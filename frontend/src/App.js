@@ -2,6 +2,7 @@ import React from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Truck, BookOpen, Palette, Users, Calculator, FileText, DollarSign, Utensils, Gauge, Timer, School, ClipboardList, Banknote, Compass, BarChart2, UserCircle, BookMarked } from "lucide-react";
+import SEO from "@/components/SEO";
 
 // Import pages
 import DayOneSimulator from "@/pages/DayOneSimulator";
@@ -33,6 +34,11 @@ const phases = [
 const Dashboard = () => {
   return (
     <div className="min-h-screen bg-[#141210] text-slate-100 p-8">
+      <SEO 
+        title="Food Truck Launch Pad"
+        description="Industrial-grade platform for food truck entrepreneurs. 11 screens, 7 phases. From concept to Day One, build your mobile food empire with precision."
+        url="/"
+      />
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-10">

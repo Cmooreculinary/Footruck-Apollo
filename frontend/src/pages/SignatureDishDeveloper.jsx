@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Utensils, ChevronRight, BookOpen, Camera, Lightbulb, Trash2, Eye, Upload } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const SignatureDishDeveloper = () => {
   const [dishName, setDishName] = useState("");
@@ -18,6 +19,11 @@ const SignatureDishDeveloper = () => {
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-background-dark font-work text-slate-100 antialiased">
+      <SEO 
+        title="Signature Dish Developer"
+        description="Create your food truck's hero item with industrial-luxe precision. Build dish narratives, highlight ingredients, and craft your brand's calling card."
+        url="/signature-dish"
+      />
       {/* Header */}
       <header className="flex items-center justify-between border-b border-industrial-gray px-6 lg:px-10 py-3 bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-8">

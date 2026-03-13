@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Compass, Shield, Cross, Building, Map, Check, ChevronRight, Lock, Clock, Search, Bell, Settings, Plus, Download, MapPin, Lightbulb, Info } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const PaperTrailPermits = () => {
   const [healthExpanded, setHealthExpanded] = useState(true);
 
   return (
     <div className="bg-background-dark font-display text-slate-100 min-h-screen">
+      <SEO 
+        title="Paper Trail - Permits Navigator"
+        description="Navigate the food truck regulatory landscape. Track federal, health department, city, and county permits with progress monitoring and deadline alerts."
+        url="/paper-trail"
+      />
       <div className="flex h-screen overflow-hidden">
         {/* Left Panel */}
         <aside className="w-72 border-r border-border-col bg-surface flex flex-col shrink-0">

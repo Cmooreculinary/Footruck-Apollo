@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Truck, Search, Settings, Bell, Download, Save, Layers, Plus, Clock, Thermometer } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const ingredients = [
   { id: 1, name: "Prime Beef Brisket", sku: "#0422", qty: "5.50 kg", unitCost: "$18.50", total: "$101.75" },
@@ -41,6 +42,11 @@ const RecipeBuilder = () => {
 
   return (
     <div className="bg-[#141210] font-display text-slate-100 min-h-screen">
+      <SEO 
+        title="Recipe Builder - Smoked Brisket Tacos"
+        description="Build and cost your food truck recipes with industrial precision. Ingredient costing, cooking methods, batch yields, and cost per serving."
+        url="/recipe-builder"
+      />
       <div className="flex h-screen flex-col overflow-hidden">
         {/* Top Nav */}
         <header className="flex items-center justify-between px-8 py-4 border-b border-border-col bg-surface shrink-0">

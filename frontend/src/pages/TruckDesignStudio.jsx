@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Truck, Palette, Layers, Type, Lightbulb, Settings, RotateCcw, Camera, Upload, Printer } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const TruckDesignStudio = () => {
   const [finishType, setFinishType] = useState("matte");
@@ -10,6 +11,11 @@ const TruckDesignStudio = () => {
 
   return (
     <div className="bg-background-dark font-display text-slate-100 h-screen flex flex-col overflow-hidden">
+      <SEO 
+        title="Truck Design Studio - Paint Shop"
+        description="Design your food truck wrap with industrial precision. Choose finishes, upload branding, add custom lettering, and export for your wrap shop."
+        url="/truck-design"
+      />
       {/* Header */}
       <header className="flex items-center justify-between border-b border-steel/50 px-8 py-4 bg-background-dark shrink-0">
         <div className="flex items-center gap-4">

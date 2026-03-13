@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { X, BookOpen, Calculator, Activity, TrendingUp, Search, Bell, Printer, Package, Clock, Zap, SlidersHorizontal, Info, ArrowRight, GitBranch, BarChart2 } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const ingredientData = [
   { name: "Beef Short Rib (Bone-in)", unit: "kg", original: "10.0", target: "48.0", waste: "1.2 kg" },
@@ -16,6 +17,11 @@ const ScalingPrepCalculator = () => {
 
   return (
     <div className="bg-background-dark font-display text-slate-100 min-h-screen">
+      <SEO 
+        title="Scaling & Prep Calculator"
+        description="Industrial-grade batch scaling for culinary entrepreneurs. Calculate ingredient quantities, waste estimates, prep labor, and cost per serving."
+        url="/scaling-prep"
+      />
       <div className="flex h-screen overflow-hidden">
         {/* Sidebar */}
         <aside className="w-52 border-r border-border-col bg-surface flex flex-col shrink-0">

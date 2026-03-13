@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Truck, Download, Plus, Calendar, Search, Zap, Users, Coins, Gavel, PiggyBank, Wand2, BarChart, CheckCircle } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const crewData = [
   { initials: "MA", name: "Marco A.", color: "primary", shifts: ["08:00", "08:00", "08:00", "OFF", "10:00", "10:00"], total: "44:00" },
@@ -13,6 +14,11 @@ const PayrollPlanning = () => {
 
   return (
     <div className="bg-background-dark font-display text-slate-100 min-h-screen">
+      <SEO 
+        title="Payroll Planning & Scheduling"
+        description="Model labor costs and manage weekly shifts with industrial precision. State wage compliance, tip pool management, and labor analytics."
+        url="/payroll"
+      />
       <div className="flex h-screen overflow-hidden">
         {/* Sidebar */}
         <aside className="w-52 border-r border-border-col bg-surface flex flex-col shrink-0">

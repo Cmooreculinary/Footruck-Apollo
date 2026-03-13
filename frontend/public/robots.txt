@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://truck-commander-2.preview.emergentagent.com/sitemap.xml
+
+# Block indexing of API routes
+Disallow: /api/

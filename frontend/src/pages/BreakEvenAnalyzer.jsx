@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Truck, Upload, Save, Wallet, ShoppingBag, Calendar, Flag, CheckCircle, ArrowRight } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const BreakEvenAnalyzer = () => {
   const [fixedExpenses, setFixedExpenses] = useState(4500);
@@ -22,6 +23,11 @@ const BreakEvenAnalyzer = () => {
 
   return (
     <div className="bg-background-dark text-white font-work overflow-x-hidden antialiased min-h-screen">
+      <SEO 
+        title="Break-Even Analyzer"
+        description="Calculate your food truck break-even point. Model fixed costs, unit economics, and sales volume to understand your path to profitability."
+        url="/break-even"
+      />
       <div className="relative flex min-h-screen flex-col">
         {/* Header */}
         <header className="sticky top-0 z-50 w-full border-b border-solid border-border-dark bg-background-dark/95 backdrop-blur-sm px-5 py-3 md:px-10">

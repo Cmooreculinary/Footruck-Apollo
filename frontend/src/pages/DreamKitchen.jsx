@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Truck, ArrowRight, ClipboardList, Lightbulb, Utensils, Store, Shield, DollarSign, Timer } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const DreamKitchen = () => {
   const [progress, setProgress] = useState(0);
@@ -11,6 +12,11 @@ const DreamKitchen = () => {
 
   return (
     <div className="bg-background-dark text-white font-work min-h-screen flex flex-col overflow-x-hidden antialiased selection:bg-primary selection:text-white">
+      <SEO 
+        title="Dream Kitchen - Readiness Assessment"
+        description="Gauge your food truck readiness. Get a tailored roadmap, risk analysis, and capital forecast for your mobile food business journey."
+        url="/dream-kitchen"
+      />
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b border-border-dark bg-[#181311]/95 backdrop-blur-sm">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">

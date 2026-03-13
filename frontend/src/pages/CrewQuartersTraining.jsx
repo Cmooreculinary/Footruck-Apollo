@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Truck, Box, Thermometer, Users, AlertTriangle, Shield, Award, Upload, Lock, CheckCircle, PlayCircle } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const trainingModules = [
   {
@@ -34,6 +35,11 @@ const CrewQuartersTraining = () => {
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-[#1a1614] font-lexend text-slate-100">
+      <SEO 
+        title="Crew Quarters - Training Bible"
+        description="Industrial-grade training resources for your food truck team. HACCP protocols, customer service standards, emergency procedures, and documentation vault."
+        url="/crew-quarters"
+      />
       {/* Header */}
       <header className="flex items-center justify-between border-b border-industrial bg-[#1a1614] px-10 py-4 sticky top-0 z-50">
         <div className="flex items-center gap-8">

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Truck, ChevronLeft, ChevronRight, Check, Timer, Lock, Brain, Award, Smile, Gauge, CreditCard, Sun, Utensils, Zap } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const scenarios = [
   {
@@ -61,6 +62,11 @@ const DayOneSimulator = () => {
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col bg-background-dark concrete-overlay font-display text-slate-100">
+      <SEO 
+        title="Day One Simulator"
+        description="Interactive scenario-based training for food truck operators. Practice rush hour decision making with live metrics and real-time feedback."
+        url="/day-one"
+      />
       {/* Header */}
       <header className="flex items-center justify-between border-b border-steel px-6 md:px-10 py-4 bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-4">

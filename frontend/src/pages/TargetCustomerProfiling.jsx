@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Users, Briefcase, GraduationCap, Camera, PartyPopper, UsersRound, Plus, Check, Download, User } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const archetypes = [
   { id: "corporate", icon: Briefcase, title: "Corporate Worker", desc: "Short lunch breaks, higher disposable income, values speed.", persona: "The Power Luncher", estSpend: "$15 – $22", peakTime: "11:30 – 13:30", drivers: ["Fast Service", "Healthy", "Quality"], painPoints: ["Long wait times", "Heavy/greasy food", "No seating available"] },
@@ -29,6 +30,11 @@ const TargetCustomerProfiling = () => {
 
   return (
     <div className="bg-background-dark font-display text-slate-100 min-h-screen">
+      <SEO 
+        title="Target Customer Profiling"
+        description="Define your ideal food truck customer. Build customer archetypes, set demographics, and generate real-time persona profiles."
+        url="/target-customer"
+      />
       <div className="flex h-screen overflow-hidden">
         {/* Sidebar */}
         <aside className="w-64 border-r border-border-col bg-surface flex flex-col shrink-0">
