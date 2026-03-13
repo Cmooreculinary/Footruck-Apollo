@@ -1,7 +1,7 @@
 # Food Truck Launch Pad - PRD
 
 ## Problem Statement
-Upgrade the FoodTruck LaunchPad app with 9 pixel-perfect feature modules based on provided HTML templates covering the entire food truck entrepreneur journey from concept to launch.
+Upgrade the FoodTruck LaunchPad app with **11 pixel-perfect feature modules** based on provided HTML templates covering the entire food truck entrepreneur journey from concept to launch.
 
 ## Architecture & Tech Stack
 - **Frontend**: React.js with Tailwind CSS
@@ -25,9 +25,11 @@ Upgrade the FoodTruck LaunchPad app with 9 pixel-perfect feature modules based o
 ## What's Been Implemented (Jan 2026)
 
 ### Dashboard (Home Page)
-- Command Center with 9 phase cards
-- Navigation to all feature pages
-- Industrial branding with Food Truck icon
+- Screen Catalog layout with 11 cards
+- Blue Collar Apps Co. branding
+- Badges: "11 Screens", "7 Phases", "Production Ready"
+- Phase tags on each card
+- Font style indicators per module
 
 ### Feature Modules Implemented:
 
@@ -89,6 +91,21 @@ Upgrade the FoodTruck LaunchPad app with 9 pixel-perfect feature modules based o
    - Multiple choice answers with feedback
    - Live metrics panel (Revenue, Satisfaction, Ticket Time)
    - Badge earning system
+
+10. **Target Customer Profiling (Module 2)** - `/target-customer`
+    - Core Archetypes selection (Corporate Worker, Student, Tourist, Event Goer, Families)
+    - Multi-select functionality
+    - Demographic details (age range slider, income level buttons)
+    - Real-time Persona Preview panel
+    - Download Persona PDF button
+
+11. **Recipe Builder - Brisket Tacos (Phase 3)** - `/recipe-builder`
+    - Recipe stats bar (Prep Time, Cook Time, Batch Yield, Cost Per Serving)
+    - Ingredients sidebar with SKUs, quantities, unit costs, totals
+    - Ingredient subtotal and waste factor calculation
+    - Cooking method steps with time and temperature
+    - Editable step content
+    - Save Recipe and Export PDF buttons
 
 ## Prioritized Backlog
 
