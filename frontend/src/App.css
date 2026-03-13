@@ -10,7 +10,7 @@
 }
 
 .App-header {
-    background-color: #0f0f10;
+    background-color: #181411;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -21,7 +21,7 @@
 }
 
 .App-link {
-    color: #61dafb;
+    color: #ec7f13;
 }
 
 @keyframes App-logo-spin {
@@ -31,4 +31,38 @@
     to {
         transform: rotate(360deg);
     }
+}
+
+/* Industrial Luxe Theme */
+.dark {
+    background-color: #181411;
+}
+
+/* Scenario glow effect */
+.scenario-glow {
+    box-shadow: 0 0 20px 2px rgba(236, 127, 19, 0.2);
+}
+
+/* Concrete texture overlay */
+.concrete-overlay {
+    background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA5QjMFf4Ol0K79yyukP_D6C44I8oZB7x_EFr4Soy4IeSLEiK1TWXPPwVkt4sb8bpDC_vr2R_M0Pv7ODrmcWZN8wUeI3ZkhC7pOQrmD7AkcAzq6fz4jc_dpdNr3dGXPXT_gMLbY77kK5X4hg6enbMGchA324Rbv9seJRUx1HuJTKR6-dSsyRPsTX9P_kQ9FqyiVzncPvCKW9NVTwllwBc6AkHAT9JRs09FvC1WE56diWG5dhU8tmdXbEYToUdgSWkIM-l68YdaxQs-t');
+    background-repeat: repeat;
+}
+
+/* Amber glow on focus */
+.amber-glow:focus {
+    box-shadow: 0 0 10px rgba(203, 79, 16, 0.4);
+    border-color: #cb4f10;
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #3d3632;
+    border-radius: 10px;
 }

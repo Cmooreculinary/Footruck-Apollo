@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Day One Interactive Simulator | Food Truck Launch Pad</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec7f13",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#1a1a1a",
+                        "copper": "#b87333",
+                        "steel": "#4a4a4a",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "header": ["Oswald", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>.concrete-overlay {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuA5QjMFf4Ol0K79yyukP_D6C44I8oZB7x_EFr4Soy4IeSLEiK1TWXPPwVkt4sb8bpDC_vr2R_M0Pv7ODrmcWZN8wUeI3ZkhC7pOQrmD7AkcAzq6fz4jc_dpdNr3dGXPXT_gMLbY77kK5X4hg6enbMGchA324Rbv9seJRUx1HuJTKR6-dSsyRPsTX9P_kQ9FqyiVzncPvCKW9NVTwllwBc6AkHAT9JRs09FvC1WE56diWG5dhU8tmdXbEYToUdgSWkIM-l68YdaxQs-t);
+    background-repeat: repeat
+    }
+.scenario-glow {
+    box-shadow: 0 0 20px 2px rgba(236, 127, 19, 0.2)
+    }</style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 selection:bg-primary/30">
+<div class="relative flex h-auto min-h-screen w-full flex-col concrete-overlay">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-steel px-6 md:px-10 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="text-primary">
+<span class="material-symbols-outlined text-4xl">local_shipping</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-header text-xl font-bold leading-tight tracking-wider uppercase">Food Truck Launch Pad</h2>
+<span class="text-[10px] text-primary font-bold tracking-[0.2em] uppercase">Phase 7: Launchpad</span>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<nav class="hidden lg:flex items-center gap-9">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Training</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Equipment</a>
+<a class="text-primary text-sm font-bold border-b-2 border-primary pb-1" href="#">Launchpad</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-background-dark text-sm font-bold hover:bg-primary/90 transition-all uppercase tracking-wider font-header">
+                            Profile
+                        </button>
+</div>
+</div>
+</header>
+<main class="flex flex-1 flex-col lg:flex-row max-w-[1400px] mx-auto w-full p-6 gap-8">
+<aside class="w-full lg:w-80 flex flex-col gap-6">
+<div class="bg-white dark:bg-steel/20 p-6 rounded-xl border border-slate-200 dark:border-steel">
+<div class="flex flex-col mb-6">
+<h3 class="font-header text-2xl font-bold uppercase tracking-tight">Mission Control</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Real-time operation simulation</p>
+</div>
+<div class="relative space-y-0">
+<div class="flex gap-4 group">
+<div class="flex flex-col items-center">
+<div class="z-10 flex items-center justify-center size-10 rounded-full bg-primary text-background-dark shadow-lg">
+<span class="material-symbols-outlined text-xl">check</span>
+</div>
+<div class="w-0.5 h-16 bg-primary"></div>
+</div>
+<div class="pt-1">
+<h4 class="font-header text-lg font-bold uppercase text-primary">Pre-Opening</h4>
+<p class="text-xs text-slate-400">Inventory &amp; Prep complete</p>
+</div>
+</div>
+<div class="flex gap-4 group">
+<div class="flex flex-col items-center">
+<div class="z-10 flex items-center justify-center size-10 rounded-full bg-primary ring-4 ring-primary/20 text-background-dark animate-pulse shadow-lg scenario-glow">
+<span class="material-symbols-outlined text-xl">timer</span>
+</div>
+<div class="w-0.5 h-16 bg-slate-300 dark:bg-steel"></div>
+</div>
+<div class="pt-1">
+<h4 class="font-header text-lg font-bold uppercase text-slate-900 dark:text-white">Service Peak</h4>
+<p class="text-xs text-primary font-medium italic">Current Stage: Rush Hour</p>
+</div>
+</div>
+<div class="flex gap-4 group">
+<div class="flex flex-col items-center">
+<div class="z-10 flex items-center justify-center size-10 rounded-full bg-slate-200 dark:bg-steel text-slate-400">
+<span class="material-symbols-outlined text-xl">lock</span>
+</div>
+</div>
+<div class="pt-1">
+<h4 class="font-header text-lg font-bold uppercase text-slate-400">Closing</h4>
+<p class="text-xs text-slate-500">Scheduled: 10:00 PM</p>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-primary/10 border border-primary/30 p-6 rounded-xl">
+<div class="flex items-center gap-3 mb-3">
+<span class="material-symbols-outlined text-primary">psychology</span>
+<span class="font-header font-bold uppercase tracking-wider text-primary">Mentor Insight</span>
+</div>
+<p class="text-sm leading-relaxed text-slate-300 italic">
+                            "Speed is king, but accuracy keeps the customers coming back. When the line grows, don't panic—delegate."
+                        </p>
+</div>
+</aside>
+<section class="flex-1 flex flex-col gap-6">
+<div class="bg-white dark:bg-steel/10 border border-slate-200 dark:border-steel p-8 rounded-xl scenario-glow">
+<div class="flex justify-between items-start mb-8">
+<div>
+<span class="bg-primary/20 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest mb-2 inline-block">Scenario 4 of 12</span>
+<h1 class="font-header text-4xl font-bold uppercase text-slate-900 dark:text-white leading-none">Long line forming - what do you do?</h1>
+</div>
+<div class="text-right">
+<p class="text-xs text-slate-500 uppercase font-bold tracking-tighter">Stress Level</p>
+<div class="flex gap-1 mt-1">
+<div class="w-4 h-2 bg-primary rounded-sm"></div>
+<div class="w-4 h-2 bg-primary rounded-sm"></div>
+<div class="w-4 h-2 bg-primary rounded-sm"></div>
+<div class="w-4 h-2 bg-slate-300 dark:bg-steel rounded-sm"></div>
+<div class="w-4 h-2 bg-slate-300 dark:bg-steel rounded-sm"></div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<button class="group flex items-start gap-4 p-5 rounded-lg border-2 border-slate-200 dark:border-steel hover:border-primary transition-all text-left bg-background-light dark:bg-background-dark/50">
+<span class="size-8 rounded-full border-2 border-slate-300 dark:border-steel group-hover:border-primary flex items-center justify-center font-bold text-sm">A</span>
+<div>
+<p class="font-bold text-slate-800 dark:text-slate-100">Stop taking orders</p>
+<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Focus entirely on the current tickets until the queue is cleared.</p>
+</div>
+</button>
+<button class="group flex items-start gap-4 p-5 rounded-lg border-2 border-primary bg-primary/5 transition-all text-left">
+<span class="size-8 rounded-full bg-primary text-background-dark flex items-center justify-center font-bold text-sm">B</span>
+<div>
+<p class="font-bold text-slate-800 dark:text-slate-100">Streamline the menu</p>
+<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Temporarily offer only 'Best Sellers' to speed up the kitchen output.</p>
+</div>
+</button>
+<button class="group flex items-start gap-4 p-5 rounded-lg border-2 border-slate-200 dark:border-steel hover:border-primary transition-all text-left bg-background-light dark:bg-background-dark/50">
+<span class="size-8 rounded-full border-2 border-slate-300 dark:border-steel group-hover:border-primary flex items-center justify-center font-bold text-sm">C</span>
+<div>
+<p class="font-bold text-slate-800 dark:text-slate-100">Hand out samples</p>
+<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Keep the customers in line engaged and happy while they wait.</p>
+</div>
+</button>
+<button class="group flex items-start gap-4 p-5 rounded-lg border-2 border-slate-200 dark:border-steel hover:border-primary transition-all text-left bg-background-light dark:bg-background-dark/50">
+<span class="size-8 rounded-full border-2 border-slate-300 dark:border-steel group-hover:border-primary flex items-center justify-center font-bold text-sm">D</span>
+<div>
+<p class="font-bold text-slate-800 dark:text-slate-100">Call for backup</p>
+<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Activate your on-call team member to assist with front-of-house window.</p>
+</div>
+</button>
+</div>
+<div class="mt-8 p-6 bg-emerald-500/10 border border-emerald-500/30 rounded-lg flex gap-4 items-start">
+<span class="material-symbols-outlined text-emerald-500 text-3xl">task_alt</span>
+<div>
+<h5 class="font-bold text-emerald-500 uppercase tracking-wide">Excellent Choice!</h5>
+<p class="text-sm text-slate-300 mt-1">Streamlining the menu reduces complexity in the kitchen by 40%. This is the most effective way to handle a massive surge without sacrificing quality.</p>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-steel/20 p-4 rounded-xl border border-slate-200 dark:border-steel mt-auto">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-bold uppercase text-slate-500">Simulator Progress</span>
+<span class="text-xs font-bold text-primary">35% Complete</span>
+</div>
+<div class="w-full h-3 bg-slate-200 dark:bg-steel rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[35%] transition-all duration-500"></div>
+</div>
+</div>
+</section>
+<aside class="w-full lg:w-72 flex flex-col gap-6">
+<div class="bg-white dark:bg-steel/20 p-6 rounded-xl border border-slate-200 dark:border-steel">
+<h3 class="font-header text-xl font-bold uppercase mb-4 border-b border-steel pb-2">Live Metrics</h3>
+<div class="space-y-6">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Revenue</p>
+<p class="text-2xl font-header font-bold text-emerald-500">$1,420.50</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">payments</span>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Customer Satisfaction</p>
+<p class="text-2xl font-header font-bold text-primary">88%</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">sentiment_very_satisfied</span>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Ticket Time</p>
+<p class="text-2xl font-header font-bold text-orange-400">07:12</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">speed</span>
+</div>
+</div>
+</div>
+<div class="bg-gradient-to-br from-copper/20 to-primary/10 border border-copper/30 p-6 rounded-xl">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-copper">workspace_premium</span>
+<span class="font-header font-bold uppercase tracking-wider text-copper">Badges Earned</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<div class="size-10 rounded-full bg-steel/50 flex items-center justify-center border border-copper/50">
+<span class="material-symbols-outlined text-copper text-lg">wb_sunny</span>
+</div>
+<div class="size-10 rounded-full bg-steel/50 flex items-center justify-center border border-slate-700">
+<span class="material-symbols-outlined text-slate-600 text-lg">restaurant_menu</span>
+</div>
+<div class="size-10 rounded-full bg-steel/50 flex items-center justify-center border border-slate-700">
+<span class="material-symbols-outlined text-slate-600 text-lg">bolt</span>
+</div>
+</div>
+</div>
+</aside>
+</main>
+<footer class="mt-auto border-t border-slate-200 dark:border-steel bg-white/50 dark:bg-background-dark/50 backdrop-blur-sm px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex items-center gap-4">
+<button class="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">chevron_left</span>
+<span class="text-sm font-bold uppercase font-header">Previous Scenario</span>
+</button>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-xs uppercase font-bold tracking-widest text-slate-500 hover:text-primary underline">Restart Simulation</button>
+<button class="bg-primary hover:bg-primary/90 text-background-dark px-8 py-3 rounded-lg font-header font-bold uppercase tracking-widest flex items-center gap-2 group transition-all">
+                        Next Challenge
+                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+</div>
+</footer>
+</div>
+</div>
+</body></html>

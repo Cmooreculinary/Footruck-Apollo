@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Food Truck Founder - Phase 1</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#cb4f10",
+              "background-light": "#f8f6f6",
+              "background-dark": "#221610",
+              "surface-dark": "#271f1c",
+              "border-dark": "#54433b",
+              "text-muted": "#b9a69d",
+            },
+            fontFamily: {
+              "display": ["Work Sans", "sans-serif"],
+              "body": ["Noto Sans", "sans-serif"],
+            },
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display min-h-screen flex flex-col overflow-x-hidden antialiased selection:bg-primary selection:text-white">
+<header class="sticky top-0 z-50 w-full border-b border-border-dark bg-[#181311]/95 backdrop-blur-sm">
+<div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-16">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-md bg-gradient-to-br from-primary to-orange-700 flex items-center justify-center text-white shadow-lg shadow-orange-900/20">
+<span class="material-symbols-outlined">local_shipping</span>
+</div>
+<span class="text-white text-lg font-bold tracking-tight uppercase">Food Truck Founder</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<nav class="flex items-center gap-6">
+<a class="text-white text-sm font-medium hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-text-muted text-sm font-medium hover:text-white transition-colors" href="#">Resources</a>
+<a class="text-text-muted text-sm font-medium hover:text-white transition-colors" href="#">Community</a>
+</nav>
+<div class="h-6 w-px bg-border-dark"></div>
+<div class="flex items-center gap-4">
+<button class="bg-primary hover:bg-orange-600 text-white text-sm font-bold px-4 py-2 rounded-md transition-all shadow-[0_2px_8px_rgba(203,79,16,0.3)]">
+My Plan
+</button>
+</div>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+<div class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-8 lg:gap-12 items-start">
+<aside class="w-full lg:sticky lg:top-24">
+<div class="bg-surface-dark border border-border-dark rounded-xl p-6 shadow-xl">
+<div class="mb-6">
+<h3 class="text-text-muted text-xs font-bold uppercase tracking-widest mb-1">Your Journey</h3>
+<h2 class="text-white text-xl font-bold">Phase 1: Dream Kitchen</h2>
+</div>
+<div class="relative pl-2">
+<div class="absolute left-[19px] top-3 bottom-3 w-[2px] bg-border-dark z-0"></div>
+<div class="relative z-10 flex gap-4 pb-8">
+<div class="size-10 rounded-full bg-primary flex items-center justify-center text-white shrink-0 shadow-[0_0_15px_rgba(203,79,16,0.4)] border-2 border-surface-dark">
+<span class="material-symbols-outlined text-[20px]">assignment</span>
+</div>
+<div class="pt-1">
+<p class="text-primary text-xs font-bold uppercase tracking-wider mb-0.5">Step 1 • Current</p>
+<p class="text-white text-base font-medium leading-tight">Welcome &amp; Assessment</p>
+</div>
+</div>
+<div class="relative z-10 flex gap-4 pb-8 opacity-60">
+<div class="size-10 rounded-full bg-surface-dark border-2 border-border-dark flex items-center justify-center text-text-muted shrink-0">
+<span class="material-symbols-outlined text-[20px]">lightbulb</span>
+</div>
+<div class="pt-1">
+<p class="text-text-muted text-xs font-bold uppercase tracking-wider mb-0.5">Step 2 • Locked</p>
+<p class="text-text-muted text-base font-medium leading-tight">Concept Definition</p>
+</div>
+</div>
+<div class="relative z-10 flex gap-4 pb-8 opacity-60">
+<div class="size-10 rounded-full bg-surface-dark border-2 border-border-dark flex items-center justify-center text-text-muted shrink-0">
+<span class="material-symbols-outlined text-[20px]">restaurant_menu</span>
+</div>
+<div class="pt-1">
+<p class="text-text-muted text-xs font-bold uppercase tracking-wider mb-0.5">Step 3 • Locked</p>
+<p class="text-text-muted text-base font-medium leading-tight">Menu Planning</p>
+</div>
+</div>
+<div class="relative z-10 flex gap-4 opacity-60">
+<div class="size-10 rounded-full bg-surface-dark border-2 border-border-dark flex items-center justify-center text-text-muted shrink-0">
+<span class="material-symbols-outlined text-[20px]">storefront</span>
+</div>
+<div class="pt-1">
+<p class="text-text-muted text-xs font-bold uppercase tracking-wider mb-0.5">Step 4 • Locked</p>
+<p class="text-text-muted text-base font-medium leading-tight">Brand Identity</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-6 bg-gradient-to-br from-gray-800 to-gray-900 border border-border-dark rounded-xl p-5 relative overflow-hidden group">
+<p class="text-primary font-bold text-sm mb-2 uppercase tracking-wide">Chef's Tip</p>
+<p class="text-gray-300 text-sm italic leading-relaxed">"Don't build a menu for everyone. Build a menu for someone specific, and make it unforgettable."</p>
+</div>
+</aside>
+<section class="flex flex-col gap-8">
+<div class="relative rounded-2xl overflow-hidden bg-surface-dark min-h-[240px] flex flex-col justify-end p-8 border border-border-dark">
+<div class="absolute inset-0 z-0">
+<div class="absolute inset-0 bg-gradient-to-t from-[#181311] via-[#181311]/80 to-transparent z-10"></div>
+</div>
+<div class="relative z-20 max-w-2xl">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-xs font-bold uppercase tracking-wider mb-4">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+Getting Started
+</div>
+<h1 class="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight mb-3">Let's Gauge Your Readiness</h1>
+<p class="text-lg text-gray-300 max-w-xl">From concept to keys. Before you invest, understand where you stand. This first step calibrates your entire roadmap.</p>
+</div>
+</div>
+<div class="bg-surface-dark border border-border-dark rounded-xl p-1 shadow-2xl relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+<div class="flex flex-col md:flex-row">
+<div class="md:w-3/5 p-6 md:p-8 flex flex-col justify-center relative z-10">
+<div class="flex items-center gap-3 mb-4 text-text-muted">
+<span class="material-symbols-outlined">timer</span>
+<span class="text-sm font-semibold uppercase tracking-wide">Est. Time: 5 Minutes</span>
+</div>
+<h2 class="text-2xl font-bold text-white mb-3">Readiness Assessment</h2>
+<p class="text-text-muted mb-8 leading-relaxed">This 5-minute assessment will analyze your culinary background, business experience, and financial preparedness to tailor a custom roadmap specifically for your food truck journey.</p>
+<div class="flex flex-col sm:flex-row gap-4 items-center">
+<button class="w-full sm:w-auto bg-primary hover:bg-orange-600 text-white text-base font-bold py-3.5 px-8 rounded-md transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20">
+<span>Begin Assessment</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<span class="text-text-muted text-sm">0% Complete</span>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+<div class="bg-surface-dark border border-border-dark rounded-lg p-6 hover:border-primary/50 transition-colors group">
+<div class="size-12 rounded-lg bg-[#392e28] flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">compass_calibration</span>
+</div>
+<h3 class="text-white text-lg font-bold mb-2">Tailored Roadmap</h3>
+<p class="text-text-muted text-sm leading-relaxed">Get specific advice based on whether you're a home cook or a seasoned executive chef.</p>
+</div>
+<div class="bg-surface-dark border border-border-dark rounded-lg p-6 hover:border-primary/50 transition-colors group">
+<div class="size-12 rounded-lg bg-[#392e28] flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">shield</span>
+</div>
+<h3 class="text-white text-lg font-bold mb-2">Risk Analysis</h3>
+<p class="text-text-muted text-sm leading-relaxed">Identify regulatory hurdles and financial pitfalls before you spend a single dollar.</p>
+</div>
+<div class="bg-surface-dark border border-border-dark rounded-lg p-6 hover:border-primary/50 transition-colors group">
+<div class="size-12 rounded-lg bg-[#392e28] flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[28px]">attach_money</span>
+</div>
+<h3 class="text-white text-lg font-bold mb-2">Capital Forecast</h3>
+<p class="text-text-muted text-sm leading-relaxed">Receive a rough estimate of the startup capital needed for your specific concept type.</p>
+</div>
+</div>
+</section>
+</div>
+</main>
+<footer class="border-t border-border-dark mt-12 py-8 bg-[#181311]">
+<div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-text-muted text-sm">© 2024 Food Truck Founder. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="text-text-muted hover:text-white text-sm" href="#">Privacy Policy</a>
+<a class="text-text-muted hover:text-white text-sm" href="#">Terms of Service</a>
+<a class="text-text-muted hover:text-white text-sm" href="#">Support</a>
+</div>
+</div>
+</footer>
+</body></html>

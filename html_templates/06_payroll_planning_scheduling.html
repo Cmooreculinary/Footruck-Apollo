@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Payroll Planning & Scheduling | Food Truck Launch Pad</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#ec7f13",
+          "background-dark": "#181411",
+          "surface": "#201c18",
+          "border-col": "#3a3228",
+          "steel": "#4a4238",
+        },
+        fontFamily: { "display": ["Space Grotesk", "sans-serif"], "header": ["Oswald", "sans-serif"] },
+      },
+    },
+  }
+</script>
+</head>
+<body class="dark:bg-background-dark font-display dark:text-slate-100 min-h-screen">
+<div class="flex h-screen overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-52 border-r border-border-col bg-surface flex flex-col shrink-0">
+  <div class="p-5 border-b border-border-col flex items-center gap-3">
+    <span class="material-symbols-outlined text-primary text-2xl">local_shipping</span>
+    <div>
+      <p class="text-xs font-bold text-white uppercase tracking-wide leading-tight">Food Truck</p>
+      <p class="text-xs font-bold text-white uppercase tracking-wide leading-tight">Launch Pad</p>
+    </div>
+  </div>
+  <nav class="flex-1 p-4 space-y-1">
+    <p class="text-[9px] text-slate-500 uppercase tracking-widest font-bold mb-3 px-3">Phase 6: Operations</p>
+    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm" href="#"><span class="material-symbols-outlined text-lg">people</span> Staff Directory</a>
+    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm" href="#"><span class="material-symbols-outlined text-lg">calendar_month</span> Scheduling</a>
+    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/20 text-primary font-semibold text-sm" href="#"><span class="material-symbols-outlined text-lg">payments</span> Payroll Modeling</a>
+    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm" href="#"><span class="material-symbols-outlined text-lg">toll</span> Tip Management</a>
+    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm" href="#"><span class="material-symbols-outlined text-lg">account_balance</span> Direct Deposit</a>
+  </nav>
+  <div class="p-4 m-4 bg-amber-900/30 border border-amber-700/40 rounded-lg">
+    <p class="text-[9px] font-bold text-amber-400 uppercase tracking-wider mb-1">Compliance Alert</p>
+    <p class="text-[10px] text-slate-400 leading-relaxed">New overtime laws in Oregon effective next month. Update labor models now.</p>
+  </div>
+</aside>
+<!-- Main -->
+<div class="flex-1 flex flex-col overflow-hidden">
+  <!-- Top Nav -->
+  <header class="flex items-center justify-between px-8 py-4 border-b border-border-col bg-surface shrink-0">
+    <nav class="flex items-center gap-8 text-sm">
+      <a class="text-slate-400 hover:text-slate-200" href="#">Dashboard</a>
+      <a class="text-slate-400 hover:text-slate-200" href="#">Inventory</a>
+      <a class="text-primary font-bold border-b-2 border-primary pb-1" href="#">Crew Quarters</a>
+      <a class="text-slate-400 hover:text-slate-200" href="#">Payroll</a>
+      <a class="text-slate-400 hover:text-slate-200" href="#">Compliance</a>
+    </nav>
+    <div class="flex items-center gap-4">
+      <div class="relative">
+        <input class="bg-surface border border-border-col rounded-lg pl-9 pr-4 py-2 text-sm text-slate-300 placeholder:text-slate-500 focus:outline-none focus:border-primary w-56" placeholder="Search operations..."/>
+        <span class="material-symbols-outlined absolute left-2.5 top-2 text-slate-500 text-lg">search</span>
+      </div>
+      <button class="bg-primary text-white text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-lg flex items-center gap-2">
+        <span class="material-symbols-outlined text-lg">bolt</span> Go Live
+      </button>
+      <div class="size-9 rounded-full bg-slate-600 border-2 border-primary/50"></div>
+    </div>
+  </header>
+  <!-- Content -->
+  <main class="flex-1 overflow-y-auto p-8">
+    <div class="flex items-start justify-between mb-8">
+      <div>
+        <h1 class="font-header text-4xl font-bold uppercase tracking-tight">Payroll Planning <span class="text-primary">&amp; Scheduling</span></h1>
+        <p class="text-slate-400 mt-1">Model labor costs and manage weekly shifts with industrial precision for high-efficiency mobile kitchens.</p>
+      </div>
+      <div class="flex gap-3">
+        <button class="flex items-center gap-2 px-4 py-2.5 border border-border-col rounded-lg text-sm font-semibold hover:bg-surface transition-colors">
+          <span class="material-symbols-outlined text-lg">download</span> Export Report
+        </button>
+        <button class="flex items-center gap-2 px-4 py-2.5 bg-primary rounded-lg text-sm font-bold text-white hover:bg-primary/90">
+          <span class="material-symbols-outlined text-lg">add</span> Add Shift
+        </button>
+      </div>
+    </div>
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-3 gap-6 mb-8">
+      <div class="bg-surface border border-border-col rounded-xl p-6">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Projected Labor Cost</p>
+          <span class="material-symbols-outlined text-slate-500">bar_chart</span>
+        </div>
+        <p class="text-3xl font-header font-bold text-white">$4,250.00</p>
+        <p class="text-xs text-emerald-400 mt-1">+5.2%</p>
+      </div>
+      <div class="bg-surface border border-border-col rounded-xl p-6">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Wage Compliance</p>
+          <span class="material-symbols-outlined text-emerald-400">verified</span>
+        </div>
+        <p class="text-3xl font-header font-bold text-white">100%</p>
+        <p class="text-xs text-slate-400 mt-1">Verified · State Level</p>
+      </div>
+      <div class="bg-surface border-2 border-primary rounded-xl p-6">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-[10px] font-bold uppercase tracking-widest text-primary">Total Weekly Labor</p>
+          <span class="material-symbols-outlined text-primary">bolt</span>
+        </div>
+        <p class="text-3xl font-header font-bold text-primary">$5,825.50</p>
+        <p class="text-xs text-slate-400 mt-1 uppercase font-bold tracking-wider">Budgeted</p>
+      </div>
+    </div>
+    <!-- Weekly Shift Grid -->
+    <div class="grid grid-cols-3 gap-6">
+      <div class="col-span-2 bg-surface border border-border-col rounded-xl p-6">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary">view_week</span>
+            <h2 class="font-header text-xl font-bold uppercase">Weekly Shift Management</h2>
+          </div>
+          <div class="flex items-center gap-3 text-sm text-slate-400">
+            <button class="hover:text-white">‹</button>
+            <span class="font-medium">Oct 14 – Oct 20</span>
+            <button class="hover:text-white">›</button>
+          </div>
+        </div>
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-[10px] uppercase tracking-widest text-slate-500 border-b border-border-col">
+              <th class="text-left pb-3 font-bold">Crew Member</th>
+              <th class="pb-3 font-bold">M</th><th class="pb-3 font-bold">T</th><th class="pb-3 font-bold">W</th><th class="pb-3 font-bold">T</th><th class="pb-3 font-bold">F</th><th class="pb-3 font-bold">S</th>
+              <th class="text-right pb-3 font-bold text-primary">Total Hrs</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border-col/50">
+            <tr class="hover:bg-white/5 transition-colors">
+              <td class="py-4 flex items-center gap-3"><div class="size-8 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary">MA</div> Marco A.</td>
+              <td class="text-center text-slate-300">08:00</td><td class="text-center text-slate-300">08:00</td><td class="text-center text-slate-300">08:00</td><td class="text-center text-slate-500">OFF</td><td class="text-center text-slate-300">10:00</td><td class="text-center text-slate-300">10:00</td>
+              <td class="text-right font-bold text-primary">44:00</td>
+            </tr>
+            <tr class="hover:bg-white/5 transition-colors">
+              <td class="py-4 flex items-center gap-3"><div class="size-8 rounded-full bg-blue-500/20 flex items-center justify-center text-xs font-bold text-blue-400">SL</div> Sarah L.</td>
+              <td class="text-center text-slate-500">OFF</td><td class="text-center text-slate-300">06:00</td><td class="text-center text-slate-300">06:00</td><td class="text-center text-slate-300">08:00</td><td class="text-center text-slate-300">08:00</td><td class="text-center text-slate-300">08:00</td>
+              <td class="text-right font-bold text-primary">36:00</td>
+            </tr>
+            <tr class="hover:bg-white/5 transition-colors">
+              <td class="py-4 flex items-center gap-3"><div class="size-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-xs font-bold text-emerald-400">JD</div> James D.</td>
+              <td class="text-center text-slate-300">08:00</td><td class="text-center text-slate-300">08:00</td><td class="text-center text-slate-300">08:00</td><td class="text-center text-slate-300">08:00</td><td class="text-center text-slate-300">08:00</td><td class="text-center text-slate-500">OFF</td>
+              <td class="text-right font-bold text-primary">40:00</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Right Column -->
+      <div class="flex flex-col gap-4">
+        <div class="bg-surface border border-border-col rounded-xl p-5">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-primary text-lg">gavel</span>
+            <h3 class="font-header font-bold uppercase tracking-wide text-sm">State Wage Tool</h3>
+          </div>
+          <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-2">Select Location</p>
+          <select class="w-full bg-background-dark border border-border-col rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-primary mb-4">
+            <option>California (San Francisco)</option>
+          </select>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="bg-background-dark rounded-lg p-3">
+              <p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Min Wage</p>
+              <p class="text-lg font-header font-bold text-white">$18.07/hr</p>
+            </div>
+            <div class="bg-background-dark rounded-lg p-3">
+              <p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Tipped Min</p>
+              <p class="text-lg font-header font-bold text-white">$18.07/hr</p>
+            </div>
+          </div>
+          <button class="w-full mt-3 py-2 border border-border-col rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-white/5 transition-colors">Sync State Requirements</button>
+        </div>
+        <div class="bg-surface border border-border-col rounded-xl p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-primary text-lg">savings</span>
+            <h3 class="font-header font-bold uppercase tracking-wide text-sm">Tip Pool Compliance</h3>
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed mb-3">Your current 70/30 Back-of-House tip pool structure is compliant with FLSA 2024 regulations.</p>
+          <div class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-3 py-2">
+            <span class="material-symbols-outlined text-emerald-400 text-sm">check_circle</span>
+            <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Legal Pool Verified</span>
+          </div>
+        </div>
+        <div class="bg-surface border border-border-col rounded-xl p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-primary text-lg">wizard_of_oz</span>
+            <h3 class="font-header font-bold uppercase tracking-wide text-sm">Setup Wizard</h3>
+          </div>
+          <p class="text-xs text-slate-400 mb-3">Finalize Direct Deposit connections for 4 new crew members.</p>
+          <div class="w-full h-1.5 bg-border-col rounded-full overflow-hidden mb-3">
+            <div class="h-full bg-primary w-2/3"></div>
+          </div>
+          <button class="w-full py-2.5 bg-primary rounded-lg text-xs font-bold uppercase tracking-widest text-white hover:bg-primary/90">Resume Wizard</button>
+        </div>
+      </div>
+    </div>
+    <!-- Industrial Analytics Banner -->
+    <div class="mt-6 bg-surface border border-border-col rounded-xl p-6 flex items-center justify-between">
+      <div class="max-w-xl">
+        <h3 class="font-header text-xl font-bold uppercase italic mb-2">Industrial Labor Analytics</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">Our modeling engine uses historical data from over 5,000 food truck operations to project your peak-hour labor efficiency. Keep your "Labor Cost vs. Sales" ratio below 30% for optimal profitability.</p>
+        <div class="flex items-center gap-6 mt-3">
+          <div class="flex items-center gap-2"><span class="size-2 rounded-full bg-primary inline-block"></span><span class="text-xs text-slate-400">Current Model: Aggressive Growth</span></div>
+          <div class="flex items-center gap-2"><span class="size-2 rounded-full bg-slate-500 inline-block"></span><span class="text-xs text-slate-400">Target Ratio: 24.5%</span></div>
+        </div>
+      </div>
+      <div class="flex items-end gap-1 h-20">
+        <div class="w-6 bg-primary/60 rounded-sm" style="height:40%"></div>
+        <div class="w-6 bg-primary/80 rounded-sm" style="height:65%"></div>
+        <div class="w-6 bg-primary rounded-sm" style="height:85%"></div>
+        <div class="w-6 bg-primary/70 rounded-sm" style="height:55%"></div>
+        <div class="w-6 bg-primary/50 rounded-sm" style="height:45%"></div>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+</body></html>

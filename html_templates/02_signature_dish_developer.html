@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#b7860b",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#181611",
+                        "industrial-gray": "#393428",
+                        "steel": "#544d3b"
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>Signature Dish Developer</title>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-industrial-gray px-6 lg:px-10 py-3 bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-8 flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">restaurant_menu</span>
+</div>
+<h2 class="text-slate-100 text-lg font-bold leading-tight tracking-[-0.015em]">Food Truck Launch Pad</h2>
+</div>
+<nav class="hidden md:flex items-center gap-9">
+<a class="text-slate-100 hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="text-slate-100 hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Menu Builder</a>
+<a class="text-slate-100 hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Location Finder</a>
+<a class="text-slate-100 hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold transition-all hover:brightness-110 active:scale-95">
+<span class="truncate">Save Progress</span>
+</button>
+</div>
+</header>
+<main class="flex-1 px-4 lg:px-40 py-8">
+<nav class="flex flex-wrap gap-2 items-center mb-6 text-slate-400">
+<a class="hover:text-primary transition-colors text-sm font-medium" href="#">Phase 3: IRON CHEF</a>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<a class="hover:text-primary transition-colors text-sm font-medium" href="#">Signature Dish Developer</a>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-slate-100 text-sm font-medium">Create New Hero Item</span>
+</nav>
+<div class="flex flex-wrap justify-between items-end gap-6 mb-12">
+<div class="flex flex-col gap-2">
+<h1 class="text-slate-100 text-5xl font-black leading-tight tracking-tight uppercase">Signature Dish <span class="text-primary">Developer</span></h1>
+<p class="text-slate-400 text-lg max-w-2xl">Perfect your food truck's hero item with industrial-luxe precision. Your signature dish is your brand's calling card.</p>
+</div>
+<button class="flex min-w-[160px] cursor-pointer items-center justify-center gap-2 rounded-lg h-12 px-6 bg-industrial-gray text-white text-sm font-bold border border-steel hover:bg-steel transition-colors">
+<span class="material-symbols-outlined">visibility</span>
+<span class="truncate">Preview on Menu</span>
+</button>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+<div class="lg:col-span-2 space-y-10">
+<section class="bg-industrial-gray/20 p-8 rounded-xl border border-industrial-gray">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary">auto_stories</span>
+<h2 class="text-primary text-2xl font-bold uppercase tracking-wider">Dish Narrative</h2>
+</div>
+<div class="flex flex-col gap-4">
+<label class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<p class="text-slate-100 text-base font-semibold">The Story Behind the Dish</p>
+</div>
+<textarea class="form-input w-full rounded-lg text-slate-100 focus:ring-primary/50 border border-steel bg-background-dark/50 focus:border-primary min-h-40 placeholder:text-slate-500 p-4 text-base leading-relaxed" placeholder="Describe the inspiration, heritage, and unique flair of this signature item..."></textarea>
+</label>
+</div>
+</section>
+<section class="bg-industrial-gray/20 p-8 rounded-xl border border-industrial-gray">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary">skillet</span>
+<h2 class="text-primary text-2xl font-bold uppercase tracking-wider">Ingredient Highlights</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="flex flex-col gap-2">
+<p class="text-slate-100 text-sm font-semibold uppercase tracking-tighter text-slate-400">Primary Component</p>
+<input class="form-input bg-background-dark/50 border-steel focus:border-primary rounded-lg text-slate-100" placeholder="e.g. 48-hour Braised Short Rib" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<p class="text-slate-100 text-sm font-semibold uppercase tracking-tighter text-slate-400">The 'X' Factor</p>
+<input class="form-input bg-background-dark/50 border-steel focus:border-primary rounded-lg text-slate-100" placeholder="e.g. House-made Yuzu Chimichurri" type="text"/>
+</div>
+<div class="md:col-span-2 flex flex-col gap-2">
+<p class="text-slate-100 text-sm font-semibold uppercase tracking-tighter text-slate-400">Flavor Profile Notes</p>
+<div class="flex gap-2 flex-wrap">
+<span class="px-3 py-1 bg-primary/20 border border-primary/40 rounded-full text-xs font-bold text-primary">SMOKY</span>
+<span class="px-3 py-1 bg-primary/20 border border-primary/40 rounded-full text-xs font-bold text-primary">UMAMI</span>
+<span class="px-3 py-1 bg-primary/20 border border-primary/40 rounded-full text-xs font-bold text-primary">CRUNCHY</span>
+<button class="px-3 py-1 border border-dashed border-steel rounded-full text-xs font-bold text-slate-500 hover:text-slate-300 hover:border-slate-300 transition-colors">+ ADD PROFILE</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="space-y-10">
+<section class="bg-industrial-gray/20 p-8 rounded-xl border border-industrial-gray h-full flex flex-col">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary">photo_camera</span>
+<h2 class="text-primary text-2xl font-bold uppercase tracking-wider">Visual Presentation</h2>
+</div>
+<div class="flex-1 flex flex-col">
+<div class="flex flex-col gap-2 mb-6">
+<p class="text-slate-100 text-base font-semibold">Hero Shot</p>
+<p class="text-slate-500 text-xs">Upload a high-resolution photo that captures the textures and colors of the dish.</p>
+</div>
+<div class="relative flex-1 min-h-[300px] border-2 border-dashed border-steel rounded-xl flex flex-col items-center justify-center bg-background-dark/30 hover:bg-background-dark/50 transition-all cursor-pointer group">
+<span class="material-symbols-outlined text-5xl text-steel group-hover:text-primary transition-colors mb-4">upload_file</span>
+<p class="text-slate-400 font-medium group-hover:text-slate-200">Drop image here or click to browse</p>
+<p class="text-slate-600 text-xs mt-2 uppercase tracking-widest">JPG, PNG up to 10MB</p>
+</div>
+<div class="mt-10 p-6 bg-background-dark/80 rounded-lg border border-primary/20 italic text-slate-400 text-sm relative">
+<span class="material-symbols-outlined absolute -top-3 -left-3 bg-primary text-white rounded-full p-1 text-sm">lightbulb</span>
+"Lighting is the secret ingredient. Use natural side-light to emphasize the texture of the glaze and the crust of the protein."
+</div>
+</div>
+</section>
+</div>
+</div>
+<div class="mt-12 pt-8 border-t border-industrial-gray flex justify-between items-center">
+<button class="text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">delete_outline</span>
+Discard Draft
+</button>
+<div class="flex gap-4">
+<button class="px-8 py-3 rounded-lg border border-steel text-slate-100 font-bold hover:bg-industrial-gray transition-colors">Save as Draft</button>
+<button class="px-8 py-3 rounded-lg bg-primary text-white font-bold hover:brightness-110 shadow-lg shadow-primary/20 transition-all">Publish to Menu</button>
+</div>
+</div>
+</main>
+<footer class="px-4 lg:px-40 py-10 bg-background-dark text-slate-600 text-xs uppercase tracking-[0.2em] border-t border-industrial-gray mt-10">
+<div class="flex flex-col md:flex-row justify-between items-center gap-4">
+<p>© 2024 Industrial Luxe Systems</p>
+<div class="flex gap-8">
+<a class="hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">Chef Support</a>
+</div>
+</div>
+</footer>
+</div>
+</div>
+</body></html>
