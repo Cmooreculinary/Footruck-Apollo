@@ -1,7 +1,7 @@
 import React from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
-import { Truck, LayoutDashboard, BookOpen, Palette, Users, Calculator, FileText, DollarSign, Utensils, Gauge } from "lucide-react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { Truck, BookOpen, Palette, Users, Calculator, FileText, DollarSign, Utensils, Gauge, Timer, School, ClipboardList, Banknote, Compass, BarChart2, UserCircle, BookMarked } from "lucide-react";
 
 // Import pages
 import DayOneSimulator from "@/pages/DayOneSimulator";
@@ -13,117 +13,75 @@ import PayrollPlanning from "@/pages/PayrollPlanning";
 import ScalingPrepCalculator from "@/pages/ScalingPrepCalculator";
 import PaperTrailPermits from "@/pages/PaperTrailPermits";
 import BreakEvenAnalyzer from "@/pages/BreakEvenAnalyzer";
+import TargetCustomerProfiling from "@/pages/TargetCustomerProfiling";
+import RecipeBuilder from "@/pages/RecipeBuilder";
 
 const phases = [
-  { path: "/dream-kitchen", name: "Dream Kitchen", phase: "Phase 1", icon: Gauge, description: "Readiness Assessment" },
-  { path: "/signature-dish", name: "Signature Dish", phase: "Phase 3", icon: Utensils, description: "Menu Development" },
-  { path: "/truck-design", name: "Truck Design", phase: "Phase 5", icon: Palette, description: "Paint Shop" },
-  { path: "/crew-quarters", name: "Crew Quarters", phase: "Phase 6", icon: Users, description: "Training & Ops" },
-  { path: "/payroll", name: "Payroll", phase: "Phase 6", icon: DollarSign, description: "Labor Planning" },
-  { path: "/scaling-prep", name: "Scaling & Prep", phase: "Phase 3", icon: Calculator, description: "Batch Calculator" },
-  { path: "/paper-trail", name: "Paper Trail", phase: "Phase 2", icon: FileText, description: "Permits & Licenses" },
-  { path: "/break-even", name: "Break-Even", phase: "Financial", icon: DollarSign, description: "Cost Analysis" },
-  { path: "/day-one", name: "Day One", phase: "Phase 7", icon: BookOpen, description: "Launch Simulator" },
+  { path: "/day-one", name: "Day One Simulator", phase: "Phase 7", icon: Timer, description: "Interactive scenario-based training. Rush hour decision making with live metrics.", fontStyle: "Space Grotesk · Oswald" },
+  { path: "/signature-dish", name: "Signature Dish Developer", phase: "Phase 3", icon: Utensils, description: "Hero item creation form with narrative, ingredient highlights, and image upload.", fontStyle: "Iron Chef · Work Sans" },
+  { path: "/crew-quarters", name: "Crew Quarters — Training Bible", phase: "Phase 6", icon: School, description: "HACCP training, sanitization protocols, customer service standards, emergency docs.", fontStyle: "Crew Quarters · Lexend" },
+  { path: "/dream-kitchen", name: "Dream Kitchen — Readiness", phase: "Phase 1", icon: ClipboardList, description: "Onboarding assessment. Tailored roadmap, risk analysis, capital forecast intro.", fontStyle: "Founder · Work Sans" },
+  { path: "/truck-design", name: "Truck Design — Paint Shop", phase: "Phase 5", icon: Palette, description: "Composite preview canvas with paint/finish tools, asset upload, lettering tool.", fontStyle: "Studio · Space Grotesk" },
+  { path: "/payroll", name: "Payroll Planning & Scheduling", phase: "Phase 6", icon: Banknote, description: "Shift grid, wage compliance, state tool, tip pool, labor analytics dashboard.", fontStyle: "Crew Quarters · Ops" },
+  { path: "/scaling-prep", name: "Scaling & Prep Calculator", phase: "Phase 3", icon: Calculator, description: "Ingredient matrix with batch scaling, waste estimation, cost per unit, prep labor.", fontStyle: "Iron Chef · High Volume" },
+  { path: "/paper-trail", name: "Paper Trail — Permits Navigator", phase: "Phase 2", icon: Compass, description: "Regulatory landscape. Federal, health dept, city, county permits with progress tracking.", fontStyle: "Navigator · Compliance" },
+  { path: "/break-even", name: "Break-Even Analyzer", phase: "Financial", icon: BarChart2, description: "Financial modeling tool with cost inputs, revenue projections, break-even point.", fontStyle: "Financial Module" },
+  { path: "/target-customer", name: "Target Customer Profiling", phase: "Module 2", icon: UserCircle, description: "Archetype builder with demographics, real-time persona preview, PDF download.", fontStyle: "Workshop · Concept Dev" },
+  { path: "/recipe-builder", name: "Recipe Builder — Brisket Tacos", phase: "Phase 3", icon: BookMarked, description: "Full recipe editor with ingredient costing, step-by-step method, export to PDF.", fontStyle: "Iron Chef · Industrial V3" },
 ];
 
 const Dashboard = () => {
   return (
-    <div className="min-h-screen bg-background-dark">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border-col bg-surface/95 backdrop-blur-sm px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="text-primary">
-              <Truck className="w-8 h-8" />
-            </div>
-            <div>
-              <h1 className="text-white text-lg font-bold tracking-tight uppercase font-header">Food Truck Launch Pad</h1>
-              <p className="text-[10px] text-primary uppercase tracking-[0.2em]">Professional Grade V.2.4</p>
-            </div>
+    <div className="min-h-screen bg-[#141210] text-slate-100 p-8">
+      <div className="max-w-5xl mx-auto">
+        {/* Header */}
+        <div className="mb-10">
+          <div className="flex items-center gap-3 mb-2">
+            <Truck className="w-8 h-8 text-primary" />
+            <h1 className="font-bold text-xl uppercase tracking-wider text-primary">Blue Collar Apps Co.</h1>
           </div>
-          <nav className="flex items-center gap-6">
-            <Link to="/" className="text-primary font-bold text-sm border-b-2 border-primary pb-1">Dashboard</Link>
-            <a href="#" className="text-slate-400 hover:text-primary text-sm transition-colors">Resources</a>
-            <a href="#" className="text-slate-400 hover:text-primary text-sm transition-colors">Community</a>
-          </nav>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-10">
-        {/* Hero Section */}
-        <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-xs font-bold uppercase tracking-wider mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-            Command Center
+          <h2 className="text-5xl font-black uppercase tracking-tight mb-2 font-header">Food Truck Launch Pad</h2>
+          <p className="text-slate-400 text-lg">Stitch Screen Catalog · Emergent Handoff Package</p>
+          <div className="flex items-center gap-4 mt-4">
+            <span className="bg-primary/20 border border-primary/40 text-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">11 Screens</span>
+            <span className="bg-slate-800 border border-slate-700 text-slate-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">7 Phases</span>
+            <span className="bg-slate-800 border border-slate-700 text-slate-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Production Ready</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight mb-3 font-header">
-            Your Food Truck Journey
-          </h2>
-          <p className="text-lg text-text-muted max-w-2xl">
-            From concept to launch. Navigate every phase of building your mobile food empire with industrial-grade precision.
-          </p>
         </div>
 
         {/* Phase Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {phases.map((phase) => {
             const Icon = phase.icon;
             return (
               <Link
                 key={phase.path}
                 to={phase.path}
-                data-testid={`nav-${phase.name.toLowerCase().replace(/\s+/g, '-')}`}
-                className="group bg-surface border border-border-col rounded-xl p-6 hover:border-primary/50 transition-all duration-300"
+                data-testid={`nav-${phase.name.toLowerCase().replace(/\s+/g, '-').replace(/[—]/g, '')}`}
+                className="group bg-[#1a1714] border border-[#2e2820] hover:border-primary/60 rounded-xl p-5 transition-all"
               >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                    <Icon className="w-6 h-6 text-primary group-hover:text-white" />
+                <div className="flex items-start justify-between mb-3">
+                  <div className="size-10 rounded-lg bg-primary/20 flex items-center justify-center">
+                    <Icon className="w-5 h-5 text-primary" />
                   </div>
-                  <span className="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 px-2 py-1 rounded border border-primary/30">
-                    {phase.phase}
-                  </span>
+                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{phase.phase}</span>
                 </div>
-                <h3 className="text-white text-lg font-bold mb-1 group-hover:text-primary transition-colors">{phase.name}</h3>
-                <p className="text-text-muted text-sm">{phase.description}</p>
-                <div className="mt-4 pt-4 border-t border-border-col flex items-center justify-between">
-                  <span className="text-xs text-slate-500">Click to open</span>
-                  <span className="text-primary text-sm font-bold group-hover:translate-x-1 transition-transform">→</span>
+                <h3 className="font-bold text-white mb-1 group-hover:text-primary transition-colors">{phase.name}</h3>
+                <p className="text-slate-500 text-xs leading-relaxed">{phase.description}</p>
+                <div className="mt-3 flex gap-2">
+                  <span className="text-[9px] bg-slate-800 px-2 py-0.5 rounded font-bold text-slate-400 uppercase">{phase.fontStyle}</span>
                 </div>
               </Link>
             );
           })}
         </div>
 
-        {/* Bottom Banner */}
-        <div className="mt-12 bg-surface border border-border-col rounded-xl p-8 flex items-center justify-between">
-          <div className="max-w-xl">
-            <h3 className="font-header text-2xl font-bold uppercase italic mb-2 text-white">Industrial-Grade Launch System</h3>
-            <p className="text-text-muted text-sm leading-relaxed">
-              Our platform guides you through every phase of building a successful food truck business—from initial concept to Day One operations. Each module is designed with the precision and efficiency of a commercial kitchen.
-            </p>
-          </div>
-          <div className="flex items-end gap-1 h-20">
-            <div className="w-6 bg-primary/60 rounded-sm" style={{height: '40%'}}></div>
-            <div className="w-6 bg-primary/80 rounded-sm" style={{height: '65%'}}></div>
-            <div className="w-6 bg-primary rounded-sm" style={{height: '85%'}}></div>
-            <div className="w-6 bg-primary/70 rounded-sm" style={{height: '55%'}}></div>
-            <div className="w-6 bg-primary/50 rounded-sm" style={{height: '45%'}}></div>
-          </div>
+        {/* Footer */}
+        <div className="mt-10 border-t border-[#2e2820] pt-6 flex items-center justify-between text-xs text-slate-600">
+          <p>Blue Collar Apps Co. · Food Truck Launch Pad · Stitch → Emergent Handoff</p>
+          <p>Design System: Space Grotesk · Oswald · #ec7f13 · Industrial Luxe</p>
         </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="border-t border-border-col bg-surface/50 px-6 py-8 mt-12">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-text-muted text-sm">© 2024 Food Truck Launch Pad. All rights reserved.</p>
-          <div className="flex gap-6">
-            <a href="#" className="text-text-muted hover:text-primary text-sm transition-colors">Privacy Policy</a>
-            <a href="#" className="text-text-muted hover:text-primary text-sm transition-colors">Terms of Service</a>
-            <a href="#" className="text-text-muted hover:text-primary text-sm transition-colors">Support</a>
-          </div>
-        </div>
-      </footer>
+      </div>
     </div>
   );
 };
@@ -143,6 +101,8 @@ function App() {
           <Route path="/scaling-prep" element={<ScalingPrepCalculator />} />
           <Route path="/paper-trail" element={<PaperTrailPermits />} />
           <Route path="/break-even" element={<BreakEvenAnalyzer />} />
+          <Route path="/target-customer" element={<TargetCustomerProfiling />} />
+          <Route path="/recipe-builder" element={<RecipeBuilder />} />
         </Routes>
       </BrowserRouter>
     </div>
