@@ -15,7 +15,7 @@ import PaperTrailPermits from "@/pages/PaperTrailPermits";
 import BreakEvenAnalyzer from "@/pages/BreakEvenAnalyzer";
 
 const phases = [
-  { path: "/", name: "Dream Kitchen", phase: "Phase 1", icon: Gauge, description: "Readiness Assessment" },
+  { path: "/dream-kitchen", name: "Dream Kitchen", phase: "Phase 1", icon: Gauge, description: "Readiness Assessment" },
   { path: "/signature-dish", name: "Signature Dish", phase: "Phase 3", icon: Utensils, description: "Menu Development" },
   { path: "/truck-design", name: "Truck Design", phase: "Phase 5", icon: Palette, description: "Paint Shop" },
   { path: "/crew-quarters", name: "Crew Quarters", phase: "Phase 6", icon: Users, description: "Training & Ops" },
