@@ -53,10 +53,13 @@ Upgrade the FoodTruck LaunchPad app with **11 pixel-perfect feature modules** ba
    - Photo upload area
 
 3. **Truck Design Paint Shop (Phase 5)** - `/truck-design`
-   - Visual truck preview canvas
-   - Finish type selector (matte/gloss/metallic)
-   - Color picker with hue slider
-   - Lettering tool with font selection
+   - **36+ Color Options** across 6 palettes (Classic, Industrial, Vibrant, Earth Tones, Metallic, Pastels)
+   - **Real-time SVG Truck Preview** that updates instantly on color selection
+   - **Primary & Accent Color System** - body color vs stripe/wheel hubs/trim
+   - **4 Finish Types**: Matte, Satin, Gloss, Metallic with visual effects
+   - **4 Texture Options**: Solid, Brushed Metal, Carbon Fiber, Diamond Plate
+   - **Custom Hex Color Input** and native color picker
+   - **Business Name Editor** with live text preview on truck
    - Export for wrap shop button
 
 4. **Crew Quarters Training (Phase 6)** - `/crew-quarters`
