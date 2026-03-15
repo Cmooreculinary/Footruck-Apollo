@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { X, BookOpen, Calculator, Activity, TrendingUp, Search, Bell, Printer, Package, Clock, Zap, SlidersHorizontal, Info, ArrowRight, GitBranch, BarChart2 } from "lucide-react";
+import { X, BookOpen, Calculator, Activity, TrendingUp, Search, Bell, Printer, Package, Clock, Zap, SlidersHorizontal, Info, ArrowRight, GitBranch, BarChart2, Loader2, Save } from "lucide-react";
+import { toast } from "sonner";
 import SEO from "@/components/SEO";
+import { apiClient } from "@/lib/api";
 
 const ingredientData = [
   { name: "Beef Short Rib (Bone-in)", unit: "kg", original: "10.0", target: "48.0", waste: "1.2 kg" },
@@ -14,6 +16,31 @@ const ingredientData = [
 const ScalingPrepCalculator = () => {
   const [selectedRecipe, setSelectedRecipe] = useState("Signature Braised Short Ribs");
   const [targetServings, setTargetServings] = useState(120);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportToInventory = async () => {
+    setIsExporting(true);
+    try {
+      await apiClient.saveScaledBatch({
+        recipe_name: selectedRecipe,
+        target_servings: targetServings,
+        total_batch_cost: 842.12,
+        cost_per_unit: 7.02,
+        prep_time_hours: 6.5,
+        ingredients: ingredientData,
+      });
+      toast.success("Exported to inventory!", { description: "Batch has been saved and added to your inventory system." });
+    } catch (error) {
+      toast.error("Export failed", { description: "Please try again." });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handlePrintPrepSheet = () => {
+    toast.info("Print coming soon", { description: "Prep sheet printing is in development." });
+  };
 
   return (
     <div className="bg-background-dark font-display text-slate-100 min-h-screen">
@@ -93,11 +120,20 @@ const ScalingPrepCalculator = () => {
                 <p className="text-slate-400 mt-1">Industrial-luxe precision for culinary entrepreneurs. Calibrate your batches for peak service efficiency.</p>
               </div>
               <div className="flex gap-3">
-                <button className="flex items-center gap-2 px-4 py-2.5 border border-border-col rounded-lg text-sm font-semibold hover:bg-surface transition-colors">
+                <button 
+                  onClick={handlePrintPrepSheet}
+                  className="flex items-center gap-2 px-4 py-2.5 border border-border-col rounded-lg text-sm font-semibold hover:bg-surface transition-colors"
+                >
                   <Printer className="w-4 h-4" /> Print Prep Sheet
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2.5 bg-primary rounded-lg text-sm font-bold text-white hover:bg-primary/90" data-testid="export-inventory-btn">
-                  <Package className="w-4 h-4" /> Export to Inventory
+                <button 
+                  onClick={handleExportToInventory}
+                  disabled={isExporting}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-primary rounded-lg text-sm font-bold text-white hover:bg-primary/90 disabled:opacity-50" 
+                  data-testid="export-inventory-btn"
+                >
+                  {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Package className="w-4 h-4" />}
+                  {isExporting ? "Exporting..." : "Export to Inventory"}
                 </button>
               </div>
             </div>

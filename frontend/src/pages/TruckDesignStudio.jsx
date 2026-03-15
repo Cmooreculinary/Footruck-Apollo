@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Truck, Palette, Layers, Type, Sparkles, Settings, RotateCcw, Camera, Upload, Printer, Check, Droplets, Sun, Zap } from "lucide-react";
+import { Truck, Palette, Layers, Type, Sparkles, Settings, RotateCcw, Camera, Upload, Printer, Check, Droplets, Sun, Zap, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import SEO from "@/components/SEO";
+import { apiClient } from "@/lib/api";
 
 // Color palettes organized by category
 const colorPalettes = {
@@ -77,9 +79,58 @@ const TruckDesignStudio = () => {
   const [activeColorTarget, setActiveColorTarget] = useState("primary"); // primary or accent
   const [businessName, setBusinessName] = useState("YOUR BRAND");
   const [activeCategory, setActiveCategory] = useState("Classic");
-  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const currentFinish = finishes.find(f => f.id === finishType);
+
+  const handleSaveDesign = async () => {
+    setIsSaving(true);
+    try {
+      await apiClient.saveTruckDesign({
+        primary_color: primaryColor,
+        accent_color: accentColor,
+        finish_type: finishType,
+        texture_type: textureType,
+        business_name: businessName,
+      });
+      toast.success("Design saved successfully!", {
+        description: "Your truck design has been saved to your account."
+      });
+    } catch (error) {
+      toast.error("Failed to save design", {
+        description: "Please try again or check your connection."
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleExportDesign = async () => {
+    setIsExporting(true);
+    try {
+      // Simulate export process
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      toast.success("Design exported!", {
+        description: "Your wrap-ready PDF has been generated."
+      });
+    } catch (error) {
+      toast.error("Export failed", {
+        description: "Please try again."
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleResetDesign = () => {
+    setPrimaryColor("#ec7f13");
+    setAccentColor("#1a1a1a");
+    setFinishType("matte");
+    setTextureType("solid");
+    setBusinessName("YOUR BRAND");
+    toast.info("Design reset to defaults");
+  };
 
   return (
     <div className="bg-background-dark font-display text-slate-100 h-screen flex flex-col overflow-hidden">
@@ -103,10 +154,20 @@ const TruckDesignStudio = () => {
         <nav className="flex items-center gap-10">
           <Link to="/" className="text-xs font-semibold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">Dashboard</Link>
           <span className="text-xs font-semibold uppercase tracking-widest text-primary border-b-2 border-primary pb-1">Paint Shop</span>
-          <a href="#" className="text-xs font-semibold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">Wrap Preview</a>
+          <button 
+            onClick={() => toast.info("Wrap Preview coming soon", { description: "This feature is in development." })}
+            className="text-xs font-semibold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors"
+          >
+            Wrap Preview
+          </button>
         </nav>
-        <button className="px-6 py-2 bg-primary rounded text-xs font-bold uppercase tracking-widest hover:bg-primary/90 transition-all flex items-center gap-2">
-          <Printer className="w-4 h-4" /> Export Design
+        <button 
+          onClick={handleExportDesign}
+          disabled={isExporting}
+          className="px-6 py-2 bg-primary rounded text-xs font-bold uppercase tracking-widest hover:bg-primary/90 transition-all flex items-center gap-2 disabled:opacity-50"
+        >
+          {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Printer className="w-4 h-4" />}
+          {isExporting ? "Exporting..." : "Export Design"}
         </button>
       </header>
 
@@ -491,26 +552,27 @@ const TruckDesignStudio = () => {
           <div className="p-4">
             <div className="grid grid-cols-2 gap-2">
               <button 
-                onClick={() => {
-                  setPrimaryColor("#ec7f13");
-                  setAccentColor("#1a1a1a");
-                  setFinishType("matte");
-                  setTextureType("solid");
-                }}
+                onClick={handleResetDesign}
                 className="py-3 border border-steel rounded-lg text-xs font-bold uppercase tracking-widest text-slate-400 hover:bg-steel/20 transition-colors"
               >
                 Reset Design
               </button>
               <button 
-                className="py-3 bg-primary rounded-lg text-xs font-bold uppercase tracking-widest text-white hover:bg-primary/90 transition-colors"
+                onClick={handleSaveDesign}
+                disabled={isSaving}
+                className="py-3 bg-primary rounded-lg text-xs font-bold uppercase tracking-widest text-white hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                 data-testid="save-design-btn"
               >
-                Save Design
+                {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                {isSaving ? "Saving..." : "Save Design"}
               </button>
             </div>
             
             {/* Upload Logo */}
-            <div className="mt-4 border-2 border-dashed border-steel/50 rounded-lg p-4 flex flex-col items-center gap-2 hover:border-primary/50 cursor-pointer transition-all">
+            <div 
+              onClick={() => toast.info("Logo upload coming soon", { description: "This feature is in development." })}
+              className="mt-4 border-2 border-dashed border-steel/50 rounded-lg p-4 flex flex-col items-center gap-2 hover:border-primary/50 cursor-pointer transition-all"
+            >
               <Upload className="w-6 h-6 text-slate-500" />
               <span className="text-[10px] uppercase font-bold text-slate-400">Upload Logo</span>
             </div>

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Truck, Download, Plus, Calendar, Search, Zap, Users, Coins, Gavel, PiggyBank, Wand2, BarChart, CheckCircle } from "lucide-react";
+import { Truck, Download, Plus, Calendar, Search, Zap, Users, Coins, Gavel, PiggyBank, Wand2, BarChart, CheckCircle, Loader2, Save } from "lucide-react";
+import { toast } from "sonner";
 import SEO from "@/components/SEO";
+import { apiClient } from "@/lib/api";
 
 const crewData = [
   { initials: "MA", name: "Marco A.", color: "primary", shifts: ["08:00", "08:00", "08:00", "OFF", "10:00", "10:00"], total: "44:00" },
@@ -11,6 +13,33 @@ const crewData = [
 
 const PayrollPlanning = () => {
   const [selectedLocation, setSelectedLocation] = useState("California (San Francisco)");
+  const [isSaving, setIsSaving] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleSavePayroll = async () => {
+    setIsSaving(true);
+    try {
+      await apiClient.savePayrollPlan({
+        location: selectedLocation,
+        projected_labor_cost: 4250.00,
+        total_weekly_labor: 5825.50,
+        crew_schedule: crewData,
+      });
+      toast.success("Payroll saved!", { description: "Your payroll plan has been saved." });
+    } catch (error) {
+      toast.error("Failed to save", { description: "Please try again." });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleExportReport = () => {
+    toast.info("Export coming soon", { description: "Report export is in development." });
+  };
+
+  const handleAddShift = () => {
+    toast.info("Shift editor coming soon", { description: "Shift management is in development." });
+  };
 
   return (
     <div className="bg-background-dark font-display text-slate-100 min-h-screen">
@@ -86,11 +115,27 @@ const PayrollPlanning = () => {
                 <p className="text-slate-400 mt-1">Model labor costs and manage weekly shifts with industrial precision for high-efficiency mobile kitchens.</p>
               </div>
               <div className="flex gap-3">
-                <button className="flex items-center gap-2 px-4 py-2.5 border border-border-col rounded-lg text-sm font-semibold hover:bg-surface transition-colors">
+                <button 
+                  onClick={handleExportReport}
+                  className="flex items-center gap-2 px-4 py-2.5 border border-border-col rounded-lg text-sm font-semibold hover:bg-surface transition-colors"
+                >
                   <Download className="w-4 h-4" /> Export Report
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2.5 bg-primary rounded-lg text-sm font-bold text-white hover:bg-primary/90" data-testid="add-shift-btn">
+                <button 
+                  onClick={handleAddShift}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-primary rounded-lg text-sm font-bold text-white hover:bg-primary/90" 
+                  data-testid="add-shift-btn"
+                >
                   <Plus className="w-4 h-4" /> Add Shift
+                </button>
+                <button 
+                  onClick={handleSavePayroll}
+                  disabled={isSaving}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-primary rounded-lg text-sm font-bold text-white hover:bg-primary/90 disabled:opacity-50" 
+                  data-testid="save-payroll-btn"
+                >
+                  {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  {isSaving ? "Saving..." : "Save Plan"}
                 </button>
               </div>
             </div>

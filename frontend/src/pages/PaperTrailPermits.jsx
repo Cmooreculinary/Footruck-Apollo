@@ -1,10 +1,54 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Compass, Shield, Cross, Building, Map, Check, ChevronRight, Lock, Clock, Search, Bell, Settings, Plus, Download, MapPin, Lightbulb, Info } from "lucide-react";
+import { Compass, Shield, Cross, Building, Map, Check, ChevronRight, Lock, Clock, Search, Bell, Settings, Plus, Download, MapPin, Lightbulb, Info, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import SEO from "@/components/SEO";
+import { apiClient } from "@/lib/api";
 
 const PaperTrailPermits = () => {
   const [healthExpanded, setHealthExpanded] = useState(true);
+  const [isAddingPermit, setIsAddingPermit] = useState(false);
+  const [isScheduling, setIsScheduling] = useState(false);
+
+  const handleNewPermit = async () => {
+    setIsAddingPermit(true);
+    try {
+      await apiClient.savePermit({
+        name: "New Permit Application",
+        category: "health",
+        status: "pending",
+        due_date: null,
+        notes: "",
+      });
+      toast.success("Permit added!", { description: "New permit application has been created." });
+    } catch (error) {
+      toast.error("Failed to add permit", { description: "Please try again." });
+    } finally {
+      setIsAddingPermit(false);
+    }
+  };
+
+  const handleScheduleInspection = async () => {
+    setIsScheduling(true);
+    try {
+      await apiClient.savePermit({
+        name: "Pre-opening Inspection",
+        category: "health",
+        status: "in_progress",
+        due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        notes: "Inspection scheduled",
+      });
+      toast.success("Inspection scheduled!", { description: "Your pre-opening inspection has been scheduled." });
+    } catch (error) {
+      toast.error("Failed to schedule", { description: "Please try again." });
+    } finally {
+      setIsScheduling(false);
+    }
+  };
+
+  const handleExportAudit = () => {
+    toast.info("Export coming soon", { description: "Audit trail export is in development." });
+  };
 
   return (
     <div className="bg-background-dark font-display text-slate-100 min-h-screen">
@@ -164,8 +208,13 @@ const PaperTrailPermits = () => {
                           <div className="flex items-center gap-3">
                             <div className="size-4 rounded border-2 border-border-col bg-transparent shrink-0"></div>
                             <p className="text-sm text-slate-300">Schedule pre-opening inspection</p>
-                            <button className="ml-auto bg-primary text-white text-[10px] font-bold px-3 py-1 rounded uppercase tracking-wider hover:bg-primary/90" data-testid="schedule-btn">
-                              Schedule Now
+                            <button 
+                              onClick={handleScheduleInspection}
+                              disabled={isScheduling}
+                              className="ml-auto bg-primary text-white text-[10px] font-bold px-3 py-1 rounded uppercase tracking-wider hover:bg-primary/90 disabled:opacity-50" 
+                              data-testid="schedule-btn"
+                            >
+                              {isScheduling ? "Scheduling..." : "Schedule Now"}
                             </button>
                           </div>
                           <div className="flex items-center gap-3 opacity-50">
@@ -230,10 +279,19 @@ const PaperTrailPermits = () => {
                     </div>
                   </div>
                 </div>
-                <button className="w-full py-3.5 bg-primary rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors" data-testid="new-permit-btn">
-                  <Plus className="w-5 h-5" /> New Permit
+                <button 
+                  onClick={handleNewPermit}
+                  disabled={isAddingPermit}
+                  className="w-full py-3.5 bg-primary rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors disabled:opacity-50" 
+                  data-testid="new-permit-btn"
+                >
+                  {isAddingPermit ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+                  {isAddingPermit ? "Adding..." : "New Permit"}
                 </button>
-                <button className="w-full py-3 border border-border-col rounded-xl text-slate-300 text-sm font-bold flex items-center justify-center gap-2 hover:bg-surface transition-colors">
+                <button 
+                  onClick={handleExportAudit}
+                  className="w-full py-3 border border-border-col rounded-xl text-slate-300 text-sm font-bold flex items-center justify-center gap-2 hover:bg-surface transition-colors"
+                >
                   <Download className="w-5 h-5" /> Export Audit Trail
                 </button>
 

@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Truck, Upload, Save, Wallet, ShoppingBag, Calendar, Flag, CheckCircle, ArrowRight } from "lucide-react";
+import { Truck, Upload, Save, Wallet, ShoppingBag, Calendar, Flag, CheckCircle, ArrowRight, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import SEO from "@/components/SEO";
+import { apiClient } from "@/lib/api";
 
 const BreakEvenAnalyzer = () => {
   const [fixedExpenses, setFixedExpenses] = useState(4500);
@@ -9,17 +11,41 @@ const BreakEvenAnalyzer = () => {
   const [avgCostPerPlate, setAvgCostPerPlate] = useState(4.50);
   const [operatingDays, setOperatingDays] = useState(20);
   const [avgCustomersPerDay, setAvgCustomersPerDay] = useState(65);
+  const [isSaving, setIsSaving] = useState(false);
+  const [scenarioName, setScenarioName] = useState("My Break-Even Scenario");
 
   // Calculations
   const contributionMargin = avgMenuPrice - avgCostPerPlate;
-  const breakEvenUnits = Math.ceil(fixedExpenses / contributionMargin);
+  const breakEvenUnits = contributionMargin > 0 ? Math.ceil(fixedExpenses / contributionMargin) : 0;
   const projectedSales = operatingDays * avgCustomersPerDay;
   const totalRevenue = projectedSales * avgMenuPrice;
   const cogs = projectedSales * avgCostPerPlate;
   const netProfit = totalRevenue - cogs - fixedExpenses;
-  const marginOfSafety = ((projectedSales - breakEvenUnits) / breakEvenUnits * 100).toFixed(0);
-  const breakEvenPercentage = Math.min((breakEvenUnits / projectedSales) * 100, 100);
+  const marginOfSafety = breakEvenUnits > 0 ? ((projectedSales - breakEvenUnits) / breakEvenUnits * 100).toFixed(0) : 0;
+  const breakEvenPercentage = projectedSales > 0 ? Math.min((breakEvenUnits / projectedSales) * 100, 100) : 0;
   const currentPositionPercentage = Math.min((projectedSales / (projectedSales + 300)) * 100, 100);
+
+  const handleSaveScenario = async () => {
+    setIsSaving(true);
+    try {
+      await apiClient.saveBreakEvenScenario({
+        name: scenarioName,
+        fixed_expenses: fixedExpenses,
+        avg_menu_price: avgMenuPrice,
+        avg_cost_per_plate: avgCostPerPlate,
+        operating_days: operatingDays,
+        avg_customers_per_day: avgCustomersPerDay,
+        break_even_units: breakEvenUnits,
+        projected_sales: projectedSales,
+        net_profit: netProfit,
+      });
+      toast.success("Scenario saved!", { description: "Your break-even analysis has been saved to your business plan." });
+    } catch (error) {
+      toast.error("Failed to save", { description: "Please try again." });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div className="bg-background-dark text-white font-work overflow-x-hidden antialiased min-h-screen">
@@ -72,13 +98,20 @@ const BreakEvenAnalyzer = () => {
                 <p className="text-text-muted text-lg max-w-2xl">Determine exactly how many burgers, tacos, or bowls you need to sell to cover your monthly costs.</p>
               </div>
               <div className="flex gap-3">
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border-dark bg-surface-dark text-text-muted hover:text-white hover:border-primary transition-colors text-sm font-medium">
+                <button 
+                  onClick={() => toast.info("Import coming soon", { description: "Data import feature is in development." })}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border-dark bg-surface-dark text-text-muted hover:text-white hover:border-primary transition-colors text-sm font-medium"
+                >
                   <Upload className="w-4 h-4" />
                   Import Data
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border-dark bg-surface-dark text-text-muted hover:text-white hover:border-primary transition-colors text-sm font-medium">
-                  <Save className="w-4 h-4" />
-                  Save Scenario
+                <button 
+                  onClick={handleSaveScenario}
+                  disabled={isSaving}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border-dark bg-surface-dark text-text-muted hover:text-white hover:border-primary transition-colors text-sm font-medium disabled:opacity-50"
+                >
+                  {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  {isSaving ? "Saving..." : "Save Scenario"}
                 </button>
               </div>
             </div>
@@ -331,9 +364,15 @@ const BreakEvenAnalyzer = () => {
                   <div className="text-sm text-text-muted">
                     <span className="text-primary font-bold">Tip:</span> Try adjusting your "Avg. Customers / Day" to see how sensitive your profit is to foot traffic.
                   </div>
-                  <button className="flex items-center gap-2 px-6 py-3 rounded-lg bg-primary hover:bg-primary-hover text-white font-bold shadow-[0_4px_14px_rgba(203,79,16,0.3)] transition-all" data-testid="save-plan-btn">
-                    Save to Business Plan
-                    <ArrowRight className="w-5 h-5" />
+                  <button 
+                    onClick={handleSaveScenario}
+                    disabled={isSaving}
+                    className="flex items-center gap-2 px-6 py-3 rounded-lg bg-primary hover:bg-primary-hover text-white font-bold shadow-[0_4px_14px_rgba(203,79,16,0.3)] transition-all disabled:opacity-50" 
+                    data-testid="save-plan-btn"
+                  >
+                    {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
+                    {isSaving ? "Saving..." : "Save to Business Plan"}
+                    {!isSaving && <ArrowRight className="w-5 h-5" />}
                   </button>
                 </div>
               </div>

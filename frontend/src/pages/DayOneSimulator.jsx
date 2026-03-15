@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Truck, ChevronLeft, ChevronRight, Check, Timer, Lock, Brain, Award, Smile, Gauge, CreditCard, Sun, Utensils, Zap } from "lucide-react";
+import { Truck, ChevronLeft, ChevronRight, Check, Timer, Lock, Brain, Award, Smile, Gauge, CreditCard, Sun, Utensils, Zap, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import SEO from "@/components/SEO";
+import { apiClient } from "@/lib/api";
 
 const scenarios = [
   {
@@ -35,12 +37,41 @@ const DayOneSimulator = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [progress, setProgress] = useState(35);
+  const [revenue, setRevenue] = useState(1420.50);
+  const [satisfaction, setSatisfaction] = useState(88);
 
   const scenario = scenarios[currentScenario];
 
-  const handleAnswerSelect = (optionId) => {
+  const handleAnswerSelect = async (optionId) => {
     setSelectedAnswer(optionId);
     setShowFeedback(true);
+    
+    const isCorrect = scenario.options.find(o => o.id === optionId)?.correct || false;
+    
+    // Update metrics based on answer
+    if (isCorrect) {
+      setRevenue(prev => prev + 150);
+      setSatisfaction(prev => Math.min(100, prev + 5));
+      toast.success("Great decision!", { description: "+$150 revenue, +5% satisfaction" });
+    } else {
+      setSatisfaction(prev => Math.max(0, prev - 3));
+      toast.warning("Room for improvement", { description: "-3% satisfaction" });
+    }
+
+    // Save progress
+    try {
+      await apiClient.saveSimulationProgress({
+        scenario_id: scenario.id,
+        selected_answer: optionId,
+        is_correct: isCorrect,
+        progress_percent: progress,
+        revenue: revenue,
+        satisfaction: satisfaction,
+      });
+    } catch (error) {
+      // Silent fail for progress saving
+      console.error("Failed to save progress:", error);
+    }
   };
 
   const handleNext = () => {
@@ -252,14 +283,14 @@ const DayOneSimulator = () => {
               <div className="flex justify-between items-end">
                 <div>
                   <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Revenue</p>
-                  <p className="text-2xl font-header font-bold text-emerald-500">$1,420.50</p>
+                  <p className="text-2xl font-header font-bold text-emerald-500">${revenue.toFixed(2)}</p>
                 </div>
                 <CreditCard className="w-5 h-5 text-slate-400" />
               </div>
               <div className="flex justify-between items-end">
                 <div>
                   <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Customer Satisfaction</p>
-                  <p className="text-2xl font-header font-bold text-primary">88%</p>
+                  <p className="text-2xl font-header font-bold text-primary">{satisfaction}%</p>
                 </div>
                 <Smile className="w-5 h-5 text-slate-400" />
               </div>

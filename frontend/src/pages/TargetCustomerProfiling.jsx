@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Users, Briefcase, GraduationCap, Camera, PartyPopper, UsersRound, Plus, Check, Download, User } from "lucide-react";
+import { Users, Briefcase, GraduationCap, Camera, PartyPopper, UsersRound, Plus, Check, Download, User, Loader2, Save } from "lucide-react";
+import { toast } from "sonner";
 import SEO from "@/components/SEO";
+import { apiClient } from "@/lib/api";
 
 const archetypes = [
   { id: "corporate", icon: Briefcase, title: "Corporate Worker", desc: "Short lunch breaks, higher disposable income, values speed.", persona: "The Power Luncher", estSpend: "$15 – $22", peakTime: "11:30 – 13:30", drivers: ["Fast Service", "Healthy", "Quality"], painPoints: ["Long wait times", "Heavy/greasy food", "No seating available"] },
@@ -17,6 +19,7 @@ const TargetCustomerProfiling = () => {
   const [selectedArchetypes, setSelectedArchetypes] = useState(["corporate"]);
   const [ageRange, setAgeRange] = useState([24, 45]);
   const [incomeLevel, setIncomeLevel] = useState(2);
+  const [isSaving, setIsSaving] = useState(false);
 
   const toggleArchetype = (id) => {
     if (selectedArchetypes.includes(id)) {
@@ -24,6 +27,30 @@ const TargetCustomerProfiling = () => {
     } else {
       setSelectedArchetypes([...selectedArchetypes, id]);
     }
+  };
+
+  const handleSaveProfile = async () => {
+    if (selectedArchetypes.length === 0) {
+      toast.error("Select at least one archetype", { description: "Choose a customer type to save your profile." });
+      return;
+    }
+    setIsSaving(true);
+    try {
+      await apiClient.saveCustomerProfile({
+        archetypes: selectedArchetypes,
+        age_range: ageRange,
+        income_level: incomeLevel,
+      });
+      toast.success("Profile saved!", { description: "Your target customer profile has been saved." });
+    } catch (error) {
+      toast.error("Failed to save", { description: "Please try again." });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDownloadPDF = () => {
+    toast.info("PDF export coming soon", { description: "This feature is in development." });
   };
 
   const primaryArchetype = archetypes.find(a => a.id === selectedArchetypes[0]) || archetypes[0];
@@ -235,8 +262,21 @@ const TargetCustomerProfiling = () => {
                 ))}
               </ul>
             </div>
-            <button className="w-full py-3 border border-border-col rounded-xl text-sm font-bold text-slate-300 flex items-center justify-center gap-2 hover:bg-white/5 transition-colors" data-testid="download-persona-btn">
+            <button 
+              onClick={handleDownloadPDF}
+              className="w-full py-3 border border-border-col rounded-xl text-sm font-bold text-slate-300 flex items-center justify-center gap-2 hover:bg-white/5 transition-colors" 
+              data-testid="download-persona-btn"
+            >
               <Download className="w-5 h-5" /> Download Persona PDF
+            </button>
+            <button 
+              onClick={handleSaveProfile}
+              disabled={isSaving}
+              className="w-full py-3 bg-primary rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors disabled:opacity-50 mt-3" 
+              data-testid="save-profile-btn"
+            >
+              {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+              {isSaving ? "Saving..." : "Save Profile"}
             </button>
           </aside>
         </div>

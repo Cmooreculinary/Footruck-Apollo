@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Truck, Box, Thermometer, Users, AlertTriangle, Shield, Award, Upload, Lock, CheckCircle, PlayCircle } from "lucide-react";
+import { Truck, Box, Thermometer, Users, AlertTriangle, Shield, Award, Upload, Lock, CheckCircle, PlayCircle, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import SEO from "@/components/SEO";
+import { apiClient } from "@/lib/api";
 
 const trainingModules = [
   {
@@ -32,6 +34,36 @@ const customerServiceModules = [
 
 const CrewQuartersTraining = () => {
   const [activeCategory, setActiveCategory] = useState("all");
+  const [trainingModulesState, setTrainingModulesState] = useState(trainingModules);
+  const [savingModuleId, setSavingModuleId] = useState(null);
+
+  const handleMarkAsTrained = async (moduleId) => {
+    setSavingModuleId(moduleId);
+    const module = trainingModulesState.find(m => m.id === moduleId);
+    try {
+      await apiClient.saveTrainingProgress({
+        module_id: moduleId,
+        module_title: module?.title || "Unknown Module",
+        completed: true,
+      });
+      setTrainingModulesState(prev => 
+        prev.map(m => m.id === moduleId ? { ...m, completed: true } : m)
+      );
+      toast.success("Training completed!", { description: `${module?.title} has been marked as completed.` });
+    } catch (error) {
+      toast.error("Failed to save", { description: "Please try again." });
+    } finally {
+      setSavingModuleId(null);
+    }
+  };
+
+  const handleUploadDoc = () => {
+    toast.info("Upload coming soon", { description: "Document upload is in development." });
+  };
+
+  const handleOpenEmergencyManual = () => {
+    toast.info("Opening manual...", { description: "Emergency manual viewer is in development." });
+  };
 
   return (
     <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-[#1a1614] font-lexend text-slate-100">
@@ -136,7 +168,10 @@ const CrewQuartersTraining = () => {
                   </div>
                   <Lock className="w-4 h-4 text-slate-500" />
                 </div>
-                <button className="w-full py-2 border-2 border-dashed border-steel/50 rounded text-slate-500 text-xs font-bold uppercase hover:border-primary/50 hover:text-primary transition-all">
+                <button 
+                  onClick={handleUploadDoc}
+                  className="w-full py-2 border-2 border-dashed border-steel/50 rounded text-slate-500 text-xs font-bold uppercase hover:border-primary/50 hover:text-primary transition-all"
+                >
                   Upload New Doc
                 </button>
               </div>
@@ -155,7 +190,7 @@ const CrewQuartersTraining = () => {
                 <span className="text-slate-500 text-sm">4 modules available</span>
               </div>
               <div className="grid grid-cols-2 gap-4" data-testid="training-modules">
-                {trainingModules.map((module) => (
+                {trainingModulesState.map((module) => (
                   <div key={module.id} className="bg-industrial/40 border border-steel/20 rounded-xl overflow-hidden flex flex-col">
                     <div 
                       className="h-32 bg-slate-800 relative group overflow-hidden"
@@ -193,8 +228,14 @@ const CrewQuartersTraining = () => {
                               <CheckCircle className="w-4 h-4" />
                               {module.stepsRemaining} Steps Remaining
                             </div>
-                            <button className="bg-primary text-white text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors" data-testid={`train-btn-${module.id}`}>
-                              Mark as Trained
+                            <button 
+                              onClick={() => handleMarkAsTrained(module.id)}
+                              disabled={savingModuleId === module.id}
+                              className="bg-primary text-white text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2" 
+                              data-testid={`train-btn-${module.id}`}
+                            >
+                              {savingModuleId === module.id ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
+                              {savingModuleId === module.id ? "Saving..." : "Mark as Trained"}
                             </button>
                           </>
                         )}
@@ -263,7 +304,10 @@ const CrewQuartersTraining = () => {
                   </p>
                 </div>
               </div>
-              <button className="bg-red-500 text-white font-bold px-6 py-3 rounded-lg hover:bg-red-600 transition-colors uppercase tracking-widest text-sm shadow-lg shadow-red-500/10">
+              <button 
+                onClick={handleOpenEmergencyManual}
+                className="bg-red-500 text-white font-bold px-6 py-3 rounded-lg hover:bg-red-600 transition-colors uppercase tracking-widest text-sm shadow-lg shadow-red-500/10"
+              >
                 Open Emergency Manual
               </button>
             </div>

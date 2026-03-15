@@ -2,6 +2,7 @@ import React from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Truck, BookOpen, Palette, Users, Calculator, FileText, DollarSign, Utensils, Gauge, Timer, School, ClipboardList, Banknote, Compass, BarChart2, UserCircle, BookMarked } from "lucide-react";
+import { Toaster } from "sonner";
 import SEO from "@/components/SEO";
 
 // Import pages
@@ -95,6 +96,19 @@ const Dashboard = () => {
 function App() {
   return (
     <div className="dark">
+      <Toaster 
+        position="top-right" 
+        richColors 
+        closeButton
+        theme="dark"
+        toastOptions={{
+          style: {
+            background: '#1a1714',
+            border: '1px solid #2e2820',
+            color: '#fff',
+          },
+        }}
+      />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Dashboard />} />

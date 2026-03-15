@@ -1,13 +1,28 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Truck, ArrowRight, ClipboardList, Lightbulb, Utensils, Store, Shield, DollarSign, Timer } from "lucide-react";
+import { Truck, ArrowRight, ClipboardList, Lightbulb, Utensils, Store, Shield, DollarSign, Timer, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import SEO from "@/components/SEO";
+import { apiClient } from "@/lib/api";
 
 const DreamKitchen = () => {
   const [progress, setProgress] = useState(0);
+  const [isStarting, setIsStarting] = useState(false);
 
-  const startAssessment = () => {
-    setProgress(10);
+  const startAssessment = async () => {
+    setIsStarting(true);
+    try {
+      await apiClient.saveAssessment({
+        progress: 10,
+        answers: {},
+      });
+      setProgress(10);
+      toast.success("Assessment started!", { description: "Your progress will be saved automatically." });
+    } catch (error) {
+      toast.error("Failed to start", { description: "Please try again." });
+    } finally {
+      setIsStarting(false);
+    }
   };
 
   return (
@@ -147,11 +162,13 @@ const DreamKitchen = () => {
                   <div className="flex flex-col sm:flex-row gap-4 items-center">
                     <button 
                       onClick={startAssessment}
-                      className="w-full sm:w-auto bg-primary hover:bg-orange-600 text-white text-base font-bold py-3.5 px-8 rounded-md transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+                      disabled={isStarting}
+                      className="w-full sm:w-auto bg-primary hover:bg-orange-600 text-white text-base font-bold py-3.5 px-8 rounded-md transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 disabled:opacity-50"
                       data-testid="begin-assessment-btn"
                     >
-                      <span>Begin Assessment</span>
-                      <ArrowRight className="w-5 h-5" />
+                      {isStarting ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
+                      <span>{isStarting ? "Starting..." : "Begin Assessment"}</span>
+                      {!isStarting && <ArrowRight className="w-5 h-5" />}
                     </button>
                     <span className="text-text-muted text-sm">{progress}% Complete</span>
                   </div>
