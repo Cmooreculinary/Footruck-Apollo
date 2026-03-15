@@ -1,35 +1,61 @@
 # Food Truck Launch Pad - PRD
 
 ## Problem Statement
-Upgrade the FoodTruck LaunchPad app with **11 pixel-perfect feature modules** based on provided HTML templates covering the entire food truck entrepreneur journey from concept to launch.
+Build a comprehensive platform for food truck entrepreneurs covering the journey from concept to launch with 13 feature modules across 7 phases.
 
 ## Architecture & Tech Stack
 - **Frontend**: React.js with Tailwind CSS
-- **Theme**: Industrial-luxe dark theme with orange primary color (#ec7f13)
+- **Theme**: Industrial-luxe dark theme with orange primary (#E8592F / #ec7f13)
 - **Fonts**: Space Grotesk, Oswald, Work Sans, Lexend
 - **Backend**: FastAPI (Python)
 - **Database**: MongoDB
 
 ## User Personas
-1. **Aspiring Food Truck Entrepreneur** - First-time business owners looking to start a food truck
+1. **Aspiring Food Truck Entrepreneur** - First-time business owners
 2. **Existing Restaurant Owner** - Expanding into mobile food service
 3. **Culinary Professional** - Chefs transitioning to food truck ownership
 
-## Core Requirements (Static)
-- Industrial-grade precision design aesthetic
-- Dark theme with orange accents
-- Responsive design for desktop and mobile
-- Interactive forms and calculators
-- Progress tracking across phases
-
 ## What's Been Implemented
 
-### Data Persistence Implementation (March 2026) ✅ COMPLETE
-All 11 pages now have working save functionality with backend persistence:
+### NEW: Paint Shop v2.0 (March 2026) ✅
+Full exterior truck configurator with:
+- **6 Base Truck Models**: Step Van Classic, Step Van Modern, Cargo Van, Food Trailer, Flatbed Build-Out, Vintage/Retro
+- **30+ Paint Colors** across 6 categories (Classic, Blues, Reds/Oranges, Greens/Earth, Metallic, Special)
+- **5 Finish Types**: High Gloss, Satin, Matte, Metallic, Pearl
+- **6 Two-Tone Patterns**: Solid, Horizontal Split, Diagonal, Hood & Roof, Racing Stripe, Lower Accent
+- **Wraps & Graphics**: Carbon fiber, wood grain, food themes, cultural patterns
+- **Serving Windows**: 6 configurations from standard to accordion fold-out
+- **Awnings**: 8 options including LED-lit
+- **15+ Accessories**: LED underglow, roof floods, neon accents, roof sign, blade sign
+- **5 Wheel Styles**: Steel, alloy, chrome, off-road
+- **Real-time 2.5D SVG Truck Preview** with business name display
+- **Cost Estimator** updating live based on selections
+
+### NEW: Kitchen Builder v2.0 (March 2026) ✅
+Interior equipment layout designer with:
+- **100+ Equipment Items** across 7 categories:
+  - Cooking: Griddles, fryers, charbroilers, ranges, ovens
+  - Refrigeration: Under-counter fridges, freezers, prep tables, display cases
+  - Prep & Tables: Work tables, shelving, racks
+  - Sinks & Plumbing: 3-compartment sink, hand wash, water tanks
+  - Ventilation: Exhaust hoods, fire extinguisher
+  - Beverage: Espresso, coffee, fountain, soft-serve
+  - Serving: Heat lamps, warming drawers, POS terminal
+- **Top-Down Floor Plan** with 6" grid snap
+- **Drag-and-Drop Placement** with collision detection
+- **Space Utilization Meter** showing % of floor space used
+- **Health Code Validation** flagging missing required items
+- **Equipment List** with running cost total
+- **6 Truck Interior Sizes** matching base truck models
+
+### Data Persistence (March 2026) ✅
+All 13 pages now have working save functionality:
 
 | Page | Save Feature | API Endpoint | Status |
 |------|--------------|--------------|--------|
-| Truck Design Studio | Save Design | POST /api/truck-designs | ✅ |
+| Paint Shop | Save Design | POST /api/truck-designs | ✅ |
+| Kitchen Builder | Save Layout | POST /api/scaled-batches | ✅ |
+| Truck Design (Legacy) | Save Design | POST /api/truck-designs | ✅ |
 | Signature Dish Developer | Save Draft/Publish | POST /api/dishes | ✅ |
 | Break-Even Analyzer | Save Scenario | POST /api/break-even | ✅ |
 | Recipe Builder | Save Recipe | POST /api/recipes | ✅ |
@@ -41,80 +67,66 @@ All 11 pages now have working save functionality with backend persistence:
 | Day One Simulator | Answer Progress | POST /api/simulation-progress | ✅ |
 | Crew Quarters Training | Mark as Trained | POST /api/training-progress | ✅ |
 
-### Backend API Endpoints
-- `GET/POST /api/truck-designs` - Truck design configurations
-- `GET/POST /api/dishes` - Signature dish data
-- `GET/POST /api/break-even` - Break-even scenarios
-- `GET/POST /api/recipes` - Recipe data with ingredients
-- `GET/POST /api/customer-profiles` - Customer profiling data
-- `GET/POST /api/assessments` - Assessment progress
-- `GET/POST /api/scaled-batches` - Scaled batch calculations
-- `GET/POST /api/payroll-plans` - Payroll configurations
-- `GET/POST /api/permits` - Permit tracking
-- `GET/POST /api/simulation-progress` - Simulator progress
-- `GET/POST /api/training-progress` - Training completion
+### Dead Links Fixed (March 2026) ✅
+All 35 `href="#"` dead links replaced with toast notifications:
+- CrewQuartersTraining.jsx - Vault, Schedule, Team, footer links
+- PayrollPlanning.jsx - Staff Directory, Scheduling, Tip Management, nav links
+- ScalingPrepCalculator.jsx - Recipe Library, Batch Logs, Yield Tracking, nav links
+- PaperTrailPermits.jsx - Compliance, Blueprint links
+- BreakEvenAnalyzer.jsx - Features, Pricing, Blog, Vendor Directory, About, Contact, Privacy
+- DreamKitchen.jsx - Resources, Community, Privacy, Terms, Support
 
-### Frontend Infrastructure
-- **API Client**: Centralized in `/frontend/src/lib/api.js`
-- **Toast System**: Using Sonner for success/error notifications
-- **Loading States**: Loader2 spinners on all save buttons
-- **Form Validation**: Basic validation before API calls
+### Social Media/SEO Optimization ✅
+- React Helmet Async for dynamic meta tags
+- Open Graph and Twitter Card meta tags on all pages
+- og-image.png, robots.txt, sitemap.xml
 
-### Social Media Sharing Optimization
-- **Open Graph Tags**: Full OG protocol implementation
-- **Twitter Cards**: summary_large_image cards
-- **OG Image**: Custom 1200x630 branded PNG
-- **SEO Component**: React Helmet Async for dynamic meta tags
-- **sitemap.xml**: All 12 URLs for search engine indexing
-- **robots.txt**: Proper crawl directives
-
-### Feature Modules (All 11 Complete)
-
-1. **Dream Kitchen (Phase 1)** - `/dream-kitchen`
-2. **Signature Dish Developer (Phase 3)** - `/signature-dish`
-3. **Truck Design Paint Shop (Phase 5)** - `/truck-design`
-4. **Crew Quarters Training (Phase 6)** - `/crew-quarters`
-5. **Payroll Planning & Scheduling (Phase 6)** - `/payroll`
-6. **Scaling & Prep Calculator (Phase 3)** - `/scaling-prep`
-7. **Paper Trail Permits (Phase 2)** - `/paper-trail`
-8. **Break-Even Analyzer (Financial)** - `/break-even`
-9. **Day One Simulator (Phase 7)** - `/day-one`
-10. **Target Customer Profiling (Module 2)** - `/target-customer`
-11. **Recipe Builder (Phase 3)** - `/recipe-builder`
+### All Feature Modules
+1. **Paint Shop v2.0** - `/paint-shop` (NEW)
+2. **Kitchen Builder v2.0** - `/kitchen-builder` (NEW)
+3. **Day One Simulator** - `/day-one`
+4. **Signature Dish Developer** - `/signature-dish`
+5. **Crew Quarters Training** - `/crew-quarters`
+6. **Dream Kitchen Readiness** - `/dream-kitchen`
+7. **Truck Design (Legacy)** - `/truck-design`
+8. **Payroll Planning** - `/payroll`
+9. **Scaling & Prep Calculator** - `/scaling-prep`
+10. **Paper Trail Permits** - `/paper-trail`
+11. **Break-Even Analyzer** - `/break-even`
+12. **Target Customer Profiling** - `/target-customer`
+13. **Recipe Builder** - `/recipe-builder`
 
 ## Prioritized Backlog
 
 ### P0 - Critical ✅ COMPLETE
-- ✅ All 11 feature modules implemented
+- ✅ All 13 feature modules implemented
 - ✅ Backend API for data persistence
-- ✅ Progress saving across sessions
+- ✅ Dead links fixed
 
 ### P1 - High Priority
-- Fix dead links (`href="#"`) across all pages
-- Replace placeholder buttons with "Coming Soon" tooltips
 - User authentication system (JWT or social login)
-- Add loading states for data fetching on page load
+- Load saved data on page mount (useEffect with fetch)
+- Form validation (client & server-side)
 
 ### P2 - Medium Priority
-- PDF export for permits, recipes, personas
+- PDF export for permits, recipes, personas, floor plans
 - Real data integration for state wage tools
-- Form validation (client & server-side)
 - Confirmation dialogs for destructive actions
+- 3D truck preview upgrade (Three.js / React Three Fiber)
 
 ### P3 - Nice to Have
 - Multi-user collaboration
 - Mobile native app
 - Third-party integrations (Stripe, payments)
-- Analytics dashboard
+- Equipment drag from floor plan (reposition)
 
-## Test Results (March 14, 2026)
-- **Backend Tests**: 23/23 PASSED (100%)
-- **Frontend Tests**: 9/9 pages PASSED (100%)
-- **Test File**: `/app/backend/tests/test_persistence_apis.py`
-- **Report**: `/app/test_reports/iteration_5.json`
+## Test Results (March 15, 2026)
+- **Iteration 5**: Backend 23/23 PASSED, Frontend 9/9 PASSED
+- **Iteration 6**: Frontend 100% PASSED (Paint Shop, Kitchen Builder, dead links)
 
 ## Files of Reference
-- `backend/server.py` - All API endpoints and Pydantic models
-- `frontend/src/lib/api.js` - API client with all methods
-- `frontend/src/pages/*.jsx` - All 11 page components
-- `frontend/src/components/SEO.jsx` - SEO meta tags
+- `/app/frontend/src/pages/PaintShop.jsx` - New Paint Shop v2.0
+- `/app/frontend/src/pages/KitchenBuilder.jsx` - New Kitchen Builder v2.0
+- `/app/backend/server.py` - All API endpoints
+- `/app/frontend/src/lib/api.js` - API client
+- `/app/frontend/src/App.js` - Routes for all 13 pages
