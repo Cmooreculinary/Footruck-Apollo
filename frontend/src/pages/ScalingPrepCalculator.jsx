@@ -59,18 +59,18 @@ const ScalingPrepCalculator = () => {
           <div className="p-4">
             <p className="text-[9px] text-slate-500 uppercase tracking-widest font-bold mb-3 px-2">Kitchen Ops</p>
             <nav className="space-y-1">
-              <a className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm" href="#">
+              <Link to="/recipe-builder" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm">
                 <BookOpen className="w-5 h-5" /> Recipe Library
-              </a>
-              <a className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/20 text-primary font-semibold text-sm" href="#">
+              </Link>
+              <span className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/20 text-primary font-semibold text-sm">
                 <Calculator className="w-5 h-5" /> Prep Calculator
-              </a>
-              <a className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm" href="#">
+              </span>
+              <button onClick={() => toast.info("Batch Logs coming soon")} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm w-full text-left">
                 <Activity className="w-5 h-5" /> Batch Logs
-              </a>
-              <a className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm" href="#">
+              </button>
+              <button onClick={() => toast.info("Yield Tracking coming soon")} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm w-full text-left">
                 <TrendingUp className="w-5 h-5" /> Yield Tracking
-              </a>
+              </button>
             </nav>
           </div>
           <div className="mt-auto p-4 m-4 bg-surface border border-border-col rounded-xl">
@@ -89,10 +89,10 @@ const ScalingPrepCalculator = () => {
           <header className="flex items-center justify-between px-8 py-4 border-b border-border-col bg-surface shrink-0">
             <nav className="flex items-center gap-8 text-sm">
               <Link to="/" className="text-slate-400 hover:text-slate-200">Dashboard</Link>
-              <a href="#" className="text-slate-400 hover:text-slate-200">Recipes</a>
-              <a href="#" className="text-slate-400 hover:text-slate-200">Inventory</a>
+              <Link to="/recipe-builder" className="text-slate-400 hover:text-slate-200">Recipes</Link>
+              <button onClick={() => toast.info("Inventory coming soon")} className="text-slate-400 hover:text-slate-200">Inventory</button>
               <span className="text-primary font-bold border-b-2 border-primary pb-1">Scaling</span>
-              <a href="#" className="text-slate-400 hover:text-slate-200">Costs</a>
+              <button onClick={() => toast.info("Costs coming soon")} className="text-slate-400 hover:text-slate-200">Costs</button>
             </nav>
             <div className="flex items-center gap-4">
               <div className="relative">
@@ -253,9 +253,9 @@ const ScalingPrepCalculator = () => {
                 <div>
                   <h3 className="font-bold mb-1">Production Variance</h3>
                   <p className="text-slate-400 text-sm mb-3">Track the difference between calculated yield and actual production volume.</p>
-                  <a href="#" className="text-primary text-xs font-bold uppercase tracking-wider hover:underline flex items-center gap-1">
+                  <button onClick={() => toast.info("Analyze History coming soon")} className="text-primary text-xs font-bold uppercase tracking-wider hover:underline flex items-center gap-1">
                     Analyze History <ArrowRight className="w-4 h-4" />
-                  </a>
+                  </button>
                 </div>
               </div>
               <div className="bg-surface border border-border-col rounded-xl p-6 flex items-start gap-4">
@@ -265,9 +265,9 @@ const ScalingPrepCalculator = () => {
                 <div>
                   <h3 className="font-bold mb-1">Sub-Recipe Breakdown</h3>
                   <p className="text-slate-400 text-sm mb-3">Expand this calculation into its constituent bases, sauces, and garnishes.</p>
-                  <a href="#" className="text-primary text-xs font-bold uppercase tracking-wider hover:underline flex items-center gap-1">
+                  <button onClick={() => toast.info("View Breakdown coming soon")} className="text-primary text-xs font-bold uppercase tracking-wider hover:underline flex items-center gap-1">
                     View Breakdown <ArrowRight className="w-4 h-4" />
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>

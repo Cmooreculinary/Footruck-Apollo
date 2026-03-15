@@ -60,18 +60,18 @@ const PayrollPlanning = () => {
           </div>
           <nav className="flex-1 p-4 space-y-1">
             <p className="text-[9px] text-slate-500 uppercase tracking-widest font-bold mb-3 px-3">Phase 6: Operations</p>
-            <a className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm" href="#">
+            <button onClick={() => toast.info("Staff Directory coming soon")} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm w-full text-left">
               <Users className="w-5 h-5" /> Staff Directory
-            </a>
-            <a className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm" href="#">
+            </button>
+            <button onClick={() => toast.info("Scheduling coming soon")} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm w-full text-left">
               <Calendar className="w-5 h-5" /> Scheduling
-            </a>
-            <a className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/20 text-primary font-semibold text-sm" href="#">
+            </button>
+            <span className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/20 text-primary font-semibold text-sm">
               <Coins className="w-5 h-5" /> Payroll Modeling
-            </a>
-            <a className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm" href="#">
+            </span>
+            <button onClick={() => toast.info("Tip Management coming soon")} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm w-full text-left">
               <PiggyBank className="w-5 h-5" /> Tip Management
-            </a>
+            </button>
           </nav>
           <div className="p-4 m-4 bg-amber-900/30 border border-amber-700/40 rounded-lg">
             <p className="text-[9px] font-bold text-amber-400 uppercase tracking-wider mb-1">Compliance Alert</p>
@@ -85,10 +85,10 @@ const PayrollPlanning = () => {
           <header className="flex items-center justify-between px-8 py-4 border-b border-border-col bg-surface shrink-0">
             <nav className="flex items-center gap-8 text-sm">
               <Link to="/" className="text-slate-400 hover:text-slate-200">Dashboard</Link>
-              <a href="#" className="text-slate-400 hover:text-slate-200">Inventory</a>
+              <button onClick={() => toast.info("Inventory coming soon")} className="text-slate-400 hover:text-slate-200">Inventory</button>
               <Link to="/crew-quarters" className="text-primary font-bold border-b-2 border-primary pb-1">Crew Quarters</Link>
               <span className="text-slate-400 hover:text-slate-200">Payroll</span>
-              <a href="#" className="text-slate-400 hover:text-slate-200">Compliance</a>
+              <button onClick={() => toast.info("Compliance coming soon")} className="text-slate-400 hover:text-slate-200">Compliance</button>
             </nav>
             <div className="flex items-center gap-4">
               <div className="relative">

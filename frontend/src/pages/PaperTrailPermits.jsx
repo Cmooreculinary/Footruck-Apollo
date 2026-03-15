@@ -124,8 +124,8 @@ const PaperTrailPermits = () => {
             <nav className="flex items-center gap-8 text-sm">
               <Link to="/" className="text-slate-400 hover:text-slate-200">Mission Control</Link>
               <span className="text-primary font-bold border-b-2 border-primary pb-1">Permits</span>
-              <a href="#" className="text-slate-400 hover:text-slate-200">Compliance</a>
-              <a href="#" className="text-slate-400 hover:text-slate-200">Blueprint</a>
+              <button onClick={() => toast.info("Compliance coming soon")} className="text-slate-400 hover:text-slate-200">Compliance</button>
+              <button onClick={() => toast.info("Blueprint coming soon")} className="text-slate-400 hover:text-slate-200">Blueprint</button>
             </nav>
             <div className="flex items-center gap-4">
               <div className="relative">

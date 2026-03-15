@@ -82,9 +82,9 @@ const CrewQuartersTraining = () => {
           <nav className="flex items-center gap-8 ml-4">
             <Link to="/" className="text-slate-400 hover:text-primary text-sm font-medium transition-colors">Dashboard</Link>
             <span className="text-primary text-sm font-bold border-b-2 border-primary pb-1">Training</span>
-            <a href="#" className="text-slate-400 hover:text-primary text-sm font-medium transition-colors">Vault</a>
-            <a href="#" className="text-slate-400 hover:text-primary text-sm font-medium transition-colors">Schedule</a>
-            <a href="#" className="text-slate-400 hover:text-primary text-sm font-medium transition-colors">Team</a>
+            <button onClick={() => toast.info("Vault coming soon")} className="text-slate-400 hover:text-primary text-sm font-medium transition-colors">Vault</button>
+            <button onClick={() => toast.info("Schedule coming soon")} className="text-slate-400 hover:text-primary text-sm font-medium transition-colors">Schedule</button>
+            <button onClick={() => toast.info("Team coming soon")} className="text-slate-400 hover:text-primary text-sm font-medium transition-colors">Team</button>
           </nav>
         </div>
       </header>
@@ -321,9 +321,9 @@ const CrewQuartersTraining = () => {
           © 2024 Food Truck Launch Pad - Phase 6: Crew Quarters
         </div>
         <div className="flex gap-6">
-          <a className="hover:text-primary transition-colors" href="#">Privacy Policy</a>
-          <a className="hover:text-primary transition-colors" href="#">Support Center</a>
-          <a className="hover:text-primary transition-colors" href="#">System Status</a>
+          <button className="hover:text-primary transition-colors" onClick={() => toast.info("Privacy Policy coming soon")}>Privacy Policy</button>
+          <button className="hover:text-primary transition-colors" onClick={() => toast.info("Support Center coming soon")}>Support Center</button>
+          <button className="hover:text-primary transition-colors" onClick={() => toast.info("System Status coming soon")}>System Status</button>
         </div>
       </footer>
     </div>

@@ -45,8 +45,8 @@ const DreamKitchen = () => {
             <div className="hidden md:flex items-center gap-8">
               <nav className="flex items-center gap-6">
                 <Link to="/" className="text-white text-sm font-medium hover:text-primary transition-colors">Dashboard</Link>
-                <a href="#" className="text-text-muted text-sm font-medium hover:text-white transition-colors">Resources</a>
-                <a href="#" className="text-text-muted text-sm font-medium hover:text-white transition-colors">Community</a>
+                <button onClick={() => toast.info("Resources coming soon")} className="text-text-muted text-sm font-medium hover:text-white transition-colors">Resources</button>
+                <button onClick={() => toast.info("Community coming soon")} className="text-text-muted text-sm font-medium hover:text-white transition-colors">Community</button>
               </nav>
               <div className="h-6 w-px bg-border-dark"></div>
               <button className="bg-primary hover:bg-orange-600 text-white text-sm font-bold px-4 py-2 rounded-md transition-all shadow-[0_2px_8px_rgba(203,79,16,0.3)]">
@@ -220,9 +220,9 @@ const DreamKitchen = () => {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-text-muted text-sm">© 2024 Food Truck Founder. All rights reserved.</p>
           <div className="flex gap-6">
-            <a className="text-text-muted hover:text-white text-sm" href="#">Privacy Policy</a>
-            <a className="text-text-muted hover:text-white text-sm" href="#">Terms of Service</a>
-            <a className="text-text-muted hover:text-white text-sm" href="#">Support</a>
+            <button className="text-text-muted hover:text-white text-sm" onClick={() => toast.info("Privacy Policy coming soon")}>Privacy Policy</button>
+            <button className="text-text-muted hover:text-white text-sm" onClick={() => toast.info("Terms of Service coming soon")}>Terms of Service</button>
+            <button className="text-text-muted hover:text-white text-sm" onClick={() => toast.info("Support coming soon")}>Support</button>
           </div>
         </div>
       </footer>

@@ -44,8 +44,16 @@ class TruckDesign(BaseModel):
     primary_color: str
     accent_color: str
     finish_type: str
-    texture_type: str
+    texture_type: Optional[str] = None  # Legacy field
     business_name: str
+    # New Paint Shop v2 fields
+    base_model: Optional[str] = None
+    split_pattern: Optional[str] = None
+    wrap_id: Optional[str] = None
+    serving_window: Optional[str] = None
+    awning: Optional[str] = None
+    accessories: Optional[List[str]] = None
+    wheels: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -53,8 +61,16 @@ class TruckDesignCreate(BaseModel):
     primary_color: str
     accent_color: str
     finish_type: str
-    texture_type: str
+    texture_type: Optional[str] = None  # Legacy field
     business_name: str
+    # New Paint Shop v2 fields
+    base_model: Optional[str] = None
+    split_pattern: Optional[str] = None
+    wrap_id: Optional[str] = None
+    serving_window: Optional[str] = None
+    awning: Optional[str] = None
+    accessories: Optional[List[str]] = None
+    wheels: Optional[str] = None
 
 
 class Recipe(BaseModel):

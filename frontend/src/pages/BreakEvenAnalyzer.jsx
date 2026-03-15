@@ -393,21 +393,21 @@ const BreakEvenAnalyzer = () => {
             <div className="flex gap-16 flex-wrap">
               <div className="flex flex-col gap-4">
                 <h4 className="text-white font-bold uppercase text-sm tracking-wider">Platform</h4>
-                <a className="text-text-muted hover:text-primary text-sm transition-colors" href="#">Features</a>
-                <a className="text-text-muted hover:text-primary text-sm transition-colors" href="#">Pricing</a>
+                <button className="text-text-muted hover:text-primary text-sm transition-colors text-left" onClick={() => toast.info("Features coming soon")}>Features</button>
+                <button className="text-text-muted hover:text-primary text-sm transition-colors text-left" onClick={() => toast.info("Pricing coming soon")}>Pricing</button>
                 <Link to="/paper-trail" className="text-text-muted hover:text-primary text-sm transition-colors">Permit Map</Link>
               </div>
               <div className="flex flex-col gap-4">
                 <h4 className="text-white font-bold uppercase text-sm tracking-wider">Resources</h4>
-                <a className="text-text-muted hover:text-primary text-sm transition-colors" href="#">Blog</a>
+                <button className="text-text-muted hover:text-primary text-sm transition-colors text-left" onClick={() => toast.info("Blog coming soon")}>Blog</button>
                 <Link to="/scaling-prep" className="text-text-muted hover:text-primary text-sm transition-colors">Cost Calculator</Link>
-                <a className="text-text-muted hover:text-primary text-sm transition-colors" href="#">Vendor Directory</a>
+                <button className="text-text-muted hover:text-primary text-sm transition-colors text-left" onClick={() => toast.info("Vendor Directory coming soon")}>Vendor Directory</button>
               </div>
               <div className="flex flex-col gap-4">
                 <h4 className="text-white font-bold uppercase text-sm tracking-wider">Company</h4>
-                <a className="text-text-muted hover:text-primary text-sm transition-colors" href="#">About Us</a>
-                <a className="text-text-muted hover:text-primary text-sm transition-colors" href="#">Contact</a>
-                <a className="text-text-muted hover:text-primary text-sm transition-colors" href="#">Privacy</a>
+                <button className="text-text-muted hover:text-primary text-sm transition-colors text-left" onClick={() => toast.info("About Us coming soon")}>About Us</button>
+                <button className="text-text-muted hover:text-primary text-sm transition-colors text-left" onClick={() => toast.info("Contact coming soon")}>Contact</button>
+                <button className="text-text-muted hover:text-primary text-sm transition-colors text-left" onClick={() => toast.info("Privacy coming soon")}>Privacy</button>
               </div>
             </div>
           </div>
