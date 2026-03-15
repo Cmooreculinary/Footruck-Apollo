@@ -223,7 +223,40 @@ const PaintShop = () => {
   // UI State
   const [expandedSection, setExpandedSection] = useState("model");
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [viewAngle, setViewAngle] = useState("front-quarter");
+
+  // Load saved design on mount
+  useEffect(() => {
+    const loadSavedDesign = async () => {
+      try {
+        const design = await apiClient.getLatestTruckDesign();
+        if (design) {
+          setTruckModel(design.base_model || "step_van_classic");
+          setPrimaryColor(design.primary_color || "#ce2029");
+          setSecondaryColor(design.accent_color || "#1a1a1a");
+          setFinishType(design.finish_type || "gloss");
+          setSplitPattern(design.split_pattern || "none");
+          if (design.wrap_id) {
+            setWrapEnabled(true);
+            setSelectedWrap(design.wrap_id);
+          }
+          setServingWindow(design.serving_window || "standard");
+          setAwning(design.awning || "none");
+          setSelectedAccessories(design.accessories || []);
+          setWheelStyle(design.wheels || "alloy");
+          setBusinessName(design.business_name || "YOUR BRAND");
+          toast.success("Design loaded", { description: "Your saved design has been restored." });
+        }
+      } catch (error) {
+        // Silent fail - user might not have a saved design
+        console.log("No saved design found");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadSavedDesign();
+  }, []);
 
   // Calculate estimated cost
   const calculateCost = () => {

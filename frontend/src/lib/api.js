@@ -15,6 +15,7 @@ class ApiClient {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         ...options,
         signal: controller.signal,
+        credentials: 'include', // Always include cookies for auth
         headers: {
           'Content-Type': 'application/json',
           ...options.headers,
@@ -61,6 +62,10 @@ class ApiClient {
     return this.request('/api/truck-designs');
   }
 
+  async getLatestTruckDesign() {
+    return this.request('/api/truck-designs/latest');
+  }
+
   // Recipe endpoints
   async saveRecipe(recipe) {
     return this.request('/api/recipes', {
@@ -81,12 +86,20 @@ class ApiClient {
     });
   }
 
+  async getLatestCustomerProfile() {
+    return this.request('/api/customer-profiles/latest');
+  }
+
   // Dish endpoints
   async saveDish(dish) {
     return this.request('/api/dishes', {
       method: 'POST',
       body: JSON.stringify(dish),
     });
+  }
+
+  async getLatestDish() {
+    return this.request('/api/dishes/latest');
   }
 
   // Assessment endpoints
@@ -103,6 +116,10 @@ class ApiClient {
       method: 'POST',
       body: JSON.stringify(scenario),
     });
+  }
+
+  async getLatestBreakEven() {
+    return this.request('/api/break-even/latest');
   }
 
   // Permit endpoints
@@ -133,6 +150,10 @@ class ApiClient {
 
   async getScaledBatches() {
     return this.request('/api/scaled-batches');
+  }
+
+  async getLatestScaledBatch() {
+    return this.request('/api/scaled-batches/latest');
   }
 
   // Payroll Plan endpoints

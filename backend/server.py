@@ -1,4 +1,5 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Response
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -8,7 +9,8 @@ from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional, Dict, Any
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
+import httpx
 
 
 ROOT_DIR = Path(__file__).parent
@@ -26,7 +28,71 @@ app = FastAPI(title="Food Truck Launch Pad API", version="1.0.0")
 api_router = APIRouter(prefix="/api")
 
 
-# ==================== MODELS ====================
+# ==================== AUTH MODELS ====================
+
+class User(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    user_id: str
+    email: str
+    name: str
+    picture: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class UserSession(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    user_id: str
+    session_token: str
+    expires_at: datetime
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+# ==================== AUTH HELPER ====================
+
+async def get_current_user(request: Request) -> Optional[User]:
+    """Get current user from session token (cookie or header)"""
+    # Try cookie first
+    session_token = request.cookies.get("session_token")
+    
+    # Fallback to Authorization header
+    if not session_token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            session_token = auth_header[7:]
+    
+    if not session_token:
+        return None
+    
+    # Find session
+    session_doc = await db.user_sessions.find_one(
+        {"session_token": session_token},
+        {"_id": 0}
+    )
+    
+    if not session_doc:
+        return None
+    
+    # Check expiry
+    expires_at = session_doc["expires_at"]
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    if expires_at < datetime.now(timezone.utc):
+        return None
+    
+    # Get user
+    user_doc = await db.users.find_one(
+        {"user_id": session_doc["user_id"]},
+        {"_id": 0}
+    )
+    
+    if not user_doc:
+        return None
+    
+    return User(**user_doc)
+
+
+# ==================== OTHER MODELS ====================
 
 class StatusCheck(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -283,6 +349,115 @@ async def root():
     return {"message": "Food Truck Launch Pad API v1.0", "status": "healthy"}
 
 
+# ==================== AUTH ROUTES ====================
+
+@api_router.post("/auth/session")
+async def exchange_session(request: Request, response: Response):
+    """Exchange session_id from OAuth callback for session_token"""
+    body = await request.json()
+    session_id = body.get("session_id")
+    
+    if not session_id:
+        raise HTTPException(status_code=400, detail="session_id required")
+    
+    # Call Emergent Auth to get user data
+    async with httpx.AsyncClient() as client:
+        try:
+            auth_response = await client.get(
+                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+                headers={"X-Session-ID": session_id},
+                timeout=10.0
+            )
+            if auth_response.status_code != 200:
+                raise HTTPException(status_code=401, detail="Invalid session_id")
+            
+            user_data = auth_response.json()
+        except Exception as e:
+            logging.error(f"Auth error: {e}")
+            raise HTTPException(status_code=500, detail="Authentication service error")
+    
+    # Check if user exists
+    existing_user = await db.users.find_one(
+        {"email": user_data["email"]},
+        {"_id": 0}
+    )
+    
+    if existing_user:
+        user_id = existing_user["user_id"]
+        # Update user info
+        await db.users.update_one(
+            {"user_id": user_id},
+            {"$set": {
+                "name": user_data["name"],
+                "picture": user_data.get("picture"),
+            }}
+        )
+    else:
+        # Create new user
+        user_id = f"user_{uuid.uuid4().hex[:12]}"
+        await db.users.insert_one({
+            "user_id": user_id,
+            "email": user_data["email"],
+            "name": user_data["name"],
+            "picture": user_data.get("picture"),
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+    
+    # Create session
+    session_token = user_data.get("session_token") or f"sess_{uuid.uuid4().hex}"
+    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+    
+    await db.user_sessions.insert_one({
+        "user_id": user_id,
+        "session_token": session_token,
+        "expires_at": expires_at.isoformat(),
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    # Set httpOnly cookie
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        path="/",
+        max_age=7 * 24 * 60 * 60  # 7 days
+    )
+    
+    # Get full user data
+    user_doc = await db.users.find_one({"user_id": user_id}, {"_id": 0})
+    
+    return {"user": user_doc, "session_token": session_token}
+
+
+@api_router.get("/auth/me")
+async def get_current_user_endpoint(request: Request):
+    """Get current authenticated user"""
+    user = await get_current_user(request)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return user.model_dump()
+
+
+@api_router.post("/auth/logout")
+async def logout(request: Request, response: Response):
+    """Logout user and clear session"""
+    session_token = request.cookies.get("session_token")
+    
+    if session_token:
+        await db.user_sessions.delete_one({"session_token": session_token})
+    
+    response.delete_cookie(
+        key="session_token",
+        path="/",
+        secure=True,
+        samesite="none"
+    )
+    
+    return {"message": "Logged out successfully"}
+
+
 # Status endpoints
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
@@ -299,110 +474,176 @@ async def get_status_checks():
 
 # Truck Design endpoints
 @api_router.post("/truck-designs", response_model=TruckDesign)
-async def create_truck_design(input: TruckDesignCreate):
+async def create_truck_design(input: TruckDesignCreate, request: Request):
     design_obj = TruckDesign(**input.model_dump())
     doc = serialize_doc(design_obj.model_dump())
+    
+    # Associate with user if authenticated
+    user = await get_current_user(request)
+    if user:
+        doc["user_id"] = user.user_id
+    
     await db.truck_designs.insert_one(doc)
     return design_obj
 
 @api_router.get("/truck-designs", response_model=List[TruckDesign])
-async def get_truck_designs():
-    designs = await db.truck_designs.find({}, {"_id": 0}).to_list(100)
+async def get_truck_designs(request: Request):
+    # If authenticated, get user's designs; otherwise get all
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    designs = await db.truck_designs.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(d) for d in designs]
 
 @api_router.get("/truck-designs/latest", response_model=Optional[TruckDesign])
-async def get_latest_truck_design():
-    design = await db.truck_designs.find_one({}, {"_id": 0}, sort=[("created_at", -1)])
+async def get_latest_truck_design(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    design = await db.truck_designs.find_one(query, {"_id": 0}, sort=[("created_at", -1)])
     return deserialize_doc(design) if design else None
 
 
 # Recipe endpoints
 @api_router.post("/recipes", response_model=Recipe)
-async def create_recipe(input: RecipeCreate):
+async def create_recipe(input: RecipeCreate, request: Request):
     recipe_obj = Recipe(**input.model_dump())
     doc = serialize_doc(recipe_obj.model_dump())
+    user = await get_current_user(request)
+    if user:
+        doc["user_id"] = user.user_id
     await db.recipes.insert_one(doc)
     return recipe_obj
 
 @api_router.get("/recipes", response_model=List[Recipe])
-async def get_recipes():
-    recipes = await db.recipes.find({}, {"_id": 0}).to_list(100)
+async def get_recipes(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    recipes = await db.recipes.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(r) for r in recipes]
 
 
 # Customer Profile endpoints
 @api_router.post("/customer-profiles", response_model=CustomerProfile)
-async def create_customer_profile(input: CustomerProfileCreate):
+async def create_customer_profile(input: CustomerProfileCreate, request: Request):
     profile_obj = CustomerProfile(**input.model_dump())
     doc = serialize_doc(profile_obj.model_dump())
+    user = await get_current_user(request)
+    if user:
+        doc["user_id"] = user.user_id
     await db.customer_profiles.insert_one(doc)
     return profile_obj
 
 @api_router.get("/customer-profiles", response_model=List[CustomerProfile])
-async def get_customer_profiles():
-    profiles = await db.customer_profiles.find({}, {"_id": 0}).to_list(100)
+async def get_customer_profiles(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    profiles = await db.customer_profiles.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(p) for p in profiles]
+
+@api_router.get("/customer-profiles/latest", response_model=Optional[CustomerProfile])
+async def get_latest_customer_profile(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    profile = await db.customer_profiles.find_one(query, {"_id": 0}, sort=[("created_at", -1)])
+    return deserialize_doc(profile) if profile else None
 
 
 # Signature Dish endpoints
 @api_router.post("/dishes", response_model=SignatureDish)
-async def create_dish(input: SignatureDishCreate):
+async def create_dish(input: SignatureDishCreate, request: Request):
     dish_obj = SignatureDish(**input.model_dump())
     doc = serialize_doc(dish_obj.model_dump())
+    user = await get_current_user(request)
+    if user:
+        doc["user_id"] = user.user_id
     await db.dishes.insert_one(doc)
     return dish_obj
 
 @api_router.get("/dishes", response_model=List[SignatureDish])
-async def get_dishes():
-    dishes = await db.dishes.find({}, {"_id": 0}).to_list(100)
+async def get_dishes(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    dishes = await db.dishes.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(d) for d in dishes]
+
+@api_router.get("/dishes/latest", response_model=Optional[SignatureDish])
+async def get_latest_dish(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    dish = await db.dishes.find_one(query, {"_id": 0}, sort=[("created_at", -1)])
+    return deserialize_doc(dish) if dish else None
 
 
 # Assessment endpoints
 @api_router.post("/assessments", response_model=Assessment)
-async def create_assessment(input: AssessmentCreate):
+async def create_assessment(input: AssessmentCreate, request: Request):
     assessment_obj = Assessment(**input.model_dump())
     doc = serialize_doc(assessment_obj.model_dump())
+    user = await get_current_user(request)
+    if user:
+        doc["user_id"] = user.user_id
     await db.assessments.insert_one(doc)
     return assessment_obj
 
 @api_router.get("/assessments", response_model=List[Assessment])
-async def get_assessments():
-    assessments = await db.assessments.find({}, {"_id": 0}).to_list(100)
+async def get_assessments(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    assessments = await db.assessments.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(a) for a in assessments]
 
 
 # Break-Even endpoints
 @api_router.post("/break-even", response_model=BreakEvenScenario)
-async def create_break_even_scenario(input: BreakEvenScenarioCreate):
+async def create_break_even_scenario(input: BreakEvenScenarioCreate, request: Request):
     scenario_obj = BreakEvenScenario(**input.model_dump())
     doc = serialize_doc(scenario_obj.model_dump())
+    user = await get_current_user(request)
+    if user:
+        doc["user_id"] = user.user_id
     await db.break_even_scenarios.insert_one(doc)
     return scenario_obj
 
 @api_router.get("/break-even", response_model=List[BreakEvenScenario])
-async def get_break_even_scenarios():
-    scenarios = await db.break_even_scenarios.find({}, {"_id": 0}).to_list(100)
+async def get_break_even_scenarios(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    scenarios = await db.break_even_scenarios.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(s) for s in scenarios]
+
+@api_router.get("/break-even/latest", response_model=Optional[BreakEvenScenario])
+async def get_latest_break_even(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    scenario = await db.break_even_scenarios.find_one(query, {"_id": 0}, sort=[("created_at", -1)])
+    return deserialize_doc(scenario) if scenario else None
 
 
 # Permit endpoints
 @api_router.post("/permits", response_model=Permit)
-async def create_permit(input: PermitCreate):
+async def create_permit(input: PermitCreate, request: Request):
     permit_obj = Permit(**input.model_dump())
     doc = serialize_doc(permit_obj.model_dump())
+    user = await get_current_user(request)
+    if user:
+        doc["user_id"] = user.user_id
     await db.permits.insert_one(doc)
     return permit_obj
 
 @api_router.get("/permits", response_model=List[Permit])
-async def get_permits():
-    permits = await db.permits.find({}, {"_id": 0}).to_list(100)
+async def get_permits(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    permits = await db.permits.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(p) for p in permits]
 
 @api_router.patch("/permits/{permit_id}")
-async def update_permit(permit_id: str, status: str):
+async def update_permit(permit_id: str, status: str, request: Request):
+    user = await get_current_user(request)
+    query = {"id": permit_id}
+    if user:
+        query["user_id"] = user.user_id
     result = await db.permits.update_one(
-        {"id": permit_id},
+        query,
         {"$set": {"status": status, "updated_at": datetime.now(timezone.utc).isoformat()}}
     )
     if result.modified_count == 0:
@@ -412,59 +653,93 @@ async def update_permit(permit_id: str, status: str):
 
 # Scaled Batch endpoints
 @api_router.post("/scaled-batches", response_model=ScaledBatch)
-async def create_scaled_batch(input: ScaledBatchCreate):
+async def create_scaled_batch(input: ScaledBatchCreate, request: Request):
     batch_obj = ScaledBatch(**input.model_dump())
     doc = serialize_doc(batch_obj.model_dump())
+    user = await get_current_user(request)
+    if user:
+        doc["user_id"] = user.user_id
     await db.scaled_batches.insert_one(doc)
     return batch_obj
 
 @api_router.get("/scaled-batches", response_model=List[ScaledBatch])
-async def get_scaled_batches():
-    batches = await db.scaled_batches.find({}, {"_id": 0}).to_list(100)
+async def get_scaled_batches(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    batches = await db.scaled_batches.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(b) for b in batches]
+
+@api_router.get("/scaled-batches/latest", response_model=Optional[ScaledBatch])
+async def get_latest_scaled_batch(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    batch = await db.scaled_batches.find_one(query, {"_id": 0}, sort=[("created_at", -1)])
+    return deserialize_doc(batch) if batch else None
 
 
 # Payroll Plan endpoints
 @api_router.post("/payroll-plans", response_model=PayrollPlan)
-async def create_payroll_plan(input: PayrollPlanCreate):
+async def create_payroll_plan(input: PayrollPlanCreate, request: Request):
     plan_obj = PayrollPlan(**input.model_dump())
     doc = serialize_doc(plan_obj.model_dump())
+    user = await get_current_user(request)
+    if user:
+        doc["user_id"] = user.user_id
     await db.payroll_plans.insert_one(doc)
     return plan_obj
 
 @api_router.get("/payroll-plans", response_model=List[PayrollPlan])
-async def get_payroll_plans():
-    plans = await db.payroll_plans.find({}, {"_id": 0}).to_list(100)
+async def get_payroll_plans(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    plans = await db.payroll_plans.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(p) for p in plans]
+
+@api_router.get("/payroll-plans/latest", response_model=Optional[PayrollPlan])
+async def get_latest_payroll_plan(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    plan = await db.payroll_plans.find_one(query, {"_id": 0}, sort=[("created_at", -1)])
+    return deserialize_doc(plan) if plan else None
 
 
 # Training Progress endpoints
 @api_router.post("/training-progress", response_model=TrainingProgress)
-async def create_training_progress(input: TrainingProgressCreate):
+async def create_training_progress(input: TrainingProgressCreate, request: Request):
     progress_obj = TrainingProgress(**input.model_dump())
     if input.completed:
         progress_obj.completed_at = datetime.now(timezone.utc)
     doc = serialize_doc(progress_obj.model_dump())
+    user = await get_current_user(request)
+    if user:
+        doc["user_id"] = user.user_id
     await db.training_progress.insert_one(doc)
     return progress_obj
 
 @api_router.get("/training-progress", response_model=List[TrainingProgress])
-async def get_training_progress():
-    progress = await db.training_progress.find({}, {"_id": 0}).to_list(100)
+async def get_training_progress(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    progress = await db.training_progress.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(p) for p in progress]
 
 
 # Simulation Progress endpoints
 @api_router.post("/simulation-progress", response_model=SimulationProgress)
-async def create_simulation_progress(input: SimulationProgressCreate):
+async def create_simulation_progress(input: SimulationProgressCreate, request: Request):
     sim_obj = SimulationProgress(**input.model_dump())
     doc = serialize_doc(sim_obj.model_dump())
+    user = await get_current_user(request)
+    if user:
+        doc["user_id"] = user.user_id
     await db.simulation_progress.insert_one(doc)
     return sim_obj
 
 @api_router.get("/simulation-progress", response_model=List[SimulationProgress])
-async def get_simulation_progress():
-    progress = await db.simulation_progress.find({}, {"_id": 0}).to_list(100)
+async def get_simulation_progress(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    progress = await db.simulation_progress.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(p) for p in progress]
 
 

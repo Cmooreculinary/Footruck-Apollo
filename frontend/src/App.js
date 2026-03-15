@@ -1,9 +1,11 @@
 import React from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import { Truck, BookOpen, Palette, Users, Calculator, FileText, DollarSign, Utensils, Gauge, Timer, School, ClipboardList, Banknote, Compass, BarChart2, UserCircle, BookMarked, Paintbrush, ChefHat } from "lucide-react";
+import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
+import { Truck, BookOpen, Palette, Users, Calculator, FileText, DollarSign, Utensils, Gauge, Timer, School, ClipboardList, Banknote, Compass, BarChart2, UserCircle, BookMarked, Paintbrush, ChefHat, LogIn, LogOut, User } from "lucide-react";
 import { Toaster } from "sonner";
 import SEO from "@/components/SEO";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import AuthCallback from "@/components/AuthCallback";
 
 // Import pages
 import DayOneSimulator from "@/pages/DayOneSimulator";
@@ -37,6 +39,8 @@ const phases = [
 ];
 
 const Dashboard = () => {
+  const { user, login, logout, loading, isAuthenticated } = useAuth();
+
   return (
     <div className="min-h-screen bg-[#141210] text-slate-100 p-8">
       <SEO 
@@ -47,14 +51,51 @@ const Dashboard = () => {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-10">
-          <div className="flex items-center gap-3 mb-2">
-            <Truck className="w-8 h-8 text-primary" />
-            <h1 className="font-bold text-xl uppercase tracking-wider text-primary">Blue Collar Apps Co.</h1>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-3">
+              <Truck className="w-8 h-8 text-primary" />
+              <h1 className="font-bold text-xl uppercase tracking-wider text-primary">Blue Collar Apps Co.</h1>
+            </div>
+            
+            {/* Auth UI */}
+            <div className="flex items-center gap-3">
+              {loading ? (
+                <div className="w-8 h-8 rounded-full bg-slate-800 animate-pulse" />
+              ) : isAuthenticated && user ? (
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 bg-slate-800 rounded-full pl-1 pr-3 py-1">
+                    {user.picture ? (
+                      <img src={user.picture} alt={user.name} className="w-7 h-7 rounded-full" />
+                    ) : (
+                      <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center">
+                        <User className="w-4 h-4 text-primary" />
+                      </div>
+                    )}
+                    <span className="text-sm font-medium text-white">{user.name?.split(' ')[0]}</span>
+                  </div>
+                  <button
+                    onClick={logout}
+                    className="flex items-center gap-2 px-3 py-1.5 text-sm text-slate-400 hover:text-white transition-colors"
+                    data-testid="logout-btn"
+                  >
+                    <LogOut className="w-4 h-4" /> Sign Out
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={login}
+                  className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors"
+                  data-testid="login-btn"
+                >
+                  <LogIn className="w-4 h-4" /> Sign In with Google
+                </button>
+              )}
+            </div>
           </div>
           <h2 className="text-5xl font-black uppercase tracking-tight mb-2 font-header">Food Truck Launch Pad</h2>
           <p className="text-slate-400 text-lg">Stitch Screen Catalog · Emergent Handoff Package</p>
           <div className="flex items-center gap-4 mt-4">
-            <span className="bg-primary/20 border border-primary/40 text-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">11 Screens</span>
+            <span className="bg-primary/20 border border-primary/40 text-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">13 Screens</span>
             <span className="bg-slate-800 border border-slate-700 text-slate-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">7 Phases</span>
             <span className="bg-slate-800 border border-slate-700 text-slate-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Production Ready</span>
           </div>
@@ -110,6 +151,35 @@ const Dashboard = () => {
   );
 };
 
+// Handle auth callback in hash
+const AppContent = () => {
+  const location = useLocation();
+  
+  // Check if this is an auth callback
+  if (location.hash?.includes('session_id=')) {
+    return <AuthCallback />;
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={<Dashboard />} />
+      <Route path="/dream-kitchen" element={<DreamKitchen />} />
+      <Route path="/day-one" element={<DayOneSimulator />} />
+      <Route path="/signature-dish" element={<SignatureDishDeveloper />} />
+      <Route path="/crew-quarters" element={<CrewQuartersTraining />} />
+      <Route path="/truck-design" element={<TruckDesignStudio />} />
+      <Route path="/payroll" element={<PayrollPlanning />} />
+      <Route path="/scaling-prep" element={<ScalingPrepCalculator />} />
+      <Route path="/paper-trail" element={<PaperTrailPermits />} />
+      <Route path="/break-even" element={<BreakEvenAnalyzer />} />
+      <Route path="/target-customer" element={<TargetCustomerProfiling />} />
+      <Route path="/recipe-builder" element={<RecipeBuilder />} />
+      <Route path="/paint-shop" element={<PaintShop />} />
+      <Route path="/kitchen-builder" element={<KitchenBuilder />} />
+    </Routes>
+  );
+};
+
 function App() {
   return (
     <div className="dark">
@@ -127,22 +197,9 @@ function App() {
         }}
       />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/dream-kitchen" element={<DreamKitchen />} />
-          <Route path="/day-one" element={<DayOneSimulator />} />
-          <Route path="/signature-dish" element={<SignatureDishDeveloper />} />
-          <Route path="/crew-quarters" element={<CrewQuartersTraining />} />
-          <Route path="/truck-design" element={<TruckDesignStudio />} />
-          <Route path="/payroll" element={<PayrollPlanning />} />
-          <Route path="/scaling-prep" element={<ScalingPrepCalculator />} />
-          <Route path="/paper-trail" element={<PaperTrailPermits />} />
-          <Route path="/break-even" element={<BreakEvenAnalyzer />} />
-          <Route path="/target-customer" element={<TargetCustomerProfiling />} />
-          <Route path="/recipe-builder" element={<RecipeBuilder />} />
-          <Route path="/paint-shop" element={<PaintShop />} />
-          <Route path="/kitchen-builder" element={<KitchenBuilder />} />
-        </Routes>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
       </BrowserRouter>
     </div>
   );
