@@ -146,13 +146,21 @@ const LandingPage = () => {
             ))}
           </div>
           
-          <Link 
-            to="/dashboard" 
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-4 px-10 rounded-xl text-xl transition-all transform hover:scale-105 shadow-lg shadow-orange-500/25"
-          >
-            Get Started Free
-            <ArrowRight className="w-6 h-6" />
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link 
+              to="/dashboard" 
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-4 px-10 rounded-xl text-xl transition-all transform hover:scale-105 shadow-lg shadow-orange-500/25"
+            >
+              Get Started Free
+              <ArrowRight className="w-6 h-6" />
+            </Link>
+            <Link 
+              to="/pricing" 
+              className="text-slate-400 hover:text-white transition-colors font-medium"
+            >
+              View Pricing →
+            </Link>
+          </div>
         </div>
       </section>
       
@@ -168,6 +176,7 @@ const LandingPage = () => {
           </div>
           <div className="flex items-center gap-4">
             <Link to="/dashboard" className="text-slate-400 hover:text-white transition-colors">Dashboard</Link>
+            <Link to="/pricing" className="text-slate-400 hover:text-white transition-colors">Pricing</Link>
             <Link to="/showroom" className="text-slate-400 hover:text-white transition-colors">Showroom</Link>
             <Link to="/paint-shop" className="text-slate-400 hover:text-white transition-colors">Paint Shop</Link>
           </div>

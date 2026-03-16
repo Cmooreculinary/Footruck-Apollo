@@ -23,6 +23,7 @@ import RecipeBuilder from "@/pages/RecipeBuilder";
 import PaintShop from "@/pages/PaintShop";
 import KitchenBuilder from "@/pages/KitchenBuilder";
 import Showroom from "@/pages/Showroom";
+import PricingPage from "@/pages/PricingPage";
 
 // Hero image for OG tags
 const HERO_IMAGE = "https://customer-assets.emergentagent.com/job_750cf976-26d8-4bfa-9e94-eee06e714e86/artifacts/svuwg9mb_274d8457-be63-45b6-9aaa-51fbc158cbbf.png";
@@ -184,6 +185,7 @@ const AppContent = () => {
       <Route path="/paint-shop" element={<PaintShop />} />
       <Route path="/kitchen-builder" element={<KitchenBuilder />} />
       <Route path="/showroom" element={<Showroom />} />
+      <Route path="/pricing" element={<PricingPage />} />
     </Routes>
   );
 };
