@@ -1,7 +1,7 @@
 import React from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
-import { Truck, BookOpen, Palette, Users, Calculator, FileText, DollarSign, Utensils, Gauge, Timer, School, ClipboardList, Banknote, Compass, BarChart2, UserCircle, BookMarked, Paintbrush, ChefHat, LogIn, LogOut, User } from "lucide-react";
+import { Truck, BookOpen, Palette, Users, Calculator, FileText, DollarSign, Utensils, Gauge, Timer, School, ClipboardList, Banknote, Compass, BarChart2, UserCircle, BookMarked, Paintbrush, ChefHat, LogIn, LogOut, User, Store } from "lucide-react";
 import { Toaster } from "sonner";
 import SEO from "@/components/SEO";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
@@ -21,8 +21,10 @@ import TargetCustomerProfiling from "@/pages/TargetCustomerProfiling";
 import RecipeBuilder from "@/pages/RecipeBuilder";
 import PaintShop from "@/pages/PaintShop";
 import KitchenBuilder from "@/pages/KitchenBuilder";
+import Showroom from "@/pages/Showroom";
 
 const phases = [
+  { path: "/showroom", name: "Equipment Showroom", phase: "Phase 5", icon: Store, description: "Browse and configure all food truck equipment. 8 categories, 60+ products.", fontStyle: "NEW · Showroom v1.0", isNew: true },
   { path: "/paint-shop", name: "Paint Shop — Truck Configurator", phase: "Phase 5", icon: Paintbrush, description: "Design your truck exterior with colors, wraps, windows, awnings and accessories.", fontStyle: "NEW · Configurator v2.0", isNew: true },
   { path: "/kitchen-builder", name: "Kitchen Builder — Layout Designer", phase: "Phase 5", icon: ChefHat, description: "Drag-and-drop equipment placement with code compliance validation.", fontStyle: "NEW · Builder v2.0", isNew: true },
   { path: "/day-one", name: "Day One Simulator", phase: "Phase 7", icon: Timer, description: "Interactive scenario-based training. Rush hour decision making with live metrics.", fontStyle: "Space Grotesk · Oswald" },
@@ -95,7 +97,7 @@ const Dashboard = () => {
           <h2 className="text-5xl font-black uppercase tracking-tight mb-2 font-header">Food Truck Launch Pad</h2>
           <p className="text-slate-400 text-lg">Stitch Screen Catalog · Emergent Handoff Package</p>
           <div className="flex items-center gap-4 mt-4">
-            <span className="bg-primary/20 border border-primary/40 text-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">13 Screens</span>
+            <span className="bg-primary/20 border border-primary/40 text-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">14 Screens</span>
             <span className="bg-slate-800 border border-slate-700 text-slate-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">7 Phases</span>
             <span className="bg-slate-800 border border-slate-700 text-slate-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Production Ready</span>
           </div>
@@ -176,6 +178,7 @@ const AppContent = () => {
       <Route path="/recipe-builder" element={<RecipeBuilder />} />
       <Route path="/paint-shop" element={<PaintShop />} />
       <Route path="/kitchen-builder" element={<KitchenBuilder />} />
+      <Route path="/showroom" element={<Showroom />} />
     </Routes>
   );
 };

@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://truck-launchpad.preview.emergentagent.com/sitemap.xml
+Sitemap: https://ftlp-showroom-dev.preview.emergentagent.com/sitemap.xml
 
 # Block indexing of API routes
 Disallow: /api/

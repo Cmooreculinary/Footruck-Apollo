@@ -9,7 +9,7 @@ const SEO = ({
   type = "website"
 }) => {
   // Use the actual deployed URL
-  const siteUrl = "https://truck-launchpad.preview.emergentagent.com";
+  const siteUrl = "https://ftlp-showroom-dev.preview.emergentagent.com";
   const fullUrl = url ? `${siteUrl}${url}` : siteUrl;
   const fullImage = image && image.startsWith("http") ? image : `${siteUrl}${image || '/og-image.png'}`;
   const safeTitle = title || "Food Truck Launch Pad";
