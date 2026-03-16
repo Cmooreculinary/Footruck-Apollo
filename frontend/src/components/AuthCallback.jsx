@@ -46,7 +46,7 @@ const AuthCallback = () => {
         
         // Refresh auth state and navigate to dashboard
         await checkAuth();
-        navigate('/', { replace: true, state: { user: data.user } });
+        navigate('/dashboard', { replace: true, state: { user: data.user } });
         
       } catch (error) {
         console.error('Auth callback error:', error);

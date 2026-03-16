@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Check, Truck, Rocket, Crown, ArrowRight, Clock, Shield, Zap, Star, ChefHat, Store } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Check, Truck, Rocket, Crown, ArrowRight, Clock, Shield, Zap, Star, ChefHat, Store, Loader2, XCircle, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { useAuth } from "@/contexts/AuthContext";
+import { apiClient } from "@/lib/api";
 
 const plans = [
   {
@@ -56,15 +57,87 @@ const plans = [
 
 const PricingPage = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, login } = useAuth();
+  const [searchParams] = useSearchParams();
+  const { isAuthenticated, login, user } = useAuth();
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isStartingTrial, setIsStartingTrial] = useState(false);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [subscription, setSubscription] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Check for payment success/cancel on page load
+  useEffect(() => {
+    const sessionId = searchParams.get("session_id");
+    const success = searchParams.get("success");
+    const cancelled = searchParams.get("cancelled");
+
+    if (sessionId && success) {
+      // Poll for payment status
+      pollPaymentStatus(sessionId);
+    } else if (cancelled) {
+      toast.error("Payment cancelled", { description: "You can try again anytime." });
+      // Clear params
+      navigate("/pricing", { replace: true });
+    }
+  }, [searchParams, navigate]);
+
+  // Check subscription status on load
+  useEffect(() => {
+    const checkSubscription = async () => {
+      if (!isAuthenticated) {
+        setIsLoading(false);
+        return;
+      }
+      try {
+        const response = await apiClient.request("/api/subscription/status");
+        setSubscription(response.subscription);
+      } catch (error) {
+        // No subscription
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    checkSubscription();
+  }, [isAuthenticated]);
+
+  const pollPaymentStatus = async (sessionId, attempts = 0) => {
+    const maxAttempts = 10;
+    const pollInterval = 2000;
+
+    if (attempts >= maxAttempts) {
+      toast.error("Payment verification timed out", { description: "Please check your email for confirmation." });
+      navigate("/pricing", { replace: true });
+      return;
+    }
+
+    try {
+      const response = await apiClient.request(`/api/subscription/checkout/status/${sessionId}`);
+      
+      if (response.payment_status === "paid") {
+        toast.success("Payment successful!", { 
+          description: "Welcome to Food Truck Launch Pad! Your subscription is now active.",
+          duration: 5000
+        });
+        navigate("/dashboard", { replace: true });
+        return;
+      } else if (response.status === "expired") {
+        toast.error("Payment session expired", { description: "Please try again." });
+        navigate("/pricing", { replace: true });
+        return;
+      }
+
+      // Continue polling
+      setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), pollInterval);
+    } catch (error) {
+      console.error("Payment status error:", error);
+      setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), pollInterval);
+    }
+  };
 
   const handleStartTrial = async (planId) => {
     setSelectedPlan(planId);
     setIsStartingTrial(true);
     
-    // If not authenticated, prompt to sign in first
     if (!isAuthenticated) {
       toast.info("Sign in to start your trial", { 
         description: "Create a free account to begin your 24-hour trial",
@@ -77,17 +150,73 @@ const PricingPage = () => {
       return;
     }
 
-    // Simulate trial activation
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    try {
+      const response = await apiClient.request("/api/subscription/start-trial", {
+        method: "POST",
+        body: JSON.stringify({ plan_id: planId })
+      });
+      
+      const plan = plans.find(p => p.id === planId);
+      toast.success(`${plan.name} Trial Started!`, { 
+        description: "Your 24-hour free trial is now active. Enjoy full access!",
+        duration: 5000
+      });
+      
+      setSubscription(response.subscription);
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error("Failed to start trial", { description: error.message });
+    } finally {
+      setIsStartingTrial(false);
+    }
+  };
+
+  const handleSubscribe = async (planId) => {
+    setSelectedPlan(planId);
+    setIsCheckingOut(true);
     
-    const plan = plans.find(p => p.id === planId);
-    toast.success(`${plan.name} Trial Started!`, { 
-      description: "Your 24-hour free trial is now active. Enjoy full access!",
-      duration: 5000
-    });
+    if (!isAuthenticated) {
+      toast.info("Sign in to subscribe", { 
+        description: "Create a free account to continue",
+        action: {
+          label: "Sign In",
+          onClick: () => login()
+        }
+      });
+      setIsCheckingOut(false);
+      return;
+    }
+
+    try {
+      const response = await apiClient.request("/api/subscription/checkout", {
+        method: "POST",
+        body: JSON.stringify({ 
+          plan_id: planId,
+          origin_url: window.location.origin,
+          is_first_month: true
+        })
+      });
+      
+      // Redirect to Stripe checkout
+      if (response.url) {
+        window.location.href = response.url;
+      }
+    } catch (error) {
+      toast.error("Checkout failed", { description: error.message });
+      setIsCheckingOut(false);
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    if (!confirm("Are you sure you want to cancel your subscription?")) return;
     
-    setIsStartingTrial(false);
-    navigate("/dashboard");
+    try {
+      await apiClient.request("/api/subscription/cancel", { method: "POST" });
+      toast.success("Subscription cancelled");
+      setSubscription({ ...subscription, status: "cancelled" });
+    } catch (error) {
+      toast.error("Failed to cancel", { description: error.message });
+    }
   };
 
   return (
@@ -189,28 +318,72 @@ const PricingPage = () => {
                 </p>
               </div>
 
-              {/* CTA Button */}
-              <button
-                onClick={() => handleStartTrial(plan.id)}
-                disabled={isStartingTrial && selectedPlan === plan.id}
-                className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
-                  plan.popular
-                    ? "bg-orange-500 hover:bg-orange-600 text-white"
-                    : "bg-slate-700 hover:bg-slate-600 text-white"
-                } disabled:opacity-50`}
-              >
-                {isStartingTrial && selectedPlan === plan.id ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Starting Trial...
-                  </>
-                ) : (
-                  <>
-                    Start Free Trial
-                    <ArrowRight className="w-5 h-5" />
-                  </>
-                )}
-              </button>
+              {/* CTA Buttons */}
+              {subscription?.status === "active" && subscription?.plan_id === plan.id ? (
+                <div className="space-y-2">
+                  <div className="w-full py-4 rounded-xl bg-green-500/20 border border-green-500/50 text-green-400 font-bold text-lg flex items-center justify-center gap-2">
+                    <CheckCircle className="w-5 h-5" />
+                    Current Plan
+                  </div>
+                  <button
+                    onClick={handleCancelSubscription}
+                    className="w-full py-2 text-slate-500 hover:text-red-400 text-sm transition-colors"
+                  >
+                    Cancel Subscription
+                  </button>
+                </div>
+              ) : subscription?.status === "trial" && subscription?.plan_id === plan.id ? (
+                <div className="space-y-2">
+                  <div className="w-full py-4 rounded-xl bg-blue-500/20 border border-blue-500/50 text-blue-400 font-bold text-lg flex items-center justify-center gap-2">
+                    <Clock className="w-5 h-5" />
+                    Trial Active
+                  </div>
+                  <button
+                    onClick={() => handleSubscribe(plan.id)}
+                    disabled={isCheckingOut && selectedPlan === plan.id}
+                    className="w-full py-3 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                  >
+                    {isCheckingOut && selectedPlan === plan.id ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : null}
+                    Subscribe Now - ${plan.firstMonth}
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <button
+                    onClick={() => handleStartTrial(plan.id)}
+                    disabled={isStartingTrial && selectedPlan === plan.id}
+                    className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
+                      plan.popular
+                        ? "bg-orange-500 hover:bg-orange-600 text-white"
+                        : "bg-slate-700 hover:bg-slate-600 text-white"
+                    } disabled:opacity-50`}
+                  >
+                    {isStartingTrial && selectedPlan === plan.id ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Starting Trial...
+                      </>
+                    ) : (
+                      <>
+                        Start Free Trial
+                        <ArrowRight className="w-5 h-5" />
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => handleSubscribe(plan.id)}
+                    disabled={isCheckingOut && selectedPlan === plan.id}
+                    className="w-full py-3 border border-slate-600 hover:border-slate-500 rounded-lg text-sm font-medium text-slate-400 hover:text-white flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+                  >
+                    {isCheckingOut && selectedPlan === plan.id ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : null}
+                    Skip Trial - Subscribe ${plan.firstMonth}
+                  </button>
+                </div>
+              )}
               <p className="text-center text-slate-500 text-xs mt-3">
                 24-hour free trial • No credit card required
               </p>
