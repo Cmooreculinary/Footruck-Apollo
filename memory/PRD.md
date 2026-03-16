@@ -39,6 +39,7 @@ Complete equipment catalog and build configurator:
 - **"Your Build" Shopping Cart** with real-time cost tracking
 - **Product Detail Modals** with full specs and features
 - **Save Build** persists configuration to backend
+- **16 Photorealistic Product Images** generated from prompt kit (chassis, cooking, refrigeration, etc.)
 
 ### NEW: Paint Shop v2.0 (March 2026) ✅
 Full exterior truck configurator with:

@@ -16,6 +16,36 @@ const TIERS = {
   elite: { label: "Elite", color: "#E8592F", bg: "#E8592F15", desc: "Top of the line. Chef's choice." },
 };
 
+// ═══════════════════════════════════════════════════════════════
+// PRODUCT IMAGES — Photorealistic images for key products
+// ═══════════════════════════════════════════════════════════════
+const PRODUCT_IMAGES = {
+  // Chassis
+  "ch-1": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/0c43c993e3eb3ab7f6161b687f9f22274f356679a903bccc146ae5a7c5e42a35.png",
+  "ch-2": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/77062c3071627f8cb8555d50d2ee84ff653f175e37a09b9042f88cc77999271d.png",
+  "ch-5": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/fe9d43e88821c4a6b270c20b91bee2f8fb71c00656ee74631507a5b4c2e11330.png",
+  // Cooking
+  "ck-1": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/f0af09061d569b0376d4044c9aba5d948cccf217191f909c6084c6b9bd88eec7.png",
+  "ck-3": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/239480c3ae14811b240e65d49c556bb62db27f5264263d833cb9c5822d6a7668.png",
+  "ck-5": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/1ed510872627aa5947dfc4d47817c39e3870cce0bbf8032e1c72f2b81e42896f.png",
+  "ck-9": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/a547d50bff7aee8dc19485932f058307e42b692fc98dca20603e661bb6576ea6.png",
+  // Refrigeration
+  "rf-1": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/67a10bdf5c9cf051eba13af84a2cb45ce6d90acd15a9b09e9791992f24bc6a3f.png",
+  "rf-6": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/52a123bb0852d541af67ff5f1a623d17fde622dedec2b8870b3f5eae4d3f516f.png",
+  // HVAC
+  "hv-1": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/4e0090f20f1b7395be4e496086ebe49825ff8244d657d7fd5439681b229caf92.png",
+  // Plumbing
+  "pl-1": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/dcfb5067a3af90747881e61e2db73faf621e781e967387c7043d728e881cca68.png",
+  // Electrical
+  "el-1": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/e0650335d3a22ab5a310c2f398801b1ca9a9bc41d3da6c63ea6d2a96870919dd.png",
+  // Smallwares
+  "sw-1": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/9ab32b6a16e069a8fe838206bc2d49367d3c27cefc27ab0d7a515b2493129215.png",
+  "sw-5": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/d2da30c34fe31e09caaaa4c61c1e824c4abda3645f286ccd1ba343fa3c03bf66.png",
+  // Serving & POS
+  "sv-2": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/b720e4b0fbeea90658b3df404a2aef3a80f6a34df66e2e4c248d3d365b347949.png",
+  "sv-4": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/414b8ab6a208d6d719a811c14d7bee271fa9aae291c63cd9b40abb4ee0b0abf6.png",
+};
+
 const CATEGORIES = [
   { id: "chassis", name: "Chassis", icon: "🚛", sub: "Base Vehicle Selection" },
   { id: "cooking", name: "Cooking", icon: "🔥", sub: "Griddles, Fryers, Ovens & More" },
@@ -127,10 +157,41 @@ const PRODUCTS = {
 };
 
 // ═══════════════════════════════════════════════════════════════
-// SVG PRODUCT ILLUSTRATIONS
+// SVG PRODUCT ILLUSTRATIONS (with photorealistic image support)
 // ═══════════════════════════════════════════════════════════════
 
 function ProductSVG({ item, size = 160 }) {
+  // Check if we have a photorealistic image for this product
+  const imageUrl = PRODUCT_IMAGES[item.id];
+  
+  if (imageUrl) {
+    return (
+      <div style={{ 
+        width: size, 
+        height: size, 
+        borderRadius: 12, 
+        overflow: "hidden", 
+        background: "#0B0F17",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }}>
+        <img 
+          src={imageUrl} 
+          alt={item.name}
+          style={{ 
+            width: "100%", 
+            height: "100%", 
+            objectFit: "cover",
+            borderRadius: 12
+          }}
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+  
+  // Fallback to SVG illustration
   const tc = TIERS[item.tier]?.color || "#999";
   const t = item.type || "";
 
