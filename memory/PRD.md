@@ -44,6 +44,12 @@ Complete equipment catalog and build configurator:
 - **Save Build** persists configuration to backend
 - **36 Photorealistic Product Images** generated from prompt kit (all chassis, cooking, refrigeration, etc.)
 
+### NEW: PDF Export (March 2026) ✅
+Export functionality for layouts and recipes:
+- **Recipe Builder PDF** - Complete recipe with ingredients, steps, and cost breakdown
+- **Kitchen Builder PDF** - Floor plan layout with equipment list and total cost
+- **jsPDF + html2canvas** integration for high-quality exports
+
 ### NEW: Landing Page (March 2026) ✅
 Beautiful landing page with:
 - **Hero Image** - Custom Food Truck Launch Pad branding
@@ -126,8 +132,12 @@ React Helmet Async, Open Graph, Twitter Cards, sitemap.xml
 ## Test Results
 - **Iteration 5**: Backend 23/23 PASSED, Frontend 9/9 PASSED
 - **Iteration 6**: Frontend 100% PASSED (Paint Shop, Kitchen Builder)
-- **Iteration 7**: Frontend 100% PASSED (Equipment Showroom - all 8 categories, filtering, search, build cart, save)
-- **Auth**: Sign In button present, API endpoints working
+- **Iteration 7**: Frontend 100% PASSED (Equipment Showroom)
+- **Iteration 8**: Frontend 100% PASSED - All action items completed:
+  - Showroom: 59 photorealistic images across 8 categories
+  - PDF Export: Recipe Builder + Kitchen Builder functional
+  - Data Loading: Break-Even + Payroll load saved data on mount
+  - Navigation: Landing page at /, Dashboard at /dashboard
 
 ## Files of Reference
 - `/app/frontend/src/contexts/AuthContext.js` - Auth state management
