@@ -861,368 +861,235 @@ const PaintShop = () => {
   );
 };
 
+
 // ============================================================================
-// TRUCK PREVIEW COMPONENT (2.5D SVG Illustration)
+// TRUCK PREVIEW COMPONENT (Photo-based with CSS Color Overlay)
 // ============================================================================
+
+// Real food truck base image (white for color overlay compatibility)
+const TRUCK_BASE_IMAGE = "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/0492b9aa282ca71e1e7333dd6f57a1e9501d75854655ae4cedfb6443d6ad1fd3.png";
+
 const TruckPreview = ({ 
   truckModel, primaryColor, secondaryColor, finishType, splitPattern, 
   servingWindow, awning, awningColor, wheelStyle, businessName, 
   selectedAccessories, viewAngle 
 }) => {
   
-  // Generate finish gradient overlay
-  const getFinishOverlay = () => {
-    const finishMap = {
-      gloss: "linear-gradient(145deg, rgba(255,255,255,0.35) 0%, transparent 40%, rgba(0,0,0,0.15) 100%)",
-      satin: "linear-gradient(145deg, rgba(255,255,255,0.15) 0%, transparent 60%)",
-      matte: "none",
-      metallic: "linear-gradient(145deg, rgba(255,255,255,0.4) 0%, transparent 25%, rgba(255,255,255,0.15) 60%, transparent 100%)",
-      pearl: "linear-gradient(145deg, rgba(255,200,255,0.2) 0%, rgba(200,255,255,0.2) 50%, transparent 100%)",
+  // Generate finish effects
+  const getFinishStyle = () => {
+    const finishStyles = {
+      gloss: { 
+        filter: "contrast(1.05) brightness(1.02)",
+        overlayGradient: "linear-gradient(145deg, rgba(255,255,255,0.25) 0%, transparent 50%, rgba(0,0,0,0.1) 100%)"
+      },
+      satin: { 
+        filter: "contrast(1.02)",
+        overlayGradient: "linear-gradient(145deg, rgba(255,255,255,0.1) 0%, transparent 70%)"
+      },
+      matte: { 
+        filter: "contrast(0.98) brightness(0.98)",
+        overlayGradient: "none"
+      },
+      metallic: { 
+        filter: "contrast(1.08) saturate(1.15)",
+        overlayGradient: "linear-gradient(145deg, rgba(255,255,255,0.35) 0%, transparent 30%, rgba(255,255,255,0.15) 70%)"
+      },
+      pearl: { 
+        filter: "contrast(1.02) saturate(1.1)",
+        overlayGradient: "linear-gradient(145deg, rgba(255,200,255,0.15) 0%, rgba(200,255,255,0.15) 50%, transparent 100%)"
+      },
     };
-    return finishMap[finishType] || "none";
+    return finishStyles[finishType] || finishStyles.gloss;
   };
 
-  // Get wheel colors
-  const getWheelColors = () => {
-    const wheelMap = {
-      steel_silver: { rim: "#c0c0c0", hub: "#808080" },
-      steel_black: { rim: "#2a2a2a", hub: "#1a1a1a" },
-      alloy: { rim: "#d4d4d4", hub: "#a0a0a0" },
-      chrome: { rim: "#e8e8e8", hub: "#c0c0c0" },
-      offroad: { rim: "#3a3a3a", hub: "#1a1a1a" },
-    };
-    return wheelMap[wheelStyle] || wheelMap.alloy;
-  };
-
-  // Get secondary color based on split pattern
-  const getBodyColors = () => {
-    if (splitPattern === "none") {
-      return { main: primaryColor, accent: primaryColor };
+  // Calculate overlay opacity based on color brightness
+  const getOverlayOpacity = () => {
+    if (!primaryColor || primaryColor.toLowerCase() === "#ffffff" || primaryColor.toLowerCase() === "#fff") {
+      return 0;
     }
-    return { main: primaryColor, accent: secondaryColor };
+    const r = parseInt(primaryColor.slice(1, 3), 16);
+    const g = parseInt(primaryColor.slice(3, 5), 16);
+    const b = parseInt(primaryColor.slice(5, 7), 16);
+    const brightness = (r + g + b) / 3;
+    if (brightness > 240) return 0.3;
+    if (brightness > 200) return 0.5;
+    return 0.7;
   };
 
-  const colors = getBodyColors();
-  const wheelColors = getWheelColors();
-  const hasLEDUnderglow = selectedAccessories.includes("led_underglow");
-  const hasRoofRack = selectedAccessories.includes("roof_rack");
-  const hasRoofSign = selectedAccessories.includes("roof_sign");
+  const finishStyle = getFinishStyle();
+  const overlayOpacity = getOverlayOpacity();
+  const hasAwning = awning !== "none";
+  const hasRoofRack = selectedAccessories?.includes("roof_rack");
+  const hasRoofSign = selectedAccessories?.includes("roof_sign");
+  const hasLEDUnderglow = selectedAccessories?.includes("led_underglow");
 
-  // Different truck shapes based on model
-  const getTruckPath = () => {
-    switch (truckModel) {
-      case "cargo_van":
-        return {
-          body: "M100,280 L100,160 Q100,140 120,130 L200,110 Q220,105 240,105 L680,105 Q720,105 740,130 L760,160 L760,280 Z",
-          cab: "M660,160 L660,280 L760,280 L760,160 L740,130 Q720,105 680,105 L680,160 Z",
-          roof: "M120,130 Q100,140 100,160 L100,130 Q110,110 140,105 L680,105 Q700,105 720,115 L740,130 L120,130 Z"
-        };
-      case "trailer":
-        return {
-          body: "M80,280 L80,120 Q80,100 100,100 L750,100 Q770,100 770,120 L770,280 Z",
-          cab: null,
-          roof: "M100,100 Q80,100 80,120 L80,100 Q90,80 120,80 L730,80 Q760,80 770,100 Z",
-          hitch: "M20,260 L80,260 L80,240 L40,240 L40,220 L20,220 Z"
-        };
-      case "vintage":
-        return {
-          body: "M120,280 L120,180 Q120,140 160,120 L200,110 Q240,100 280,100 L600,100 Q640,100 680,110 L720,140 Q740,160 740,200 L740,280 Z",
-          cab: "M620,180 Q620,140 660,120 L700,130 Q730,150 730,200 L730,280 L620,280 Z",
-          roof: "M160,120 Q120,140 120,180 L120,140 Q140,100 200,90 L600,90 Q660,100 700,130 L680,110 Q640,100 600,100 L280,100 Q240,100 200,110 Z",
-          fenders: "M140,260 Q100,260 100,300 L180,300 Q180,260 140,260 M700,260 Q740,260 740,300 L660,300 Q660,260 700,260"
-        };
-      case "flatbed":
-        return {
-          body: "M200,280 L200,130 Q200,110 220,110 L740,110 Q760,110 760,130 L760,280 Z",
-          cab: "M80,180 Q80,140 120,120 L180,110 Q200,110 200,130 L200,280 L80,280 Z",
-          roof: "M220,110 Q200,110 200,130 L200,110 L740,110 Q760,110 760,130 L760,110 Z"
-        };
-      case "step_van_modern":
-        return {
-          body: "M80,280 L80,130 Q80,100 120,100 L640,100 Q680,100 700,130 L720,160 L720,280 Z",
-          cab: "M600,160 L600,280 L720,280 L720,160 L700,130 Q680,100 640,100 L640,160 Z",
-          roof: "M120,100 Q80,100 80,130 L80,100 Q100,70 150,70 L600,70 Q660,70 700,100 L700,130 Q680,100 640,100 L120,100 Z"
-        };
-      default: // step_van_classic
-        return {
-          body: "M80,280 L80,120 Q80,100 100,100 L600,100 Q620,100 640,120 L680,160 L680,280 Z",
-          cab: "M560,160 L560,280 L680,280 L680,160 L640,120 Q620,100 600,100 L600,160 Z",
-          roof: "M100,100 Q80,100 80,120 L80,100 L600,100 Q620,100 640,120 L640,100 Z"
-        };
-    }
+  // Get contrast color for text
+  const getContrastColor = (hexColor) => {
+    if (!hexColor) return "#ffffff";
+    const r = parseInt(hexColor.slice(1, 3), 16);
+    const g = parseInt(hexColor.slice(3, 5), 16);
+    const b = parseInt(hexColor.slice(5, 7), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 128 ? "#1a1a1a" : "#ffffff";
   };
 
-  const truckPaths = getTruckPath();
-
-  // Serving window dimensions
-  const getWindowDims = () => {
-    const winMap = {
-      standard: { x: 180, y: 140, w: 140, h: 80 },
-      wide: { x: 160, y: 140, w: 200, h: 80 },
-      double: { x: 140, y: 140, w: 240, h: 80 },
-      full_pass: { x: 120, y: 130, w: 280, h: 100 },
-      fold_counter: { x: 180, y: 140, w: 160, h: 80 },
-      accordion: { x: 100, y: 120, w: 340, h: 120 },
+  // Get split pattern mask
+  const getSplitMask = (pattern) => {
+    const masks = {
+      horizontal: "linear-gradient(to bottom, transparent 0%, transparent 50%, black 50%, black 100%)",
+      diagonal: "linear-gradient(135deg, transparent 0%, transparent 50%, black 50%, black 100%)",
+      hood_roof: "linear-gradient(to bottom, black 0%, black 25%, transparent 25%, transparent 100%)",
+      racing_stripe: "linear-gradient(to right, transparent 42%, black 42%, black 58%, transparent 58%)",
+      lower_accent: "linear-gradient(to bottom, transparent 0%, transparent 65%, black 65%, black 100%)",
     };
-    return winMap[servingWindow] || winMap.standard;
+    return masks[pattern] || "none";
   };
 
-  const windowDims = getWindowDims();
+  // Wheel colors
+  const wheelColors = {
+    steel_silver: "#c0c0c0",
+    steel_black: "#2a2a2a",
+    alloy: "#d4d4d4",
+    chrome: "#e8e8e8",
+    offroad: "#3a3a3a",
+  };
+  const wheelColor = wheelColors[wheelStyle] || wheelColors.alloy;
 
   return (
-    <svg 
-      viewBox="0 0 850 420" 
-      className="w-full max-w-4xl drop-shadow-2xl"
-      style={{ filter: finishType === "metallic" ? "contrast(1.05) saturate(1.1)" : "none" }}
-    >
-      <defs>
-        {/* Finish gradient */}
-        <linearGradient id="finishGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="rgba(255,255,255,0.3)" />
-          <stop offset="40%" stopColor="transparent" />
-          <stop offset="100%" stopColor="rgba(0,0,0,0.15)" />
-        </linearGradient>
-        
-        {/* Metallic sparkle pattern */}
-        <pattern id="metallicSparkle" patternUnits="userSpaceOnUse" width="3" height="3">
-          <circle cx="1.5" cy="1.5" r="0.3" fill="rgba(255,255,255,0.4)" />
-        </pattern>
-        
-        {/* Shadow gradient */}
-        <linearGradient id="shadowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="rgba(0,0,0,0)" />
-          <stop offset="100%" stopColor="rgba(0,0,0,0.3)" />
-        </linearGradient>
-        
-        {/* Window glass gradient */}
-        <linearGradient id="glassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#1a1a2e" />
-          <stop offset="50%" stopColor="#0f0f14" />
-          <stop offset="100%" stopColor="#1a1a2e" />
-        </linearGradient>
-      </defs>
-      
-      {/* Ground shadow */}
-      <ellipse cx="400" cy="340" rx="320" ry="25" fill="rgba(0,0,0,0.4)" />
-      
-      {/* LED Underglow */}
-      {hasLEDUnderglow && (
-        <ellipse cx="400" cy="300" rx="280" ry="15" fill="#E8592F" opacity="0.4">
-          <animate attributeName="opacity" values="0.3;0.5;0.3" dur="2s" repeatCount="indefinite" />
-        </ellipse>
-      )}
-      
-      {/* Main Body */}
-      <g>
-        {/* Body base */}
-        <path 
-          d={truckPaths.body} 
-          fill={colors.main}
-        />
-        
-        {/* Secondary color based on split pattern */}
-        {splitPattern === "horizontal" && (
-          <path d="M80,200 L80,280 L680,280 L680,200 Z" fill={colors.accent} />
-        )}
-        {splitPattern === "diagonal" && (
-          <path d="M80,280 L300,100 L680,100 L680,280 Z" fill={colors.accent} />
-        )}
-        {splitPattern === "lower_accent" && (
-          <path d="M80,240 L80,280 L680,280 L680,240 Z" fill={colors.accent} />
-        )}
-        {splitPattern === "racing_stripe" && (
-          <path d="M350,100 L350,280 L430,280 L430,100 Z" fill={colors.accent} opacity="0.9" />
-        )}
-        {splitPattern === "hood_roof" && truckPaths.cab && (
-          <path d={truckPaths.cab} fill={colors.accent} />
-        )}
-        
-        {/* Finish overlay */}
-        <path 
-          d={truckPaths.body} 
-          fill="url(#finishGradient)"
-          opacity={finishType === "matte" ? 0 : 1}
-        />
-        
-        {/* Metallic sparkle */}
-        {finishType === "metallic" && (
-          <path d={truckPaths.body} fill="url(#metallicSparkle)" opacity="0.5" />
-        )}
-        
-        {/* Roof highlight */}
-        {truckPaths.roof && (
-          <path d={truckPaths.roof} fill="rgba(255,255,255,0.1)" />
-        )}
-        
-        {/* Cab section */}
-        {truckPaths.cab && (
-          <>
-            <path d={truckPaths.cab} fill={splitPattern === "hood_roof" ? colors.accent : colors.main} />
-            <path d={truckPaths.cab} fill="url(#finishGradient)" opacity={finishType === "matte" ? 0 : 0.7} />
-          </>
-        )}
-        
-        {/* Trailer hitch */}
-        {truckPaths.hitch && (
-          <path d={truckPaths.hitch} fill="#2a2a2a" />
-        )}
-        
-        {/* Vintage fenders */}
-        {truckPaths.fenders && (
-          <path d={truckPaths.fenders} fill={colors.main} />
-        )}
-      </g>
-      
-      {/* Serving Window */}
-      <g>
-        <rect 
-          x={windowDims.x} y={windowDims.y} 
-          width={windowDims.w} height={windowDims.h} 
-          rx="4" 
-          fill="#1a1a1a" 
-        />
-        <rect 
-          x={windowDims.x + 4} y={windowDims.y + 4} 
-          width={windowDims.w - 8} height={windowDims.h - 8} 
-          rx="2" 
-          fill="url(#glassGradient)" 
-        />
-        {/* Window frame */}
-        <rect 
-          x={windowDims.x} y={windowDims.y + windowDims.h - 6} 
-          width={windowDims.w} height="6" 
-          fill={colors.accent}
-        />
-        
-        {/* Fold-down counter */}
-        {servingWindow === "fold_counter" && (
-          <rect 
-            x={windowDims.x - 10} y={windowDims.y + windowDims.h} 
-            width={windowDims.w + 20} height="25" 
-            fill="#c0c0c0"
-            rx="2"
-          />
-        )}
-      </g>
-      
-      {/* Awning */}
-      {awning !== "none" && awningColor && (
-        <g>
-          <path 
-            d={`M${windowDims.x - 20},${windowDims.y - 5} 
-                L${windowDims.x + windowDims.w + 20},${windowDims.y - 5} 
-                L${windowDims.x + windowDims.w + 40},${windowDims.y - 40} 
-                L${windowDims.x - 40},${windowDims.y - 40} Z`}
-            fill={typeof awningColor === 'string' && awningColor.startsWith('repeating') ? '#ce2029' : awningColor}
-          />
-          {awning === "led_lit" && (
-            <line 
-              x1={windowDims.x - 15} y1={windowDims.y - 8}
-              x2={windowDims.x + windowDims.w + 15} y2={windowDims.y - 8}
-              stroke="#ffcc00" strokeWidth="3" opacity="0.8"
-            >
-              <animate attributeName="opacity" values="0.6;1;0.6" dur="1.5s" repeatCount="indefinite" />
-            </line>
-          )}
-        </g>
-      )}
-      
-      {/* Cab Windows */}
-      {truckModel !== "trailer" && (
-        <g>
-          {/* Windshield */}
-          <path 
-            d={truckModel === "vintage" 
-              ? "M630,135 L630,200 L715,200 L715,150 L690,125 Z"
-              : "M570,125 L570,220 L665,220 L665,165 L640,125 Z"
-            }
-            fill="#1a1a2e"
-          />
-          <path 
-            d={truckModel === "vintage"
-              ? "M635,140 L635,195 L710,195 L710,155 L687,130 Z"
-              : "M575,130 L575,215 L660,215 L660,168 L637,130 Z"
-            }
-            fill="url(#glassGradient)"
-          />
-        </g>
-      )}
-      
-      {/* Business Name */}
-      <text 
-        x={truckModel === "trailer" ? 425 : 320} 
-        y="195" 
-        textAnchor="middle" 
-        fill={secondaryColor === "#ffffff" || secondaryColor === "#f5f5f0" ? "#1a1a1a" : "#ffffff"}
-        fontSize="32" 
-        fontFamily="Oswald, sans-serif"
-        fontWeight="bold"
-        letterSpacing="6"
+    <div className="relative w-full max-w-4xl mx-auto" data-testid="truck-preview-container">
+      {/* Main Preview Container */}
+      <div 
+        className="relative"
+        style={{ 
+          aspectRatio: "3/2",
+          filter: finishStyle.filter
+        }}
       >
-        {businessName}
-      </text>
-      
-      {/* Wheels */}
-      <g>
-        {/* Front wheel */}
-        <circle cx={truckModel === "flatbed" ? 140 : 180} cy="305" r="45" fill="#1a1a1a" />
-        <circle cx={truckModel === "flatbed" ? 140 : 180} cy="305" r="32" fill="#2a2a2a" />
-        <circle cx={truckModel === "flatbed" ? 140 : 180} cy="305" r="20" fill={wheelColors.rim} />
-        <circle cx={truckModel === "flatbed" ? 140 : 180} cy="305" r="8" fill={wheelColors.hub} />
+        {/* Base truck image (white truck for color overlay) */}
+        <img 
+          src={TRUCK_BASE_IMAGE}
+          alt="Food truck preview"
+          className="w-full h-full object-contain select-none"
+          style={{ 
+            userSelect: "none",
+            WebkitUserDrag: "none"
+          }}
+          draggable="false"
+        />
         
-        {/* Rear wheel */}
-        <circle cx={truckModel === "trailer" ? 650 : 580} cy="305" r="45" fill="#1a1a1a" />
-        <circle cx={truckModel === "trailer" ? 650 : 580} cy="305" r="32" fill="#2a2a2a" />
-        <circle cx={truckModel === "trailer" ? 650 : 580} cy="305" r="20" fill={wheelColors.rim} />
-        <circle cx={truckModel === "trailer" ? 650 : 580} cy="305" r="8" fill={wheelColors.hub} />
-        
-        {/* Middle wheel for larger trucks */}
-        {(truckModel === "step_van_classic" || truckModel === "step_van_modern" || truckModel === "trailer") && (
-          <>
-            <circle cx="400" cy="305" r="45" fill="#1a1a1a" />
-            <circle cx="400" cy="305" r="32" fill="#2a2a2a" />
-            <circle cx="400" cy="305" r="20" fill={wheelColors.rim} />
-            <circle cx="400" cy="305" r="8" fill={wheelColors.hub} />
-          </>
+        {/* Primary Color overlay using multiply blend mode */}
+        {primaryColor && primaryColor !== "#ffffff" && primaryColor !== "#fff" && (
+          <div 
+            className="absolute inset-0 pointer-events-none transition-all duration-300 ease-out"
+            style={{
+              backgroundColor: primaryColor,
+              mixBlendMode: "multiply",
+              opacity: overlayOpacity,
+              // Mask to preserve wheels and windows
+              maskImage: "linear-gradient(to bottom, black 0%, black 80%, transparent 92%)",
+              WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 80%, transparent 92%)"
+            }}
+          />
         )}
-      </g>
+        
+        {/* Two-tone secondary color overlay */}
+        {splitPattern && splitPattern !== "none" && secondaryColor && secondaryColor !== primaryColor && (
+          <div 
+            className="absolute inset-0 pointer-events-none transition-all duration-300 ease-out"
+            style={{
+              backgroundColor: secondaryColor,
+              mixBlendMode: "multiply",
+              opacity: overlayOpacity * 0.85,
+              maskImage: getSplitMask(splitPattern),
+              WebkitMaskImage: getSplitMask(splitPattern)
+            }}
+          />
+        )}
+        
+        {/* Finish overlay (gloss/metallic shine effects) */}
+        {finishStyle.overlayGradient && finishStyle.overlayGradient !== "none" && (
+          <div 
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: finishStyle.overlayGradient,
+              mixBlendMode: "overlay"
+            }}
+          />
+        )}
+        
+        {/* LED Underglow Effect */}
+        {hasLEDUnderglow && (
+          <div 
+            className="absolute bottom-[8%] left-[20%] right-[20%] h-6 rounded-full blur-xl opacity-60"
+            style={{ 
+              backgroundColor: primaryColor || "#E8592F",
+              transform: "translateY(50%)"
+            }}
+          />
+        )}
+        
+        {/* Business Name on truck body */}
+        {businessName && businessName.trim() !== "" && (
+          <div className="absolute top-[35%] left-[15%] right-[35%] text-center pointer-events-none">
+            <span 
+              className="text-xl md:text-2xl lg:text-3xl font-black tracking-wide"
+              style={{ 
+                color: getContrastColor(primaryColor),
+                textShadow: "2px 2px 4px rgba(0,0,0,0.5), -1px -1px 2px rgba(0,0,0,0.3)"
+              }}
+            >
+              {businessName}
+            </span>
+          </div>
+        )}
+        
+        {/* Awning indicator */}
+        {hasAwning && (
+          <div 
+            className="absolute top-[18%] left-[12%] h-4 rounded-b-lg shadow-lg"
+            style={{ 
+              backgroundColor: awningColor || "#dc2626",
+              width: awning === "full" ? "45%" : "25%"
+            }}
+          />
+        )}
+        
+        {/* Roof accessories */}
+        {(hasRoofRack || hasRoofSign) && (
+          <div className="absolute top-[8%] left-[25%] right-[35%] flex justify-center items-center gap-4">
+            {hasRoofRack && (
+              <div className="w-32 h-2 bg-gray-500 rounded opacity-70" />
+            )}
+            {hasRoofSign && (
+              <div className="px-4 py-1.5 bg-gray-800 rounded-lg border border-gray-600">
+                <span className="text-orange-500 text-xs font-bold">OPEN</span>
+              </div>
+            )}
+          </div>
+        )}
+        
+        {/* Wheel style indicators */}
+        <div className="absolute bottom-[10%] left-[18%] pointer-events-none">
+          <div 
+            className="w-10 h-10 rounded-full border-4 opacity-50"
+            style={{ borderColor: wheelColor, backgroundColor: "#1a1a1a" }}
+          />
+        </div>
+        <div className="absolute bottom-[10%] right-[22%] pointer-events-none">
+          <div 
+            className="w-10 h-10 rounded-full border-4 opacity-50"
+            style={{ borderColor: wheelColor, backgroundColor: "#1a1a1a" }}
+          />
+        </div>
+      </div>
       
-      {/* Roof Rack */}
-      {hasRoofRack && (
-        <g>
-          <rect x="120" y="85" width="460" height="4" fill="#3a3a3a" rx="2" />
-          <rect x="140" y="78" width="4" height="12" fill="#3a3a3a" />
-          <rect x="320" y="78" width="4" height="12" fill="#3a3a3a" />
-          <rect x="500" y="78" width="4" height="12" fill="#3a3a3a" />
-        </g>
-      )}
-      
-      {/* Roof Sign */}
-      {hasRoofSign && (
-        <g>
-          <rect x="250" y="55" width="180" height="35" rx="4" fill="#2a2a2a" />
-          <rect x="255" y="60" width="170" height="25" rx="2" fill="#1a1a1a" />
-          <text x="340" y="79" textAnchor="middle" fill="#E8592F" fontSize="14" fontWeight="bold">OPEN</text>
-        </g>
-      )}
-      
-      {/* Headlight */}
-      {truckModel !== "trailer" && (
-        <g>
-          <circle cx={truckModel === "flatbed" ? 190 : truckModel === "vintage" ? 730 : 670} cy="230" r="12" fill="#facc15" />
-          <circle cx={truckModel === "flatbed" ? 190 : truckModel === "vintage" ? 730 : 670} cy="230" r="8" fill="#fef08a" />
-        </g>
-      )}
-      
-      {/* Tail lights for trailer */}
-      {truckModel === "trailer" && (
-        <g>
-          <rect x="765" y="200" width="8" height="20" rx="2" fill="#dc2626" />
-          <rect x="765" y="230" width="8" height="20" rx="2" fill="#dc2626" />
-        </g>
-      )}
-    </svg>
+      {/* View angle indicator */}
+      <div className="absolute top-2 left-2 px-2 py-1 bg-black/50 rounded text-[10px] text-white/60 uppercase">
+        {viewAngle?.replace("-", " ") || "Side View"}
+      </div>
+    </div>
   );
 };
 
 export default PaintShop;
+
