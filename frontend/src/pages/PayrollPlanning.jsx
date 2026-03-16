@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Truck, Download, Plus, Calendar, Search, Zap, Users, Coins, Gavel, PiggyBank, Wand2, BarChart, CheckCircle, Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { apiClient } from "@/lib/api";
+import { SkeletonTable } from "@/components/ui/skeleton-loader";
 
 const crewData = [
   { initials: "MA", name: "Marco A.", color: "primary", shifts: ["08:00", "08:00", "08:00", "OFF", "10:00", "10:00"], total: "44:00" },
@@ -15,6 +16,25 @@ const PayrollPlanning = () => {
   const [selectedLocation, setSelectedLocation] = useState("California (San Francisco)");
   const [isSaving, setIsSaving] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load saved payroll on mount
+  useEffect(() => {
+    const loadSavedPayroll = async () => {
+      try {
+        const data = await apiClient.request('/api/payroll/latest');
+        if (data && data.location) {
+          setSelectedLocation(data.location);
+          toast.success("Payroll loaded", { description: "Your saved payroll plan has been restored." });
+        }
+      } catch (error) {
+        // No saved data
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadSavedPayroll();
+  }, []);
 
   const handleSavePayroll = async () => {
     setIsSaving(true);

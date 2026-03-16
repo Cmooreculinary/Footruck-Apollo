@@ -9,6 +9,7 @@ import {
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { apiClient } from "@/lib/api";
+import { exportKitchenLayoutToPDF } from "@/lib/pdfExport";
 
 // ============================================================================
 // EQUIPMENT CATALOG
@@ -102,10 +103,12 @@ const KitchenBuilder = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("Cooking");
   const [isSaving, setIsSaving] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [showValidation, setShowValidation] = useState(false);
   
   const floorPlanRef = useRef(null);
+  const canvasRef = useRef(null);
   const interior = truckInteriors[truckModel];
   const GRID_SIZE = 6; // 6-inch grid
 
@@ -204,6 +207,30 @@ const KitchenBuilder = () => {
     setPlacedEquipment(placedEquipment.filter(item => item.id !== selectedItem));
     setSelectedItem(null);
     toast.info("Equipment removed");
+  };
+
+  // Export to PDF
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    try {
+      const equipmentList = placedEquipment.map(item => {
+        const catalogItem = Object.values(equipmentCatalog).flat().find(e => e.id === item.equipmentId);
+        return {
+          name: catalogItem?.name || 'Unknown',
+          price: catalogItem?.cost || 0
+        };
+      });
+      
+      await exportKitchenLayoutToPDF(
+        { equipment: equipmentList, truckModel, totalCost, utilization },
+        floorPlanRef.current
+      );
+      toast.success("PDF exported!", { description: "Kitchen layout PDF downloaded." });
+    } catch (error) {
+      toast.error("Export failed", { description: error.message });
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   // Rotate selected item
@@ -597,10 +624,12 @@ const KitchenBuilder = () => {
           {/* Actions */}
           <div className="space-y-2">
             <button
-              onClick={() => toast.info("PDF export coming soon")}
-              className="w-full py-3 border border-white/20 rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-white/5 transition-all"
+              onClick={handleExportPDF}
+              disabled={isExporting}
+              className="w-full py-3 border border-white/20 rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-white/5 transition-all disabled:opacity-50"
             >
-              <Download className="w-4 h-4" /> Export PDF
+              {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+              {isExporting ? "Exporting..." : "Export PDF"}
             </button>
             <button
               onClick={() => toast.info("Quote request coming soon")}

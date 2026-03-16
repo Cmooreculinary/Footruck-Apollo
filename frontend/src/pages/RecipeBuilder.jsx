@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { apiClient } from "@/lib/api";
 import { SkeletonForm, SkeletonTable } from "@/components/ui/skeleton-loader";
+import { exportRecipeToPDF } from "@/lib/pdfExport";
 
 const initialIngredients = [
   { id: 1, name: "Prime Beef Brisket", sku: "#0422", qty: "5.50", unit: "kg", unitCost: 18.50, total: 101.75 },
@@ -127,10 +128,18 @@ const RecipeBuilder = () => {
   const handleExportPDF = async () => {
     setIsExporting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      toast.success("PDF exported!", { description: "Your recipe PDF has been generated." });
+      exportRecipeToPDF({
+        name: recipeName,
+        prep_time: prepTime,
+        cook_time: cookTime,
+        batch_yield: batchYield,
+        cost_per_serving: parseFloat(costPerServing),
+        ingredients: ingredients,
+        steps: steps,
+      });
+      toast.success("PDF exported!", { description: "Your recipe PDF has been downloaded." });
     } catch (error) {
-      toast.error("Export failed");
+      toast.error("Export failed", { description: error.message });
     } finally {
       setIsExporting(false);
     }

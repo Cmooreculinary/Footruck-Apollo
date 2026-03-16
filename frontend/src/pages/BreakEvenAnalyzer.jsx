@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Truck, Upload, Save, Wallet, ShoppingBag, Calendar, Flag, CheckCircle, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { apiClient } from "@/lib/api";
+import { SkeletonForm, Skeleton } from "@/components/ui/skeleton-loader";
 
 const BreakEvenAnalyzer = () => {
   const [fixedExpenses, setFixedExpenses] = useState(4500);
@@ -12,7 +13,31 @@ const BreakEvenAnalyzer = () => {
   const [operatingDays, setOperatingDays] = useState(20);
   const [avgCustomersPerDay, setAvgCustomersPerDay] = useState(65);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [scenarioName, setScenarioName] = useState("My Break-Even Scenario");
+
+  // Load saved scenario on mount
+  useEffect(() => {
+    const loadSavedScenario = async () => {
+      try {
+        const data = await apiClient.request('/api/break-even/latest');
+        if (data && data.name) {
+          setScenarioName(data.name);
+          if (data.fixed_expenses) setFixedExpenses(data.fixed_expenses);
+          if (data.avg_menu_price) setAvgMenuPrice(data.avg_menu_price);
+          if (data.avg_cost_per_plate) setAvgCostPerPlate(data.avg_cost_per_plate);
+          if (data.operating_days) setOperatingDays(data.operating_days);
+          if (data.avg_customers_per_day) setAvgCustomersPerDay(data.avg_customers_per_day);
+          toast.success("Scenario loaded", { description: "Your saved analysis has been restored." });
+        }
+      } catch (error) {
+        // No saved scenario
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadSavedScenario();
+  }, []);
 
   // Calculations
   const contributionMargin = avgMenuPrice - avgCostPerPlate;
