@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Rocket, ChefHat, Truck, Store, Calculator, Users, ArrowRight, Check, Sparkles } from "lucide-react";
 import SEO from "@/components/SEO";
 
-const HERO_IMAGE = "https://customer-assets.emergentagent.com/job_750cf976-26d8-4bfa-9e94-eee06e714e86/artifacts/svuwg9mb_274d8457-be63-45b6-9aaa-51fbc158cbbf.png";
+const HERO_IMAGE = "https://ftlp-showroom-dev.preview.emergentagent.com/og-image.png";
 
 const features = [
   { icon: Store, title: "Equipment Showroom", desc: "60+ commercial products across 8 categories with photorealistic previews" },

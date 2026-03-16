@@ -1,7 +1,8 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 
-const DEFAULT_IMAGE = "https://customer-assets.emergentagent.com/job_750cf976-26d8-4bfa-9e94-eee06e714e86/artifacts/svuwg9mb_274d8457-be63-45b6-9aaa-51fbc158cbbf.png";
+const DEFAULT_IMAGE = "https://ftlp-showroom-dev.preview.emergentagent.com/og-image.png";
+const SITE_URL = "https://ftlp-showroom-dev.preview.emergentagent.com";
 
 const SEO = ({ 
   title = "Food Truck Launch Pad",
@@ -10,9 +11,7 @@ const SEO = ({
   url = "",
   type = "website"
 }) => {
-  // Use the actual deployed URL
-  const siteUrl = "https://ftlp-showroom-dev.preview.emergentagent.com";
-  const fullUrl = url ? `${siteUrl}${url}` : siteUrl;
+  const fullUrl = url ? `${SITE_URL}${url}` : SITE_URL;
   const fullImage = image && image.startsWith("http") ? image : DEFAULT_IMAGE;
   const safeTitle = title || "Food Truck Launch Pad";
   const safeDescription = description || "The ultimate platform for food truck entrepreneurs.";
@@ -28,8 +27,11 @@ const SEO = ({
       <meta property="og:title" content={safeTitle} />
       <meta property="og:description" content={safeDescription} />
       <meta property="og:image" content={fullImage} />
+      <meta property="og:image:secure_url" content={fullImage} />
+      <meta property="og:image:type" content="image/png" />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="1200" />
+      <meta property="og:image:alt" content={safeTitle} />
       <meta property="og:site_name" content="Food Truck Launch Pad" />
       
       <meta name="twitter:card" content="summary_large_image" />
@@ -37,6 +39,7 @@ const SEO = ({
       <meta name="twitter:title" content={safeTitle} />
       <meta name="twitter:description" content={safeDescription} />
       <meta name="twitter:image" content={fullImage} />
+      <meta name="twitter:image:alt" content={safeTitle} />
       
       <link rel="canonical" href={fullUrl} />
     </Helmet>
