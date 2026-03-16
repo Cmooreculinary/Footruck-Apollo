@@ -1,7 +1,7 @@
 # Food Truck Launch Pad - PRD
 
 ## Problem Statement
-Build a comprehensive platform for food truck entrepreneurs covering the journey from concept to launch with 13 feature modules across 7 phases.
+Build a comprehensive platform for food truck entrepreneurs covering the journey from concept to launch with 14 feature modules across 7 phases.
 
 ## Architecture & Tech Stack
 - **Frontend**: React.js with Tailwind CSS
@@ -30,6 +30,15 @@ Backend endpoints:
 - `POST /api/auth/session` - Exchange OAuth session_id for session_token
 - `GET /api/auth/me` - Get current authenticated user
 - `POST /api/auth/logout` - Clear session and logout
+
+### NEW: Equipment Showroom (March 2026) ✅
+Complete equipment catalog and build configurator:
+- **8 Equipment Categories**: Chassis, Cooking, Refrigeration, Smallwares, HVAC, Plumbing, Electrical, Serving & POS
+- **60+ Products** across 3 tiers (Standard, Premium, Elite)
+- **Tier Filtering** and search functionality
+- **"Your Build" Shopping Cart** with real-time cost tracking
+- **Product Detail Modals** with full specs and features
+- **Save Build** persists configuration to backend
 
 ### NEW: Paint Shop v2.0 (March 2026) ✅
 Full exterior truck configurator with:
@@ -60,9 +69,10 @@ All 35 `href="#"` dead links replaced with toast notifications.
 ### Social Media/SEO Optimization ✅
 React Helmet Async, Open Graph, Twitter Cards, sitemap.xml
 
-### All Feature Modules (13 Total)
-1. **Paint Shop v2.0** - `/paint-shop`
-2. **Kitchen Builder v2.0** - `/kitchen-builder`
+### All Feature Modules (14 Total)
+1. **Equipment Showroom** - `/showroom` ← NEW
+2. **Paint Shop v2.0** - `/paint-shop`
+3. **Kitchen Builder v2.0** - `/kitchen-builder`
 3. **Day One Simulator** - `/day-one`
 4. **Signature Dish Developer** - `/signature-dish`
 5. **Crew Quarters Training** - `/crew-quarters`
@@ -103,11 +113,13 @@ React Helmet Async, Open Graph, Twitter Cards, sitemap.xml
 ## Test Results
 - **Iteration 5**: Backend 23/23 PASSED, Frontend 9/9 PASSED
 - **Iteration 6**: Frontend 100% PASSED (Paint Shop, Kitchen Builder)
+- **Iteration 7**: Frontend 100% PASSED (Equipment Showroom - all 8 categories, filtering, search, build cart, save)
 - **Auth**: Sign In button present, API endpoints working
 
 ## Files of Reference
 - `/app/frontend/src/contexts/AuthContext.js` - Auth state management
 - `/app/frontend/src/components/AuthCallback.jsx` - OAuth callback handler
+- `/app/frontend/src/pages/Showroom.jsx` - Equipment Showroom ← NEW
 - `/app/frontend/src/pages/PaintShop.jsx` - Paint Shop v2.0
 - `/app/frontend/src/pages/KitchenBuilder.jsx` - Kitchen Builder v2.0
 - `/app/backend/server.py` - All API endpoints including auth
