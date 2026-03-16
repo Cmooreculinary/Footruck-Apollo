@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Utensils, ChevronRight, BookOpen, Camera, Lightbulb, Trash2, Eye, Upload, Loader2, X } from "lucide-react";
+import { Utensils, ChevronRight, BookOpen, Camera, Lightbulb, Trash2, Eye, Upload, Loader2, X, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { apiClient } from "@/lib/api";
+import { Skeleton, SkeletonText } from "@/components/ui/skeleton-loader";
 
 const SignatureDishDeveloper = () => {
   const [dishName, setDishName] = useState("");
@@ -13,8 +14,48 @@ const SignatureDishDeveloper = () => {
   const [flavorProfiles, setFlavorProfiles] = useState(["SMOKY", "UMAMI", "CRUNCHY"]);
   const [isSaving, setIsSaving] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [newProfile, setNewProfile] = useState("");
   const [showProfileInput, setShowProfileInput] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  // Load saved dish on mount
+  useEffect(() => {
+    const loadSavedDish = async () => {
+      try {
+        const data = await apiClient.getLatestDish();
+        if (data && data.name) {
+          setDishName(data.name);
+          if (data.narrative) setNarrative(data.narrative);
+          if (data.primary_component) setPrimaryComponent(data.primary_component);
+          if (data.x_factor) setXFactor(data.x_factor);
+          if (data.flavor_profiles?.length) setFlavorProfiles(data.flavor_profiles);
+          toast.success("Dish loaded", { description: "Your saved dish has been restored." });
+        }
+      } catch (error) {
+        // No saved dish found
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadSavedDish();
+  }, []);
+
+  // Validation helper
+  const validateField = (field, value) => {
+    const newErrors = { ...errors };
+    if (field === 'narrative' && !value.trim()) {
+      newErrors.narrative = "Narrative is required for publishing";
+    } else if (field === 'narrative') {
+      delete newErrors.narrative;
+    }
+    if (field === 'primaryComponent' && !value.trim()) {
+      newErrors.primaryComponent = "Primary component is required";
+    } else if (field === 'primaryComponent') {
+      delete newErrors.primaryComponent;
+    }
+    setErrors(newErrors);
+  };
 
   const addFlavorProfile = () => {
     if (newProfile.trim()) {
@@ -105,7 +146,7 @@ const SignatureDishDeveloper = () => {
             <h2 className="text-slate-100 text-lg font-bold leading-tight tracking-[-0.015em]">Food Truck Launch Pad</h2>
           </div>
           <nav className="hidden md:flex items-center gap-9">
-            <Link to="/" className="text-slate-100 hover:text-primary transition-colors text-sm font-medium">Dashboard</Link>
+            <Link to="/dashboard" className="text-slate-100 hover:text-primary transition-colors text-sm font-medium">Dashboard</Link>
             <Link to="/recipe-builder" className="text-slate-100 hover:text-primary transition-colors text-sm font-medium">Recipe Builder</Link>
             <Link to="/scaling-prep" className="text-slate-100 hover:text-primary transition-colors text-sm font-medium">Scaling Calculator</Link>
             <Link to="/break-even" className="text-slate-100 hover:text-primary transition-colors text-sm font-medium">Analytics</Link>
@@ -125,7 +166,7 @@ const SignatureDishDeveloper = () => {
       <main className="flex-1 px-4 lg:px-40 py-8">
         {/* Breadcrumb */}
         <nav className="flex flex-wrap gap-2 items-center mb-6 text-slate-400">
-          <Link to="/" className="hover:text-primary transition-colors text-sm font-medium">Phase 3: IRON CHEF</Link>
+          <Link to="/dashboard" className="hover:text-primary transition-colors text-sm font-medium">Phase 3: IRON CHEF</Link>
           <ChevronRight className="w-3 h-3" />
           <span className="hover:text-primary transition-colors text-sm font-medium">Signature Dish Developer</span>
           <ChevronRight className="w-3 h-3" />
@@ -319,7 +360,7 @@ const SignatureDishDeveloper = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <p>© 2024 Food Truck Launch Pad</p>
           <div className="flex gap-8">
-            <Link to="/" className="hover:text-primary transition-colors">Dashboard</Link>
+            <Link to="/dashboard" className="hover:text-primary transition-colors">Dashboard</Link>
             <Link to="/crew-quarters" className="hover:text-primary transition-colors">Training</Link>
             <Link to="/break-even" className="hover:text-primary transition-colors">Support</Link>
           </div>

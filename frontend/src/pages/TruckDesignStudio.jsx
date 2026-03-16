@@ -143,7 +143,7 @@ const TruckDesignStudio = () => {
       {/* Header */}
       <header className="flex items-center justify-between border-b border-steel/50 px-8 py-4 bg-background-dark shrink-0">
         <div className="flex items-center gap-4">
-          <Link to="/" className="text-primary">
+          <Link to="/dashboard" className="text-primary">
             <Truck className="w-7 h-7" />
           </Link>
           <div>
@@ -152,7 +152,7 @@ const TruckDesignStudio = () => {
           </div>
         </div>
         <nav className="flex items-center gap-10">
-          <Link to="/" className="text-xs font-semibold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">Dashboard</Link>
+          <Link to="/dashboard" className="text-xs font-semibold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">Dashboard</Link>
           <span className="text-xs font-semibold uppercase tracking-widest text-primary border-b-2 border-primary pb-1">Paint Shop</span>
           <button 
             onClick={() => toast.info("Wrap Preview coming soon", { description: "This feature is in development." })}

@@ -101,7 +101,7 @@ const DayOneSimulator = () => {
       {/* Header */}
       <header className="flex items-center justify-between border-b border-steel px-6 md:px-10 py-4 bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
         <div className="flex items-center gap-4">
-          <Link to="/" className="text-primary">
+          <Link to="/dashboard" className="text-primary">
             <Truck className="w-9 h-9" />
           </Link>
           <div className="flex flex-col">
@@ -111,7 +111,7 @@ const DayOneSimulator = () => {
         </div>
         <div className="flex flex-1 justify-end gap-8 items-center">
           <nav className="hidden lg:flex items-center gap-9">
-            <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">Dashboard</Link>
+            <Link to="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">Dashboard</Link>
             <Link to="/crew-quarters" className="text-sm font-medium hover:text-primary transition-colors">Training</Link>
             <Link to="/truck-design" className="text-sm font-medium hover:text-primary transition-colors">Equipment</Link>
             <span className="text-primary text-sm font-bold border-b-2 border-primary pb-1">Launchpad</span>

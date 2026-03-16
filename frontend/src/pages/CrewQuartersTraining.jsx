@@ -80,7 +80,7 @@ const CrewQuartersTraining = () => {
             <h2 className="text-slate-100 text-xl font-bold leading-tight tracking-tight uppercase">Crew Quarters</h2>
           </div>
           <nav className="flex items-center gap-8 ml-4">
-            <Link to="/" className="text-slate-400 hover:text-primary text-sm font-medium transition-colors">Dashboard</Link>
+            <Link to="/dashboard" className="text-slate-400 hover:text-primary text-sm font-medium transition-colors">Dashboard</Link>
             <span className="text-primary text-sm font-bold border-b-2 border-primary pb-1">Training</span>
             <button onClick={() => toast.info("Vault coming soon")} className="text-slate-400 hover:text-primary text-sm font-medium transition-colors">Vault</button>
             <button onClick={() => toast.info("Schedule coming soon")} className="text-slate-400 hover:text-primary text-sm font-medium transition-colors">Schedule</button>

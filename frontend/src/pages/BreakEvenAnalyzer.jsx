@@ -62,11 +62,11 @@ const BreakEvenAnalyzer = () => {
               <div className="flex items-center justify-center text-primary">
                 <Truck className="w-8 h-8" />
               </div>
-              <Link to="/" className="text-lg font-bold leading-tight tracking-[-0.015em] uppercase hover:text-primary transition-colors">FT Launch Pad</Link>
+              <Link to="/dashboard" className="text-lg font-bold leading-tight tracking-[-0.015em] uppercase hover:text-primary transition-colors">FT Launch Pad</Link>
             </div>
             <div className="hidden md:flex flex-1 justify-end gap-8 items-center">
               <nav className="flex items-center gap-9">
-                <Link to="/" className="text-text-muted hover:text-primary text-sm font-medium transition-colors">Dashboard</Link>
+                <Link to="/dashboard" className="text-text-muted hover:text-primary text-sm font-medium transition-colors">Dashboard</Link>
                 <span className="text-white text-sm font-medium hover:text-primary transition-colors">Financials</span>
                 <Link to="/signature-dish" className="text-text-muted hover:text-primary text-sm font-medium transition-colors">Menu Builder</Link>
               </nav>
@@ -84,7 +84,7 @@ const BreakEvenAnalyzer = () => {
           {/* Breadcrumb */}
           <div className="w-full border-b border-border-dark bg-surface-dark/50 py-4 px-4">
             <div className="mx-auto max-w-[1200px] flex items-center gap-2 text-sm">
-              <Link to="/" className="text-text-muted hover:text-white">Financial Reality Check</Link>
+              <Link to="/dashboard" className="text-text-muted hover:text-white">Financial Reality Check</Link>
               <span className="text-border-dark">/</span>
               <span className="text-primary font-semibold">Break-Even Analyzer</span>
             </div>

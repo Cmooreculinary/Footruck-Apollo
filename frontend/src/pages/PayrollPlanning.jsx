@@ -84,7 +84,7 @@ const PayrollPlanning = () => {
           {/* Top Nav */}
           <header className="flex items-center justify-between px-8 py-4 border-b border-border-col bg-surface shrink-0">
             <nav className="flex items-center gap-8 text-sm">
-              <Link to="/" className="text-slate-400 hover:text-slate-200">Dashboard</Link>
+              <Link to="/dashboard" className="text-slate-400 hover:text-slate-200">Dashboard</Link>
               <button onClick={() => toast.info("Inventory coming soon")} className="text-slate-400 hover:text-slate-200">Inventory</button>
               <Link to="/crew-quarters" className="text-primary font-bold border-b-2 border-primary pb-1">Crew Quarters</Link>
               <span className="text-slate-400 hover:text-slate-200">Payroll</span>

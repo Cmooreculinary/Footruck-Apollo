@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Truck, Search, Settings, Bell, Download, Save, Layers, Plus, Clock, Thermometer, Loader2, X } from "lucide-react";
+import { Truck, Search, Settings, Bell, Download, Save, Layers, Plus, Clock, Thermometer, Loader2, X, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { apiClient } from "@/lib/api";
+import { SkeletonForm, SkeletonTable } from "@/components/ui/skeleton-loader";
 
 const initialIngredients = [
   { id: 1, name: "Prime Beef Brisket", sku: "#0422", qty: "5.50", unit: "kg", unitCost: 18.50, total: 101.75 },
@@ -43,6 +44,53 @@ const RecipeBuilder = () => {
   const [activeStep, setActiveStep] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errors, setErrors] = useState({});
+
+  // Load saved recipe on mount
+  useEffect(() => {
+    const loadSavedRecipe = async () => {
+      try {
+        const data = await apiClient.request('/api/recipes/latest');
+        if (data && data.name) {
+          setRecipeName(data.name);
+          if (data.ingredients?.length) setIngredients(data.ingredients);
+          if (data.steps?.length) setSteps(data.steps);
+          toast.success("Recipe loaded", { description: "Your saved recipe has been restored." });
+        }
+      } catch (error) {
+        // No saved recipe found - use defaults
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadSavedRecipe();
+  }, []);
+
+  // Form validation
+  const validateForm = () => {
+    const newErrors = {};
+    if (!recipeName.trim()) {
+      newErrors.recipeName = "Recipe name is required";
+    }
+    if (ingredients.length === 0) {
+      newErrors.ingredients = "Add at least one ingredient";
+    }
+    if (steps.length === 0) {
+      newErrors.steps = "Add at least one step";
+    }
+    // Validate each ingredient
+    ingredients.forEach((ing, idx) => {
+      if (!ing.name.trim()) {
+        newErrors[`ingredient_${idx}`] = "Ingredient name required";
+      }
+      if (parseFloat(ing.qty) <= 0) {
+        newErrors[`ingredient_qty_${idx}`] = "Quantity must be positive";
+      }
+    });
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const prepTime = 45;
   const cookTime = 12 * 60; // 12 hours in minutes
@@ -52,6 +100,10 @@ const RecipeBuilder = () => {
   const costPerServing = ((ingredientSubtotal + wasteFactor) / batchYield).toFixed(2);
 
   const handleSaveRecipe = async () => {
+    if (!validateForm()) {
+      toast.error("Please fix errors", { description: "Check the highlighted fields." });
+      return;
+    }
     setIsSaving(true);
     try {
       await apiClient.saveRecipe({
@@ -64,6 +116,7 @@ const RecipeBuilder = () => {
         steps: steps,
       });
       toast.success("Recipe saved!", { description: "Your recipe has been saved to your library." });
+      setErrors({});
     } catch (error) {
       toast.error("Failed to save", { description: "Please try again." });
     } finally {
@@ -130,7 +183,7 @@ const RecipeBuilder = () => {
               <h2 className="font-bold text-white uppercase tracking-wide">Food Truck Launch Pad</h2>
             </div>
             <nav className="flex items-center gap-6 text-sm">
-              <Link to="/" className="text-slate-400 hover:text-slate-200">Dashboard</Link>
+              <Link to="/dashboard" className="text-slate-400 hover:text-slate-200">Dashboard</Link>
               <span className="text-primary font-bold border-b-2 border-primary pb-1">Recipe Builder</span>
               <Link to="/scaling-prep" className="text-slate-400 hover:text-slate-200">Scaling</Link>
               <Link to="/break-even" className="text-slate-400 hover:text-slate-200">Analytics</Link>
@@ -160,6 +213,18 @@ const RecipeBuilder = () => {
           </div>
         </header>
 
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="flex-1 p-8 space-y-6">
+            <div className="flex items-center gap-4 mb-8">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              <span className="text-slate-400">Loading your recipe...</span>
+            </div>
+            <SkeletonForm fields={3} />
+            <SkeletonTable rows={4} cols={5} />
+          </div>
+        ) : (
+          <>
         {/* Recipe Header Bar */}
         <div className="px-8 py-5 border-b border-border-col bg-surface/80 shrink-0">
           <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Phase 3: Iron Chef · Industrial Edition V3.0</p>
@@ -168,10 +233,20 @@ const RecipeBuilder = () => {
               <input
                 type="text"
                 value={recipeName}
-                onChange={(e) => setRecipeName(e.target.value)}
-                className="font-header text-3xl font-bold uppercase tracking-tight bg-transparent border-none outline-none text-white"
+                onChange={(e) => {
+                  setRecipeName(e.target.value);
+                  if (errors.recipeName) setErrors(prev => ({ ...prev, recipeName: null }));
+                }}
+                className={`font-header text-3xl font-bold uppercase tracking-tight bg-transparent border-b-2 outline-none text-white ${errors.recipeName ? 'border-red-500' : 'border-transparent focus:border-primary'}`}
+                placeholder="Enter recipe name..."
               />
               <span className="text-primary">.</span>
+              {errors.recipeName && (
+                <span className="text-red-500 text-xs flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" />
+                  {errors.recipeName}
+                </span>
+              )}
             </div>
             <div className="flex gap-3">
               <button 
@@ -321,6 +396,8 @@ const RecipeBuilder = () => {
             <span>{new Date().toLocaleTimeString()}</span>
           </div>
         </footer>
+          </>
+        )}
       </div>
     </div>
   );

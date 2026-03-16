@@ -339,7 +339,7 @@ const PaintShop = () => {
       <header className="border-b border-white/10 bg-[#0f0f14]/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-[1800px] mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link to="/" className="text-[#E8592F]">
+            <Link to="/dashboard" className="text-[#E8592F]">
               <Truck className="w-8 h-8" />
             </Link>
             <div>
@@ -349,7 +349,7 @@ const PaintShop = () => {
           </div>
           
           <div className="flex items-center gap-4">
-            <Link to="/" className="text-white/60 hover:text-white text-sm font-medium transition-colors">Dashboard</Link>
+            <Link to="/dashboard" className="text-white/60 hover:text-white text-sm font-medium transition-colors">Dashboard</Link>
             <span className="text-[#E8592F] text-sm font-bold border-b-2 border-[#E8592F] pb-1">Paint Shop</span>
             <Link to="/kitchen-builder" className="text-white/60 hover:text-white text-sm font-medium transition-colors flex items-center gap-1">
               Kitchen Builder <ArrowRight className="w-4 h-4" />

@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import AuthCallback from "@/components/AuthCallback";
 
 // Import pages
+import LandingPage from "@/pages/LandingPage";
 import DayOneSimulator from "@/pages/DayOneSimulator";
 import SignatureDishDeveloper from "@/pages/SignatureDishDeveloper";
 import CrewQuartersTraining from "@/pages/CrewQuartersTraining";
@@ -22,6 +23,9 @@ import RecipeBuilder from "@/pages/RecipeBuilder";
 import PaintShop from "@/pages/PaintShop";
 import KitchenBuilder from "@/pages/KitchenBuilder";
 import Showroom from "@/pages/Showroom";
+
+// Hero image for OG tags
+const HERO_IMAGE = "https://customer-assets.emergentagent.com/job_750cf976-26d8-4bfa-9e94-eee06e714e86/artifacts/svuwg9mb_274d8457-be63-45b6-9aaa-51fbc158cbbf.png";
 
 const phases = [
   { path: "/showroom", name: "Equipment Showroom", phase: "Phase 5", icon: Store, description: "Browse and configure all food truck equipment. 8 categories, 60+ products.", fontStyle: "NEW · Showroom v1.0", isNew: true },
@@ -46,18 +50,18 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-[#141210] text-slate-100 p-8">
       <SEO 
-        title="Food Truck Launch Pad"
-        description="Industrial-grade platform for food truck entrepreneurs. 11 screens, 7 phases. From concept to Day One, build your mobile food empire with precision."
-        url="/"
+        title="Dashboard - Food Truck Launch Pad"
+        description="Industrial-grade platform for food truck entrepreneurs. 14 screens, 7 phases. From concept to Day One, build your mobile food empire with precision."
+        url="/dashboard"
       />
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-10">
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <Truck className="w-8 h-8 text-primary" />
               <h1 className="font-bold text-xl uppercase tracking-wider text-primary">Blue Collar Apps Co.</h1>
-            </div>
+            </Link>
             
             {/* Auth UI */}
             <div className="flex items-center gap-3">
@@ -164,7 +168,8 @@ const AppContent = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<Dashboard />} />
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/dream-kitchen" element={<DreamKitchen />} />
       <Route path="/day-one" element={<DayOneSimulator />} />
       <Route path="/signature-dish" element={<SignatureDishDeveloper />} />

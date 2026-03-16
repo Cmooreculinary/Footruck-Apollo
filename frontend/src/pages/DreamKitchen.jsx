@@ -44,7 +44,7 @@ const DreamKitchen = () => {
             </div>
             <div className="hidden md:flex items-center gap-8">
               <nav className="flex items-center gap-6">
-                <Link to="/" className="text-white text-sm font-medium hover:text-primary transition-colors">Dashboard</Link>
+                <Link to="/dashboard" className="text-white text-sm font-medium hover:text-primary transition-colors">Dashboard</Link>
                 <button onClick={() => toast.info("Resources coming soon")} className="text-text-muted text-sm font-medium hover:text-white transition-colors">Resources</button>
                 <button onClick={() => toast.info("Community coming soon")} className="text-text-muted text-sm font-medium hover:text-white transition-colors">Community</button>
               </nav>
