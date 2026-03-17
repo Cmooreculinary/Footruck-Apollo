@@ -27,11 +27,11 @@ print('User ID: ' + userId);
 ## Step 2: Test Backend API
 ```bash
 # Test auth endpoint
-curl -X GET "https://ftlp-showroom-dev.preview.emergentagent.com/api/auth/me" \
+curl -X GET "https://truck-paint-shop.preview.emergentagent.com/api/auth/me" \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN"
 
 # Test protected endpoints
-curl -X GET "https://ftlp-showroom-dev.preview.emergentagent.com/api/truck-designs" \
+curl -X GET "https://truck-paint-shop.preview.emergentagent.com/api/truck-designs" \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN"
 ```
 
@@ -47,7 +47,7 @@ await page.context.add_cookies([{
     "secure": True,
     "sameSite": "None"
 }])
-await page.goto("https://ftlp-showroom-dev.preview.emergentagent.com")
+await page.goto("https://truck-paint-shop.preview.emergentagent.com")
 ```
 
 ## Quick Debug
