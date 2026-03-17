@@ -866,7 +866,7 @@ const PaintShop = () => {
 // TRUCK PREVIEW COMPONENT (Photo-based with CSS Color Overlay)
 // ============================================================================
 
-// Real food truck base image (white for color overlay compatibility)
+// Real food truck base image (white truck on white background)
 const TRUCK_BASE_IMAGE = "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/0492b9aa282ca71e1e7333dd6f57a1e9501d75854655ae4cedfb6443d6ad1fd3.png";
 
 const TruckPreview = ({ 
@@ -955,56 +955,37 @@ const TruckPreview = ({
   };
   const wheelColor = wheelColors[wheelStyle] || wheelColors.alloy;
 
+  // Create an SVG mask path that approximates the truck body shape
+  // This masks out the areas where color should NOT appear (background, wheels, windows)
+  const getTruckBodyMask = () => {
+    // SVG path that covers roughly where the truck body is
+    // Based on the truck image position when using object-contain
+    return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='xMidYMid slice'%3E%3Cpath d='M15,25 L85,25 L85,70 L15,70 Z' fill='white'/%3E%3C/svg%3E")`;
+  };
+
   return (
     <div className="relative w-full max-w-4xl mx-auto" data-testid="truck-preview-container">
       {/* Main Preview Container */}
       <div 
-        className="relative"
+        className="relative overflow-hidden rounded-lg"
         style={{ 
           aspectRatio: "3/2",
-          filter: finishStyle.filter
+          backgroundColor: "#1a1a2e" // Dark background to match app theme
         }}
       >
-        {/* Base truck image (white truck for color overlay) */}
-        <img 
-          src={TRUCK_BASE_IMAGE}
-          alt="Food truck preview"
-          className="w-full h-full object-contain select-none"
-          style={{ 
-            userSelect: "none",
-            WebkitUserDrag: "none"
+        {/* Truck with color applied using background-blend-mode */}
+        <div 
+          className="absolute inset-0 transition-all duration-300 ease-out"
+          style={{
+            backgroundImage: `url(${TRUCK_BASE_IMAGE})`,
+            backgroundSize: "contain",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            backgroundColor: (primaryColor && primaryColor !== "#ffffff" && primaryColor !== "#fff") ? primaryColor : "#ffffff",
+            backgroundBlendMode: (primaryColor && primaryColor !== "#ffffff" && primaryColor !== "#fff") ? "multiply" : "normal",
+            filter: finishStyle.filter
           }}
-          draggable="false"
         />
-        
-        {/* Primary Color overlay using multiply blend mode */}
-        {primaryColor && primaryColor !== "#ffffff" && primaryColor !== "#fff" && (
-          <div 
-            className="absolute inset-0 pointer-events-none transition-all duration-300 ease-out"
-            style={{
-              backgroundColor: primaryColor,
-              mixBlendMode: "multiply",
-              opacity: overlayOpacity,
-              // Mask to preserve wheels and windows
-              maskImage: "linear-gradient(to bottom, black 0%, black 80%, transparent 92%)",
-              WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 80%, transparent 92%)"
-            }}
-          />
-        )}
-        
-        {/* Two-tone secondary color overlay */}
-        {splitPattern && splitPattern !== "none" && secondaryColor && secondaryColor !== primaryColor && (
-          <div 
-            className="absolute inset-0 pointer-events-none transition-all duration-300 ease-out"
-            style={{
-              backgroundColor: secondaryColor,
-              mixBlendMode: "multiply",
-              opacity: overlayOpacity * 0.85,
-              maskImage: getSplitMask(splitPattern),
-              WebkitMaskImage: getSplitMask(splitPattern)
-            }}
-          />
-        )}
         
         {/* Finish overlay (gloss/metallic shine effects) */}
         {finishStyle.overlayGradient && finishStyle.overlayGradient !== "none" && (
