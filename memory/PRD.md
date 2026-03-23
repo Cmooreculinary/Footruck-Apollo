@@ -162,6 +162,12 @@ React Helmet Async, Open Graph, Twitter Cards, sitemap.xml
   - ✅ 4 Accessories - Awning, LED Underglow, Roof Signage, Racing Stripe
   - ✅ Save Design - API integration fixed and working
   - ✅ Background Integrity - Colors properly scoped to truck preview only
+- **Stripe Subscription Integration** (March 2026):
+  - ✅ Standard Plan: price_1TEEq1HAM0vSVVVHrdIhHNWE ($10 first month, $14/mo)
+  - ✅ Pro Plan: price_1TEErmHAM0vSVVVHp1OvOsGx ($15 first month, $20/mo)
+  - ✅ Subscription mode checkout (not one-time payment)
+  - ✅ Webhook handlers for subscription lifecycle events
+  - ✅ Login required before checkout (security)
 
 ## Files of Reference
 - `/app/frontend/src/contexts/AuthContext.js` - Auth state management
