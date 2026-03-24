@@ -5,44 +5,44 @@ import { toast } from "sonner";
 import api from "../lib/api";
 
 // ============================================================================
-// TRUCK CHASSIS LIBRARY - 6 Models with Photorealistic Images
+// TRUCK CHASSIS LIBRARY - 6 Models with Transparent Background Images
 // ============================================================================
 const TRUCK_MODELS = {
   truck_01: {
     id: "truck_01",
     name: "Classic Step Van",
     description: "Street food, BBQ, comfort food",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/eb8e82aa47f861394b899ee0da1a554d50e55da59f5dd320f2635e6cb875fee9.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/270b1ee977ad171aafe12cec76404d32d2dca1787677e7edeecd5ff3bbeee8c6.png"
   },
   truck_02: {
     id: "truck_02", 
     name: "Modern Sprinter Van",
     description: "Coffee, juice, health food, desserts",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/e63b23f51b95d567df8c376f1ab56ad433e25f5c5bf687fb07a38b036c11a2d7.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/7a3996dc2944312a7f2832392b194822928f98e26c8b5c6b79a1640b1b002bb6.png"
   },
   truck_03: {
     id: "truck_03",
     name: "Large Box Truck", 
     description: "High-volume, catering, events",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/0f2111b3cbf00cc0c47d38d6db1a4e13fd7128d2ab9881e2dec14c33aa4a3c1d.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/d69cbabcda9ece6591bb78c375345e2f2b1aae7d801e23ffe3ff1a7ca178a33e.png"
   },
   truck_04: {
     id: "truck_04",
     name: "Compact Transit Van",
     description: "Urban tight spaces, lunch rush", 
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/f4c58f0b91b12460952466d9bbdab25a849d3e7cc3ea63423f5b6ef7b414b5de.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/2989d8e19495d4c1a8a7d7eef148e0219dabc6785cfb442bf60efeddf23f20c9.png"
   },
   truck_05: {
     id: "truck_05",
     name: "Retro Airstream",
     description: "Premium, wine, artisan, brunch",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/152d887a6fa033947b3c500ce34ec2163944837b85846fe238079f3a58619b6e.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/78aaf9aab86f55c1c8e369c2b36ef395019dc2e12f57243fca61c57d8e415423.png"
   },
   truck_06: {
     id: "truck_06",
     name: "Open-Air Trailer",
     description: "Farmers markets, festivals",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/f3516ff3bc38583592289a208f83a12e398960b6801535ad053ffb48a4167771.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/b0820a353b05acf2f533c308e772a00a16ad612db53521a279a6ec2df5cded52.png"
   }
 };
 
@@ -283,7 +283,7 @@ const LETTERING_FONTS = {
 };
 
 // ============================================================================
-// TRUCK CANVAS COMPONENT - Real-time Preview with All Layers
+// TRUCK CANVAS COMPONENT - Real-time Preview with CSS Blend Mode
 // ============================================================================
 const TruckCanvas = ({ state, zoom = 1 }) => {
   const truckModel = TRUCK_MODELS[state.truckModel] || TRUCK_MODELS.truck_01;
@@ -301,81 +301,89 @@ const TruckCanvas = ({ state, zoom = 1 }) => {
     return luminance > 0.5 ? "#000000" : "#FFFFFF";
   };
 
+  const truckImageUrl = state.userPhotoUrl || truckModel.photo;
+  const hasColor = state.primaryColor && state.primaryColor !== "#FFFFFF" && state.primaryColor !== "#fff";
+
   return (
     <div 
       className="relative w-full h-full overflow-hidden rounded-xl"
       style={{ transform: `scale(${zoom})`, transformOrigin: "center center" }}
       data-testid="truck-canvas"
     >
-      {/* Background Layer */}
-      <div className="absolute inset-0 bg-black" />
+      {/* Dark background for the entire canvas */}
+      <div className="absolute inset-0 bg-[#0f0f14]" />
       
-      {/* Base Truck Photo Layer */}
+      {/* Truck preview area - uses isolation to contain blend modes */}
       <div 
-        className="absolute inset-0"
-        style={{ filter: finishType.filter }}
+        className="absolute inset-2 rounded-lg overflow-hidden"
+        style={{ isolation: "isolate" }}
       >
+        {/* Colored background that will show through white parts of truck */}
+        <div 
+          className="absolute inset-0"
+          style={{ 
+            backgroundColor: hasColor ? state.primaryColor : "#0f0f14"
+          }}
+        />
+        
+        {/* Truck image with multiply blend - white areas become the background color */}
         <img 
-          src={state.userPhotoUrl || truckModel.photo}
+          src={truckImageUrl}
           alt={truckModel.name}
-          className="w-full h-full object-contain"
+          className="absolute inset-0 w-full h-full object-contain"
+          style={{ 
+            mixBlendMode: "multiply",
+            filter: finishType.filter
+          }}
           draggable="false"
         />
-      </div>
-      
-      {/* Primary Color Overlay - mix-blend-mode: multiply */}
-      {state.primaryColor && state.primaryColor !== "#FFFFFF" && (
-        <div 
-          className="absolute inset-0 transition-colors duration-150 pointer-events-none"
-          style={{
-            backgroundColor: state.primaryColor,
-            mixBlendMode: "multiply",
-            opacity: 0.85
-          }}
-          data-testid="primary-color-overlay"
-        />
-      )}
-      
-      {/* Two-Tone Secondary Color Overlay */}
-      {state.twoToneEnabled && state.secondaryColor && splitPattern && (
-        <div 
-          className="absolute inset-0 transition-colors duration-150 pointer-events-none"
-          style={{
-            backgroundColor: state.secondaryColor,
-            mixBlendMode: "multiply",
-            opacity: 0.85,
-            clipPath: splitPattern.clipPath
-          }}
-          data-testid="secondary-color-overlay"
-        />
-      )}
-      
-      {/* Wrap Pattern Overlay */}
-      {wrapPattern && wrapPattern.css && (
-        <div 
-          className="absolute inset-0 pointer-events-none transition-opacity duration-150"
-          style={{
-            background: wrapPattern.css,
-            backgroundSize: wrapPattern.size || "auto",
-            backgroundPosition: wrapPattern.position || "0 0",
-            opacity: state.wrapOpacity || 0.5,
-            mixBlendMode: "overlay"
-          }}
-          data-testid="wrap-overlay"
-        />
-      )}
-      
-      {/* Finish Overlay (Gloss/Metallic shine) */}
-      {finishType.overlay && (
+        
+        {/* For images with white/colored background: add a frame to darken edges */}
+        {/* This creates a spotlight effect on the truck */}
         <div 
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: finishType.overlay,
-            mixBlendMode: "overlay"
+            background: "radial-gradient(ellipse 55% 65% at center, transparent 0%, transparent 40%, rgba(15,15,20,0.4) 60%, #0f0f14 85%)"
           }}
-          data-testid="finish-overlay"
         />
-      )}
+        
+        {/* Two-Tone secondary color overlay */}
+        {state.twoToneEnabled && state.secondaryColor && splitPattern && (
+          <div 
+            className="absolute inset-0 pointer-events-none"
+            style={{ 
+              backgroundColor: state.secondaryColor,
+              mixBlendMode: "multiply",
+              clipPath: splitPattern.clipPath
+            }}
+          />
+        )}
+        
+        {/* Wrap Pattern Overlay */}
+        {wrapPattern && wrapPattern.css && (
+          <div 
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: wrapPattern.css,
+              backgroundSize: wrapPattern.size || "auto",
+              backgroundPosition: wrapPattern.position || "0 0",
+              opacity: state.wrapOpacity || 0.5,
+              mixBlendMode: "overlay"
+            }}
+          />
+        )}
+        
+        {/* Finish Overlay (Gloss/Metallic shine) */}
+        {finishType.overlay && (
+          <div 
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: finishType.overlay,
+              mixBlendMode: "overlay"
+            }}
+          />
+        )}
+      </div>
       
       {/* LED Underglow Effect */}
       {state.lightsEnabled && (
