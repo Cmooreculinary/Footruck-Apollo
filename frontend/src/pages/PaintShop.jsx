@@ -5,44 +5,44 @@ import { toast } from "sonner";
 import api from "../lib/api";
 
 // ============================================================================
-// TRUCK CHASSIS LIBRARY - 6 Models with Real Photos
+// TRUCK CHASSIS LIBRARY - 6 Models with Photorealistic Images
 // ============================================================================
 const TRUCK_MODELS = {
   truck_01: {
     id: "truck_01",
     name: "Classic Step Van",
     description: "Street food, BBQ, comfort food",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/2608b2cc835007b226fafc262984b84077c489f24b10a7106791621613c8a639.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/eb8e82aa47f861394b899ee0da1a554d50e55da59f5dd320f2635e6cb875fee9.png"
   },
   truck_02: {
     id: "truck_02", 
     name: "Modern Sprinter Van",
     description: "Coffee, juice, health food, desserts",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/4eb15398d2fbd048623ab328d6b0453d4f65515b43c9b0da265231eda8e6f224.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/e63b23f51b95d567df8c376f1ab56ad433e25f5c5bf687fb07a38b036c11a2d7.png"
   },
   truck_03: {
     id: "truck_03",
     name: "Large Box Truck", 
     description: "High-volume, catering, events",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/5e6002b307c93ecbecefb78c4e19589902026d3d3365f34d825099c9ad11c09a.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/0f2111b3cbf00cc0c47d38d6db1a4e13fd7128d2ab9881e2dec14c33aa4a3c1d.png"
   },
   truck_04: {
     id: "truck_04",
-    name: "Compact City Truck",
+    name: "Compact Transit Van",
     description: "Urban tight spaces, lunch rush", 
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/306462f81f1943a77e91645eb7968b2278e971f6c72cc98fc820101576b80655.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/f4c58f0b91b12460952466d9bbdab25a849d3e7cc3ea63423f5b6ef7b414b5de.png"
   },
   truck_05: {
     id: "truck_05",
     name: "Retro Airstream",
     description: "Premium, wine, artisan, brunch",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/0670006faddb7c6cd367717d167ca4431b3924b795dd09023e703f8d5fccc0a0.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/152d887a6fa033947b3c500ce34ec2163944837b85846fe238079f3a58619b6e.png"
   },
   truck_06: {
     id: "truck_06",
     name: "Open-Air Trailer",
     description: "Farmers markets, festivals",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/ffbe526215b5051d84846ca9cf06763c081f114335574e730fa4680942a06bf3.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/f3516ff3bc38583592289a208f83a12e398960b6801535ad053ffb48a4167771.png"
   }
 };
 
