@@ -12,37 +12,37 @@ const TRUCK_MODELS = {
     id: "truck_01",
     name: "Classic Step Van",
     description: "Street food, BBQ, comfort food",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/270b1ee977ad171aafe12cec76404d32d2dca1787677e7edeecd5ff3bbeee8c6.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/49543eada3bb3feb6f73dc2842f4c367e9528d8e117830f1862993d6a66b6bc1.png"
   },
   truck_02: {
     id: "truck_02", 
     name: "Modern Sprinter Van",
     description: "Coffee, juice, health food, desserts",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/7a3996dc2944312a7f2832392b194822928f98e26c8b5c6b79a1640b1b002bb6.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/96b97f3c965376487442d8cb5e32a589accd481e207dc21ceaa2d0218d55426a.png"
   },
   truck_03: {
     id: "truck_03",
     name: "Large Box Truck", 
     description: "High-volume, catering, events",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/d69cbabcda9ece6591bb78c375345e2f2b1aae7d801e23ffe3ff1a7ca178a33e.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/bcdce5ed77b6fe3a8ecd88dc93a55f91822e471da9a7841340a3a0c03c0ffefe.png"
   },
   truck_04: {
     id: "truck_04",
     name: "Compact Transit Van",
     description: "Urban tight spaces, lunch rush", 
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/2989d8e19495d4c1a8a7d7eef148e0219dabc6785cfb442bf60efeddf23f20c9.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/e7a69d1a9b15b8d78f7a3a0d1fea83a59a563c0cd6b03c2daa9208cc22b4d741.png"
   },
   truck_05: {
     id: "truck_05",
     name: "Retro Airstream",
     description: "Premium, wine, artisan, brunch",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/78aaf9aab86f55c1c8e369c2b36ef395019dc2e12f57243fca61c57d8e415423.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/fcf519c68af2f6e44db6b3a578da6f26821f8582fe69c4e36a621a3e03c0bb05.png"
   },
   truck_06: {
     id: "truck_06",
     name: "Open-Air Trailer",
     description: "Farmers markets, festivals",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/b0820a353b05acf2f533c308e772a00a16ad612db53521a279a6ec2df5cded52.png"
+    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/047bd8b019434ea2ff90bb096e082d6fdf0d5ee1bb9e7b02ee48df5219dbf654.png"
   }
 };
 
@@ -283,7 +283,10 @@ const LETTERING_FONTS = {
 };
 
 // ============================================================================
-// TRUCK CANVAS COMPONENT - Real-time Preview with CSS Blend Mode
+// TRUCK CANVAS COMPONENT - Isolated Truck Preview with All Effects
+// Images: WHITE truck on BLACK background
+// Technique: Render truck normally, then overlay color with multiply blend
+// multiply(color, black)=black → bg stays dark | multiply(color, white)=color → truck gets painted
 // ============================================================================
 const TruckCanvas = ({ state, zoom = 1 }) => {
   const truckModel = TRUCK_MODELS[state.truckModel] || TRUCK_MODELS.truck_01;
@@ -291,7 +294,6 @@ const TruckCanvas = ({ state, zoom = 1 }) => {
   const splitPattern = TWO_TONE_SPLITS[state.twoToneSplit];
   const wrapPattern = WRAP_PATTERNS[state.wrapPattern];
   
-  // Calculate contrast color for text
   const getContrastColor = (hexColor) => {
     if (!hexColor) return "#FFFFFF";
     const r = parseInt(hexColor.slice(1, 3), 16);
@@ -310,62 +312,40 @@ const TruckCanvas = ({ state, zoom = 1 }) => {
       style={{ transform: `scale(${zoom})`, transformOrigin: "center center" }}
       data-testid="truck-canvas"
     >
-      {/* Dark background for the entire canvas */}
-      <div className="absolute inset-0 bg-[#0f0f14]" />
-      
-      {/* Truck preview area - uses isolation to contain blend modes */}
-      <div 
-        className="absolute inset-2 rounded-lg overflow-hidden"
-        style={{ isolation: "isolate" }}
-      >
-        {/* Colored background that will show through white parts of truck */}
-        <div 
-          className="absolute inset-0"
-          style={{ 
-            backgroundColor: hasColor ? state.primaryColor : "#0f0f14"
-          }}
-        />
+      {/* Isolated blend context */}
+      <div className="absolute inset-0" style={{ isolation: "isolate" }}>
+        {/* Layer 1: Black base — ensures no color leaks outside image bounds */}
+        <div className="absolute inset-0 bg-black" />
         
-        {/* Truck image with multiply blend - white areas become the background color */}
+        {/* Layer 2: Truck image — rendered normally (white truck on black bg) */}
         <img 
           src={truckImageUrl}
           alt={truckModel.name}
-          className="absolute inset-0 w-full h-full object-contain"
-          style={{ 
-            mixBlendMode: "multiply",
-            filter: finishType.filter
-          }}
+          className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+          style={{ filter: finishType.filter }}
           draggable="false"
         />
         
-        {/* For images with white/colored background: add a frame to darken edges */}
-        {/* This creates a spotlight effect on the truck */}
-        <div 
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: "radial-gradient(ellipse 55% 65% at center, transparent 0%, transparent 40%, rgba(15,15,20,0.4) 60%, #0f0f14 85%)"
-          }}
-        />
-        
-        {/* Two-Tone secondary color overlay */}
-        {state.twoToneEnabled && state.secondaryColor && splitPattern && (
-          <div 
-            className="absolute inset-0 pointer-events-none"
-            style={{ 
-              backgroundColor: state.secondaryColor,
-              mixBlendMode: "multiply",
-              clipPath: splitPattern.clipPath
-            }}
-          />
+        {/* Layer 3: Color overlay with multiply — colors white areas, black stays black */}
+        {hasColor && (
+          <div className="absolute inset-0" style={{ mixBlendMode: "multiply" }}>
+            <div className="absolute inset-0" style={{ backgroundColor: state.primaryColor }} />
+            {state.twoToneEnabled && state.secondaryColor && splitPattern && (
+              <div 
+                className="absolute inset-0" 
+                style={{ backgroundColor: state.secondaryColor, clipPath: splitPattern.clipPath }} 
+              />
+            )}
+          </div>
         )}
         
-        {/* Wrap Pattern Overlay */}
+        {/* Layer 4: Wrap pattern — overlay blend (invisible on black, visible on colored truck) */}
         {wrapPattern && wrapPattern.css && (
           <div 
             className="absolute inset-0 pointer-events-none"
             style={{
               background: wrapPattern.css,
-              backgroundSize: wrapPattern.size || "auto",
+              backgroundSize: wrapPattern.size || "20px 20px",
               backgroundPosition: wrapPattern.position || "0 0",
               opacity: state.wrapOpacity || 0.5,
               mixBlendMode: "overlay"
@@ -373,114 +353,120 @@ const TruckCanvas = ({ state, zoom = 1 }) => {
           />
         )}
         
-        {/* Finish Overlay (Gloss/Metallic shine) */}
+        {/* Layer 5: Finish highlight */}
         {finishType.overlay && (
           <div 
             className="absolute inset-0 pointer-events-none"
+            style={{ background: finishType.overlay, mixBlendMode: "soft-light" }}
+          />
+        )}
+        
+        {/* Layer 6: Racing stripe — overlay so it only shows on lit areas */}
+        {state.racingStripeEnabled && (
+          <div 
+            className="absolute inset-0 pointer-events-none"
             style={{
-              background: finishType.overlay,
+              background: `linear-gradient(to bottom, 
+                transparent 0%, transparent 42%, 
+                ${state.racingStripeColor || "#FFFFFF"} 42%, 
+                ${state.racingStripeColor || "#FFFFFF"} ${state.racingStripeWidth === "thin" ? "46%" : state.racingStripeWidth === "bold" ? "58%" : "52%"}, 
+                transparent ${state.racingStripeWidth === "thin" ? "46%" : state.racingStripeWidth === "bold" ? "58%" : "52%"}, 
+                transparent 100%)`,
               mixBlendMode: "overlay"
             }}
           />
         )}
       </div>
       
-      {/* LED Underglow Effect */}
+      {/* Accessories — outside blend context, rendered normally */}
       {state.lightsEnabled && (
         <div 
-          className="absolute bottom-[5%] left-[15%] right-[15%] h-8 rounded-full blur-2xl"
-          style={{ 
-            backgroundColor: state.lightsColor || state.primaryColor || "#FF6600",
-            opacity: 0.6
-          }}
-          data-testid="led-underglow"
+          className="absolute bottom-[15%] left-[20%] right-[20%] h-4 rounded-full blur-xl"
+          style={{ backgroundColor: state.lightsColor || state.primaryColor || "#FF6600", opacity: 0.8 }}
         />
       )}
       
-      {/* Awning */}
       {state.awningEnabled && (
         <div 
-          className="absolute top-[20%] left-[10%] h-4 rounded-b-lg shadow-lg"
+          className="absolute top-[22%] left-[8%]"
           style={{ 
             backgroundColor: state.awningColor || "#CC0000",
             width: state.awningStyle === "full" ? "50%" : "30%",
+            height: "16px",
+            borderRadius: "0 0 8px 8px",
             backgroundImage: state.awningStyle === "striped" 
-              ? `repeating-linear-gradient(90deg, ${state.awningColor || "#CC0000"}, ${state.awningColor || "#CC0000"} 10px, white 10px, white 20px)`
-              : "none"
+              ? `repeating-linear-gradient(90deg, ${state.awningColor || "#CC0000"}, ${state.awningColor || "#CC0000"} 8px, white 8px, white 16px)`
+              : "none",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.3)"
           }}
-          data-testid="awning"
         />
       )}
       
-      {/* Roof Signage */}
       {state.signageEnabled && (
         <div 
           className="absolute top-[8%] left-1/2 -translate-x-1/2 px-6 py-2 rounded-lg"
           style={{ 
-            backgroundColor: state.signageIlluminated ? "#222" : "#333",
-            border: "2px solid #444",
-            boxShadow: state.signageIlluminated ? `0 0 20px ${state.primaryColor || "#FF6600"}` : "none"
+            backgroundColor: state.signageIlluminated ? "#1a1a1a" : "#333",
+            border: "2px solid #555",
+            boxShadow: state.signageIlluminated 
+              ? `0 0 15px ${state.primaryColor || "#FF6600"}, 0 0 30px ${state.primaryColor || "#FF6600"}40` 
+              : "0 2px 4px rgba(0,0,0,0.5)"
           }}
-          data-testid="roof-signage"
         >
           <span 
-            className="text-sm font-bold tracking-wider"
-            style={{ color: state.signageIlluminated ? state.primaryColor || "#FF6600" : "#FFF" }}
+            className="text-sm font-bold tracking-wider whitespace-nowrap"
+            style={{ 
+              color: state.signageIlluminated ? state.primaryColor || "#FF6600" : "#FFF",
+              textShadow: state.signageIlluminated ? `0 0 10px ${state.primaryColor || "#FF6600"}` : "none"
+            }}
           >
             {state.businessName || "OPEN"}
           </span>
         </div>
       )}
       
-      {/* Logo Layer */}
       {state.logoUrl && (
         <div 
           className="absolute pointer-events-none"
           style={{
             left: `${state.logoX || 50}%`,
-            top: `${state.logoY || 40}%`,
+            top: `${state.logoY || 35}%`,
             transform: `translate(-50%, -50%) scale(${state.logoScale || 1}) rotate(${state.logoRotation || 0}deg)`,
-            maxWidth: "30%",
-            maxHeight: "30%"
+            maxWidth: "25%",
+            maxHeight: "25%",
+            filter: "drop-shadow(2px 2px 4px rgba(0,0,0,0.5))"
           }}
-          data-testid="logo-layer"
         >
-          <img 
-            src={state.logoUrl}
-            alt="Logo"
-            className="max-w-full max-h-full object-contain"
-            style={{ filter: "drop-shadow(2px 2px 4px rgba(0,0,0,0.5))" }}
-          />
+          <img src={state.logoUrl} alt="Logo" className="max-w-full max-h-full object-contain" />
         </div>
       )}
       
-      {/* Business Name Lettering */}
       {state.businessName && (
         <div 
           className="absolute pointer-events-none text-center"
           style={{
             left: `${state.letteringX || 50}%`,
-            top: `${state.letteringY || 45}%`,
+            top: `${state.letteringY || 40}%`,
             transform: "translate(-50%, -50%)",
-            width: "80%"
+            width: "70%"
           }}
-          data-testid="business-name"
         >
           <span 
             style={{
               fontFamily: LETTERING_FONTS[state.letteringFont]?.fontFamily || LETTERING_FONTS.GOTHIC.fontFamily,
               fontWeight: LETTERING_FONTS[state.letteringFont]?.fontWeight || "700",
-              fontSize: `${(state.letteringSize || 3) * 0.8}rem`,
+              fontSize: `${(state.letteringSize || 3) * 0.9}rem`,
               color: state.letteringColor || "#FFFFFF",
               textShadow: state.letteringOutline === "bold" 
-                ? `3px 3px 0 ${getContrastColor(state.letteringColor)}, -3px -3px 0 ${getContrastColor(state.letteringColor)}, 3px -3px 0 ${getContrastColor(state.letteringColor)}, -3px 3px 0 ${getContrastColor(state.letteringColor)}`
+                ? `3px 3px 0 ${getContrastColor(state.letteringColor)}, -3px -3px 0 ${getContrastColor(state.letteringColor)}, 3px -3px 0 ${getContrastColor(state.letteringColor)}, -3px 3px 0 ${getContrastColor(state.letteringColor)}, 0 0 10px rgba(0,0,0,0.8)`
                 : state.letteringOutline === "thin"
-                ? `1px 1px 0 ${getContrastColor(state.letteringColor)}`
-                : "2px 2px 8px rgba(0,0,0,0.8)",
+                ? `1px 1px 0 ${getContrastColor(state.letteringColor)}, 0 0 8px rgba(0,0,0,0.6)`
+                : "2px 2px 6px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.4)",
               letterSpacing: state.letterSpacing === "tight" ? "-0.02em" 
                 : state.letterSpacing === "wide" ? "0.1em"
                 : state.letterSpacing === "ultra" ? "0.2em"
-                : "0.02em"
+                : "0.02em",
+              whiteSpace: "nowrap"
             }}
           >
             {state.businessName}
@@ -488,21 +474,9 @@ const TruckCanvas = ({ state, zoom = 1 }) => {
         </div>
       )}
       
-      {/* Racing Stripe */}
-      {state.racingStripeEnabled && (
-        <div 
-          className="absolute left-0 right-0 pointer-events-none"
-          style={{
-            top: "45%",
-            height: state.racingStripeWidth === "thin" ? "8px" 
-              : state.racingStripeWidth === "bold" ? "24px" 
-              : "16px",
-            backgroundColor: state.racingStripeColor || "#FFFFFF",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.3)"
-          }}
-          data-testid="racing-stripe"
-        />
-      )}
+      <div className="absolute top-2 left-2 px-2 py-1 bg-black/60 rounded text-[10px] text-white/70 uppercase tracking-wider">
+        {state.viewAngle?.replace("-", " ") || "Side View"}
+      </div>
     </div>
   );
 };

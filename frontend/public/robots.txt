@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://truck-paint-shop.preview.emergentagent.com/sitemap.xml
+Sitemap: https://design-studio-614.preview.emergentagent.com/sitemap.xml
 
 # Block indexing of API routes
 Disallow: /api/
