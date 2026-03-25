@@ -1,71 +1,68 @@
-# Food Truck Launch Pad (FTLP)
+# Food Truck Launch Pad (FTLP) - Product Requirements Document
 
 ## Original Problem Statement
-Build a "Food Truck Launch Pad" full-stack application with React frontend, FastAPI backend, and MongoDB. Features include interactive "Paint Shop" and "Kitchen Builder" modules, user authentication (Google Auth), Stripe subscription payments, and a real-time visual truck configurator.
+Build a "Food Truck Launch Pad" full-stack application with React frontend, FastAPI backend, and MongoDB. Key features include an interactive Paint Shop visual configurator, Kitchen Builder module, Google Auth, Stripe subscription payments, and a public showroom.
 
-## Core Architecture
-- **Frontend:** React + TailwindCSS + Shadcn/UI (port 3000)
-- **Backend:** FastAPI + Pydantic (port 8001, prefixed with /api)
-- **Database:** MongoDB via MONGO_URL
-- **Auth:** Emergent-managed Google Auth
-- **Payments:** Stripe subscriptions (live Price IDs)
+## Architecture
+- **Frontend**: React + TailwindCSS + Shadcn UI, port 3000
+- **Backend**: FastAPI + MongoDB, port 8001
+- **Auth**: Emergent-managed Google Auth
+- **Payments**: Stripe live subscriptions
 
-## Key Technical Implementation
+## Completed Features
 
-### Paint Shop Visual Configurator
-- **Truck Images:** 6 photorealistic truck models stored as processed PNGs in `/frontend/public/trucks/`
-- **Image Processing:** Original images (mixed white/transparent backgrounds) processed via Python PIL to have solid BLACK backgrounds using flood-fill + dilation + feathering
-- **Color Technique:** `mix-blend-mode: multiply` overlay on top of truck image. Black areas stay black (no bleed), white truck body gets colored.
-- **Color Wheel:** HSV-based circular hue ring + saturation/brightness square, smooth drag interaction, HEX input, palette presets
+### Core Application
+- [x] React frontend with routing (Landing, Dashboard, Paint Shop, Kitchen Builder, Showroom)
+- [x] FastAPI backend with MongoDB persistence
+- [x] Emergent-managed Google Auth integration
+- [x] Stripe subscription integration (Standard + Pro plans with live Price IDs)
+- [x] Source code ZIP download
 
-### DB Schema
-- `users`: { google_id, name, email, picture }
-- `subscriptions`: { user_id, stripe_subscription_id, ... }
-- `truck_designs`: { user_id, base_model, primary_color, secondary_color, finish, business_name, ... }
+### Paint Shop - Real-Time Visual Configurator (P1A - COMPLETE)
+- [x] 6 photorealistic truck chassis models (black background processed images)
+- [x] Color application with NO background bleed (mix-blend-mode: multiply)
+- [x] HSV Color Wheel with circular hue ring + SV square
+- [x] 6 preset color palettes (Classic Fleet, Copper & Steel, Street Food, Coastal, Luxury, Neon City)
+- [x] Recent colors tracking
+- [x] 7 finish types (Matte, Gloss, Metallic, Chrome, Enamel, Satin, Pearl)
+- [x] Two-tone paint with 7 split patterns
+- [x] 9 wrap patterns (Stripes, Carbon Fiber, Polka Dots, Hex Grid, Chevrons, Brushed Metal, Camo)
+- [x] Wrap opacity slider
+- [x] Racing stripe (thin/medium/bold widths, custom color)
+- [x] Awning/Canopy (solid/striped/scalloped styles, custom color)
+- [x] LED Underglow with glow effect and custom color
+- [x] Roof Signage with illuminated option
+- [x] Business name lettering with 5 fonts, custom color, size, outline
+- [x] Logo upload with position/scale/rotation controls
+- [x] Custom photo upload
+- [x] Save/Load design persistence
+- [x] Reset design to defaults
+- [x] Zoom controls
 
-## What's Been Implemented
+### Landing Page
+- [x] Optimized hero image loading (preload + fetchpriority)
 
-### Completed Features
-1. React SPA with full routing (Landing, Dashboard, Paint Shop, Kitchen Builder, etc.)
-2. Google Auth login via Emergent-managed auth
-3. Stripe subscription integration (Standard/Pro plans)
-4. Real-time Paint Shop visual configurator with:
-   - 6 truck chassis models with processed black-background images
-   - HSV color wheel with hue ring + SV square + HEX input
-   - 6 preset color palettes + recent colors
-   - 7 finish types (Matte, Gloss, Metallic, Chrome, Enamel, Satin, Pearl)
-   - Two-tone paint with split patterns
-   - Business name/text overlay with fonts and styling
-   - Logo upload positioning
-   - Accessories (awning, LED underglow, roof signage, racing stripe)
-   - Save/Load design persistence
-5. Landing page with optimized hero image loading (0.55s)
-6. Source code ZIP download
+## Pending / Upcoming Tasks (Priority Order)
 
-### Bug Fixes Applied
-- **P0 Color Bleed Fix:** Processed all 6 truck images with PIL to ensure black backgrounds. Used flood-fill from edges (threshold=200), dilation (2px), and gaussian feathering for clean edges. Verified all 6 models have zero background bleed.
-- **React setState Warning:** Fixed ColorWheel to not call onChange inside setState callback
-- **truck_04 Special Processing:** Required more aggressive edge dilation due to original white background with subtle gradients
+### P1 - Next Up
+- [ ] Save/Load persistence verification (ensure all new customization state fields are stored)
+- [ ] App-wide UX robustness audit (buttons, selectors, loading states, validation)
 
-## Prioritized Backlog
+### P2 - Future
+- [ ] "Get Quote" feature
+- [ ] Design Gallery (view, name, manage saved truck designs)
+- [ ] Shareable design URLs
+- [ ] Confirmation dialogs for destructive actions (Reset Design)
+- [ ] Additional view angles (front/rear)
 
-### P0 (None - all critical items resolved)
+## Key Technical Details
+- Truck images: `/frontend/public/trucks/truck_01-06.png` (black backgrounds, white trucks)
+- Color technique: `mix-blend-mode: multiply` overlay colors white areas, leaves black untouched
+- Wraps: `mix-blend-mode: overlay` shows patterns only on colored truck areas
+- Accessories (awning, LED, signage, racing stripe): Absolute positioned elements outside blend group
+- Color isolation group uses `isolation: isolate` with `bg-black` to prevent letterbox bleed
 
-### P1 (Next)
-- Implement remaining Paint Shop features: Wraps library, additional view angles (front/rear)
-- Verify Save/Load persistence: complete configurator state saves/loads correctly
-- App-wide UX Polish: form validation, universal loading states
-- Design Gallery: view, name, and manage saved truck designs
-
-### P2 (Future)
-- Shareable Designs: URL-encoded design sharing
-- "Get Quote" functionality
-- Confirmation dialogs for destructive actions
-- Mobile responsiveness audit
-- Social media preview images for production
-
-## Key Files
-- `/app/frontend/src/pages/PaintShop.jsx` — Main configurator (ColorWheel, TruckCanvas, controls)
-- `/app/frontend/public/trucks/` — Processed truck images (black backgrounds)
-- `/app/backend/server.py` — API endpoints including Stripe, auth, design CRUD
-- `/app/frontend/src/pages/LandingPage.jsx` — Hero with preload optimization
+## DB Schema
+- **users**: `{ google_id, name, email, picture }`
+- **subscriptions**: `{ user_id, stripe_subscription_id, ... }`
+- **truck_designs**: `{ user_id, base_model, primary_color, accent_color, finish_type, business_name, split_pattern, wrap_id, awning, accessories[] }`
