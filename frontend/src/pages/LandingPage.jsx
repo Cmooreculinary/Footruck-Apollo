@@ -37,13 +37,16 @@ const LandingPage = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-blue-900/20 via-transparent to-transparent" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/30 via-transparent to-transparent" />
         
-        {/* Hero Image */}
-        <div className="relative z-10 mb-8 max-w-3xl w-full">
+        {/* Hero Image — preloaded, properly sized, no layout shift */}
+        <div className="relative z-10 mb-8 max-w-3xl w-full" style={{ aspectRatio: "16/9" }}>
           <img 
             src={HERO_IMAGE} 
             alt="Food Truck Launch Pad" 
-            className="w-full h-auto drop-shadow-2xl"
+            className="w-full h-full object-contain drop-shadow-2xl"
             style={{ filter: "drop-shadow(0 0 60px rgba(59, 130, 246, 0.3))" }}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
         </div>
         

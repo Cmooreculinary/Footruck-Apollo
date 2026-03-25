@@ -1,0 +1,149 @@
+{
+  "summary": "Frontend testing of Paint Shop Paint Shop upgrade. CRITICAL BUG: Color bleed persists on truck_04 (Compact Transit Van) - entire canvas background gets colored instead of just the truck body. All other 5 truck models work correctly. Color Wheel, palettes, finishes, two-tone, text, extras, save, and reset all function properly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "TruckCanvas - truck_04",
+        "issue": "COLOR BLEED: When color is applied to Compact Transit Van (truck_04), the entire canvas background becomes colored instead of staying black. The mix-blend-mode: multiply technique fails on this specific truck image.",
+        "selector": "[data-testid='truck-canvas']",
+        "priority": "CRITICAL",
+        "affected_models": ["truck_04 (Compact Transit Van)"],
+        "working_models": ["truck_01", "truck_02", "truck_03", "truck_05", "truck_06"]
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "ColorWheel",
+        "issues": ["React warning: Cannot update a component while rendering a different component (ColorWheel/PaintShop) - minor console warning"]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_13.json"
+  ],
+  "action_items": [
+    "CRITICAL: Fix truck_04.png image - the current image causes color bleed when mix-blend-mode: multiply is applied",
+    "Option 1: Reprocess truck_04.png to ensure pure black (0,0,0) background with pure white (255,255,255) truck body",
+    "Option 2: Use a different truck_04 image that works with the multiply blend technique",
+    "Option 3: Apply a CSS mask or clip-path specifically for truck_04 to constrain the color overlay",
+    "Minor: Fix React setState warning in ColorWheel component"
+  ],
+  "critical_code_review_comments": [
+    "TruckCanvas implementation is correct - uses isolation context with mix-blend-mode: multiply",
+    "The issue is with the truck_04.png IMAGE, not the code logic",
+    "truck_04.png has 85% black pixels and 7% white pixels, but something in the image causes the multiply blend to fail",
+    "All other 5 truck images work correctly with the same code"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend-only testing)",
+    "frontend": "85% - All features work except color bleed on truck_04"
+  },
+  "test_credentials": "No authentication required",
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Color bleed bug confirmed ONLY on truck_04 (Compact Transit Van). All other 5 truck models work correctly. The issue is with the truck_04.png image file, not the TruckCanvas code. The image needs to be reprocessed or replaced.",
+  "features_tested": {
+    "Paint_Shop_Loads": {
+      "status": "PASS",
+      "details": "Paint Shop loads correctly with all 6 truck model thumbnails"
+    },
+    "Truck_Images_Local": {
+      "status": "PASS",
+      "details": "All 6 truck images load from /trucks/ directory"
+    },
+    "Color_Bleed_Test": {
+      "status": "PARTIAL FAIL",
+      "details": "truck_01, truck_02, truck_03, truck_05, truck_06 - PASS (background stays black). truck_04 - FAIL (entire background gets colored)"
+    },
+    "Color_Wheel_Hue_Ring": {
+      "status": "PASS",
+      "details": "Circular hue ring works - clicking/dragging changes hue"
+    },
+    "Color_Wheel_SV_Square": {
+      "status": "PASS",
+      "details": "SV square works - clicking/dragging changes saturation/brightness"
+    },
+    "Color_Wheel_HEX_Input": {
+      "status": "PASS",
+      "details": "HEX input accepts valid hex values and updates preview"
+    },
+    "Color_Wheel_Live_Preview": {
+      "status": "PASS",
+      "details": "Color preview updates as color changes"
+    },
+    "Preset_Palettes": {
+      "status": "PASS",
+      "details": "All 6 palettes work: Classic Fleet, Copper & Steel, Street Food, Coastal, Luxury, Neon City"
+    },
+    "Palette_Swatches": {
+      "status": "PASS",
+      "details": "Clicking palette color swatches applies color to truck immediately"
+    },
+    "Recent_Colors": {
+      "status": "PASS",
+      "details": "Recent colors section shows previously selected colors"
+    },
+    "Finish_Types": {
+      "status": "PASS",
+      "details": "All 7 finishes work: Matte, Gloss, Metallic, Chrome, Enamel, Satin, Pearl"
+    },
+    "Two_Tone_Toggle": {
+      "status": "PASS",
+      "details": "Two-tone toggle enables secondary color selection and split patterns"
+    },
+    "Text_Tab": {
+      "status": "PASS",
+      "details": "Business name appears on truck preview with font/color/size options"
+    },
+    "Extras_Tab": {
+      "status": "PASS",
+      "details": "Awning, LED Underglow, Roof Signage, Racing Stripe toggles all work"
+    },
+    "Truck_Model_Selection": {
+      "status": "PASS",
+      "details": "Clicking truck model buttons changes the preview image"
+    },
+    "Save_Button": {
+      "status": "PASS",
+      "details": "Save button saves design to backend, shows success toast"
+    },
+    "Reset_Button": {
+      "status": "PASS",
+      "details": "Reset button clears design to defaults, shows 'Design reset to defaults' toast"
+    },
+    "Landing_Page": {
+      "status": "PASS",
+      "details": "Hero image loads quickly with fetchPriority='high' and loading='eager'. Page load time ~319ms"
+    }
+  },
+  "technical_analysis": {
+    "truck_04_image_analysis": {
+      "mode": "RGB (no alpha)",
+      "size": "1280x896",
+      "black_pixels": "85.2%",
+      "white_pixels": "7.0%",
+      "mid_tone_pixels": "7.8%",
+      "corners": "All pure black (0,0,0)"
+    },
+    "comparison_with_truck_01": {
+      "truck_01_black": "66.5%",
+      "truck_01_white": "28.7%",
+      "truck_01_mid": "4.8%",
+      "note": "truck_01 has more white pixels and fewer mid-tones, works correctly"
+    },
+    "hypothesis": "truck_04 may have mid-tone pixels in areas that should be pure black, causing the multiply blend to produce visible color instead of black"
+  },
+  "screenshots_taken": [
+    ".screenshots/paint_shop_initial.png",
+    ".screenshots/truck_04_final_test.png - Shows color bleed",
+    ".screenshots/truck_01_canvas_blue.png - Shows correct behavior",
+    ".screenshots/final_truck_01.png through final_truck_06.png"
+  ]
+}

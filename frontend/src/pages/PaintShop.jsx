@@ -5,44 +5,44 @@ import { toast } from "sonner";
 import api from "../lib/api";
 
 // ============================================================================
-// TRUCK CHASSIS LIBRARY - 6 Models with Transparent Background Images
+// TRUCK CHASSIS LIBRARY - 6 Models with Black Background Images (processed)
 // ============================================================================
 const TRUCK_MODELS = {
   truck_01: {
     id: "truck_01",
     name: "Classic Step Van",
     description: "Street food, BBQ, comfort food",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/49543eada3bb3feb6f73dc2842f4c367e9528d8e117830f1862993d6a66b6bc1.png"
+    photo: "/trucks/truck_01.png"
   },
   truck_02: {
     id: "truck_02", 
     name: "Modern Sprinter Van",
     description: "Coffee, juice, health food, desserts",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/96b97f3c965376487442d8cb5e32a589accd481e207dc21ceaa2d0218d55426a.png"
+    photo: "/trucks/truck_02.png"
   },
   truck_03: {
     id: "truck_03",
     name: "Large Box Truck", 
     description: "High-volume, catering, events",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/bcdce5ed77b6fe3a8ecd88dc93a55f91822e471da9a7841340a3a0c03c0ffefe.png"
+    photo: "/trucks/truck_03.png"
   },
   truck_04: {
     id: "truck_04",
     name: "Compact Transit Van",
     description: "Urban tight spaces, lunch rush", 
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/e7a69d1a9b15b8d78f7a3a0d1fea83a59a563c0cd6b03c2daa9208cc22b4d741.png"
+    photo: "/trucks/truck_04.png"
   },
   truck_05: {
     id: "truck_05",
     name: "Retro Airstream",
     description: "Premium, wine, artisan, brunch",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/fcf519c68af2f6e44db6b3a578da6f26821f8582fe69c4e36a621a3e03c0bb05.png"
+    photo: "/trucks/truck_05.png"
   },
   truck_06: {
     id: "truck_06",
     name: "Open-Air Trailer",
     description: "Farmers markets, festivals",
-    photo: "https://static.prod-images.emergentagent.com/jobs/d3408955-8bb6-4724-8e1c-d71cbe13a1eb/images/047bd8b019434ea2ff90bb096e082d6fdf0d5ee1bb9e7b02ee48df5219dbf654.png"
+    photo: "/trucks/truck_06.png"
   }
 };
 
@@ -284,149 +284,162 @@ const LETTERING_FONTS = {
 
 // ============================================================================
 // TRUCK CANVAS COMPONENT - Isolated Truck Preview with All Effects
-// Images: WHITE truck on BLACK background
-// Technique: Render truck normally, then overlay color with multiply blend
-// multiply(color, black)=black → bg stays dark | multiply(color, white)=color → truck gets painted
+// All truck images now have BLACK backgrounds (processed via PIL).
+// Technique: render truck normally, then overlay selected color with
+// mix-blend-mode: multiply. multiply(color, black)=black, multiply(color, white)=color.
 // ============================================================================
 const TruckCanvas = ({ state, zoom = 1 }) => {
   const truckModel = TRUCK_MODELS[state.truckModel] || TRUCK_MODELS.truck_01;
   const finishType = FINISH_TYPES[state.finish] || FINISH_TYPES.GLOSS;
   const splitPattern = TWO_TONE_SPLITS[state.twoToneSplit];
   const wrapPattern = WRAP_PATTERNS[state.wrapPattern];
-  
+  const [imgLoaded, setImgLoaded] = React.useState(false);
+  const [imgError, setImgError] = React.useState(false);
+
   const getContrastColor = (hexColor) => {
     if (!hexColor) return "#FFFFFF";
     const r = parseInt(hexColor.slice(1, 3), 16);
     const g = parseInt(hexColor.slice(3, 5), 16);
     const b = parseInt(hexColor.slice(5, 7), 16);
-    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    return luminance > 0.5 ? "#000000" : "#FFFFFF";
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.5 ? "#000000" : "#FFFFFF";
   };
 
   const truckImageUrl = state.userPhotoUrl || truckModel.photo;
   const hasColor = state.primaryColor && state.primaryColor !== "#FFFFFF" && state.primaryColor !== "#fff";
 
+  // Reset load state on image change
+  React.useEffect(() => { setImgLoaded(false); setImgError(false); }, [truckImageUrl]);
+
   return (
-    <div 
-      className="relative w-full h-full overflow-hidden rounded-xl"
+    <div
+      className="relative w-full h-full overflow-hidden rounded-xl bg-black"
       style={{ transform: `scale(${zoom})`, transformOrigin: "center center" }}
       data-testid="truck-canvas"
     >
-      {/* Isolated blend context */}
+      {/* Loading indicator */}
+      {!imgLoaded && !imgError && (
+        <div className="absolute inset-0 flex items-center justify-center z-20">
+          <div className="w-8 h-8 border-2 border-[#E8592F] border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+      {imgError && (
+        <div className="absolute inset-0 flex items-center justify-center z-20 text-gray-500 text-sm">
+          Failed to load truck image
+        </div>
+      )}
+
+      {/* Blend group — isolated so multiply stays contained */}
       <div className="absolute inset-0" style={{ isolation: "isolate" }}>
-        {/* Layer 1: Black base — ensures no color leaks outside image bounds */}
-        <div className="absolute inset-0 bg-black" />
-        
-        {/* Layer 2: Truck image — rendered normally (white truck on black bg) */}
-        <img 
+        {/* Layer 1: Truck image (white truck on black bg) */}
+        <img
           src={truckImageUrl}
           alt={truckModel.name}
           className="absolute inset-0 w-full h-full object-contain pointer-events-none"
           style={{ filter: finishType.filter }}
           draggable="false"
+          onLoad={() => setImgLoaded(true)}
+          onError={() => setImgError(true)}
         />
-        
-        {/* Layer 3: Color overlay with multiply — colors white areas, black stays black */}
+
+        {/* Layer 2: Color overlay — multiply colors white areas, leaves black untouched */}
         {hasColor && (
           <div className="absolute inset-0" style={{ mixBlendMode: "multiply" }}>
             <div className="absolute inset-0" style={{ backgroundColor: state.primaryColor }} />
             {state.twoToneEnabled && state.secondaryColor && splitPattern && (
-              <div 
-                className="absolute inset-0" 
-                style={{ backgroundColor: state.secondaryColor, clipPath: splitPattern.clipPath }} 
+              <div
+                className="absolute inset-0"
+                style={{ backgroundColor: state.secondaryColor, clipPath: splitPattern.clipPath }}
               />
             )}
           </div>
         )}
-        
-        {/* Layer 4: Wrap pattern — overlay blend (invisible on black, visible on colored truck) */}
+
+        {/* Layer 3: Wrap pattern (overlay blend — invisible on black, tints colored areas) */}
         {wrapPattern && wrapPattern.css && (
-          <div 
+          <div
             className="absolute inset-0 pointer-events-none"
             style={{
               background: wrapPattern.css,
               backgroundSize: wrapPattern.size || "20px 20px",
               backgroundPosition: wrapPattern.position || "0 0",
               opacity: state.wrapOpacity || 0.5,
-              mixBlendMode: "overlay"
+              mixBlendMode: "overlay",
             }}
           />
         )}
-        
-        {/* Layer 5: Finish highlight */}
+
+        {/* Layer 4: Finish highlight */}
         {finishType.overlay && (
-          <div 
+          <div
             className="absolute inset-0 pointer-events-none"
             style={{ background: finishType.overlay, mixBlendMode: "soft-light" }}
           />
         )}
-        
-        {/* Layer 6: Racing stripe — overlay so it only shows on lit areas */}
+
+        {/* Layer 5: Racing stripe */}
         {state.racingStripeEnabled && (
-          <div 
+          <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background: `linear-gradient(to bottom, 
-                transparent 0%, transparent 42%, 
-                ${state.racingStripeColor || "#FFFFFF"} 42%, 
-                ${state.racingStripeColor || "#FFFFFF"} ${state.racingStripeWidth === "thin" ? "46%" : state.racingStripeWidth === "bold" ? "58%" : "52%"}, 
-                transparent ${state.racingStripeWidth === "thin" ? "46%" : state.racingStripeWidth === "bold" ? "58%" : "52%"}, 
+              background: `linear-gradient(to bottom,
+                transparent 0%, transparent 42%,
+                ${state.racingStripeColor || "#FFFFFF"} 42%,
+                ${state.racingStripeColor || "#FFFFFF"} ${state.racingStripeWidth === "thin" ? "46%" : state.racingStripeWidth === "bold" ? "58%" : "52%"},
+                transparent ${state.racingStripeWidth === "thin" ? "46%" : state.racingStripeWidth === "bold" ? "58%" : "52%"},
                 transparent 100%)`,
-              mixBlendMode: "overlay"
+              mixBlendMode: "overlay",
             }}
           />
         )}
       </div>
-      
-      {/* Accessories — outside blend context, rendered normally */}
+
+      {/* Accessories — outside blend group, rendered normally */}
       {state.lightsEnabled && (
-        <div 
+        <div
           className="absolute bottom-[15%] left-[20%] right-[20%] h-4 rounded-full blur-xl"
           style={{ backgroundColor: state.lightsColor || state.primaryColor || "#FF6600", opacity: 0.8 }}
         />
       )}
-      
       {state.awningEnabled && (
-        <div 
+        <div
           className="absolute top-[22%] left-[8%]"
-          style={{ 
+          style={{
             backgroundColor: state.awningColor || "#CC0000",
             width: state.awningStyle === "full" ? "50%" : "30%",
             height: "16px",
             borderRadius: "0 0 8px 8px",
-            backgroundImage: state.awningStyle === "striped" 
-              ? `repeating-linear-gradient(90deg, ${state.awningColor || "#CC0000"}, ${state.awningColor || "#CC0000"} 8px, white 8px, white 16px)`
-              : "none",
-            boxShadow: "0 4px 8px rgba(0,0,0,0.3)"
+            backgroundImage:
+              state.awningStyle === "striped"
+                ? `repeating-linear-gradient(90deg, ${state.awningColor || "#CC0000"}, ${state.awningColor || "#CC0000"} 8px, white 8px, white 16px)`
+                : "none",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
           }}
         />
       )}
-      
       {state.signageEnabled && (
-        <div 
+        <div
           className="absolute top-[8%] left-1/2 -translate-x-1/2 px-6 py-2 rounded-lg"
-          style={{ 
+          style={{
             backgroundColor: state.signageIlluminated ? "#1a1a1a" : "#333",
             border: "2px solid #555",
-            boxShadow: state.signageIlluminated 
-              ? `0 0 15px ${state.primaryColor || "#FF6600"}, 0 0 30px ${state.primaryColor || "#FF6600"}40` 
-              : "0 2px 4px rgba(0,0,0,0.5)"
+            boxShadow: state.signageIlluminated
+              ? `0 0 15px ${state.primaryColor || "#FF6600"}, 0 0 30px ${state.primaryColor || "#FF6600"}40`
+              : "0 2px 4px rgba(0,0,0,0.5)",
           }}
         >
-          <span 
+          <span
             className="text-sm font-bold tracking-wider whitespace-nowrap"
-            style={{ 
+            style={{
               color: state.signageIlluminated ? state.primaryColor || "#FF6600" : "#FFF",
-              textShadow: state.signageIlluminated ? `0 0 10px ${state.primaryColor || "#FF6600"}` : "none"
+              textShadow: state.signageIlluminated ? `0 0 10px ${state.primaryColor || "#FF6600"}` : "none",
             }}
           >
             {state.businessName || "OPEN"}
           </span>
         </div>
       )}
-      
       {state.logoUrl && (
-        <div 
+        <div
           className="absolute pointer-events-none"
           style={{
             left: `${state.logoX || 50}%`,
@@ -434,46 +447,46 @@ const TruckCanvas = ({ state, zoom = 1 }) => {
             transform: `translate(-50%, -50%) scale(${state.logoScale || 1}) rotate(${state.logoRotation || 0}deg)`,
             maxWidth: "25%",
             maxHeight: "25%",
-            filter: "drop-shadow(2px 2px 4px rgba(0,0,0,0.5))"
+            filter: "drop-shadow(2px 2px 4px rgba(0,0,0,0.5))",
           }}
         >
           <img src={state.logoUrl} alt="Logo" className="max-w-full max-h-full object-contain" />
         </div>
       )}
-      
       {state.businessName && (
-        <div 
+        <div
           className="absolute pointer-events-none text-center"
           style={{
             left: `${state.letteringX || 50}%`,
             top: `${state.letteringY || 40}%`,
             transform: "translate(-50%, -50%)",
-            width: "70%"
+            width: "70%",
           }}
         >
-          <span 
+          <span
             style={{
               fontFamily: LETTERING_FONTS[state.letteringFont]?.fontFamily || LETTERING_FONTS.GOTHIC.fontFamily,
               fontWeight: LETTERING_FONTS[state.letteringFont]?.fontWeight || "700",
               fontSize: `${(state.letteringSize || 3) * 0.9}rem`,
               color: state.letteringColor || "#FFFFFF",
-              textShadow: state.letteringOutline === "bold" 
-                ? `3px 3px 0 ${getContrastColor(state.letteringColor)}, -3px -3px 0 ${getContrastColor(state.letteringColor)}, 3px -3px 0 ${getContrastColor(state.letteringColor)}, -3px 3px 0 ${getContrastColor(state.letteringColor)}, 0 0 10px rgba(0,0,0,0.8)`
-                : state.letteringOutline === "thin"
-                ? `1px 1px 0 ${getContrastColor(state.letteringColor)}, 0 0 8px rgba(0,0,0,0.6)`
-                : "2px 2px 6px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.4)",
-              letterSpacing: state.letterSpacing === "tight" ? "-0.02em" 
+              textShadow:
+                state.letteringOutline === "bold"
+                  ? `3px 3px 0 ${getContrastColor(state.letteringColor)}, -3px -3px 0 ${getContrastColor(state.letteringColor)}, 3px -3px 0 ${getContrastColor(state.letteringColor)}, -3px 3px 0 ${getContrastColor(state.letteringColor)}, 0 0 10px rgba(0,0,0,0.8)`
+                  : state.letteringOutline === "thin"
+                  ? `1px 1px 0 ${getContrastColor(state.letteringColor)}, 0 0 8px rgba(0,0,0,0.6)`
+                  : "2px 2px 6px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.4)",
+              letterSpacing:
+                state.letterSpacing === "tight" ? "-0.02em"
                 : state.letterSpacing === "wide" ? "0.1em"
                 : state.letterSpacing === "ultra" ? "0.2em"
                 : "0.02em",
-              whiteSpace: "nowrap"
+              whiteSpace: "nowrap",
             }}
           >
             {state.businessName}
           </span>
         </div>
       )}
-      
       <div className="absolute top-2 left-2 px-2 py-1 bg-black/60 rounded text-[10px] text-white/70 uppercase tracking-wider">
         {state.viewAngle?.replace("-", " ") || "Side View"}
       </div>
@@ -482,15 +495,210 @@ const TruckCanvas = ({ state, zoom = 1 }) => {
 };
 
 // ============================================================================
-// COLOR SWATCH COMPONENT
+// HSV UTILITIES
+// ============================================================================
+const hsvToHex = (h, s, v) => {
+  const f = (n) => {
+    const k = (n + h / 60) % 6;
+    return Math.round((v - v * s * Math.max(Math.min(k, 4 - k, 1), 0)) * 255);
+  };
+  return `#${[f(5), f(3), f(1)].map((c) => c.toString(16).padStart(2, "0")).join("")}`;
+};
+const hexToHsv = (hex) => {
+  if (!hex) return { h: 0, s: 1, v: 1 };
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  let h = 0;
+  if (d !== 0) {
+    if (max === r) h = ((g - b) / d + 6) % 6;
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h *= 60;
+  }
+  return { h, s: max === 0 ? 0 : d / max, v: max };
+};
+
+// ============================================================================
+// COLOR WHEEL COMPONENT — Circular hue ring + SV square
+// ============================================================================
+const ColorWheel = ({ value, onChange }) => {
+  const wheelRef = React.useRef(null);
+  const svRef = React.useRef(null);
+  const [dragging, setDragging] = React.useState(null); // "wheel" | "sv"
+  const [hsv, setHsv] = React.useState(() => hexToHsv(value || "#E8592F"));
+  const [hexInput, setHexInput] = React.useState(value || "#E8592F");
+
+  // Sync external value changes
+  React.useEffect(() => {
+    if (value) {
+      const next = hexToHsv(value);
+      setHsv(next);
+      setHexInput(value.toUpperCase());
+    }
+  }, [value]);
+
+  const WHEEL_SIZE = 220;
+  const RING_WIDTH = 24;
+  const SV_SIZE = WHEEL_SIZE - RING_WIDTH * 2 - 16;
+
+  const commitColor = React.useCallback((h, s, v) => {
+    const hex = hsvToHex(h, s, v);
+    setHexInput(hex.toUpperCase());
+    onChange(hex);
+  }, [onChange]);
+
+  // --- Wheel (Hue) drag ---
+  const handleWheelPointer = React.useCallback((e) => {
+    if (!wheelRef.current) return;
+    const rect = wheelRef.current.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const angle = (Math.atan2(e.clientY - cy, e.clientX - cx) * 180) / Math.PI;
+    const hue = (angle + 360) % 360;
+    setHsv((p) => {
+      commitColor(hue, p.s, p.v);
+      return { ...p, h: hue };
+    });
+  }, [commitColor]);
+
+  // --- SV square drag ---
+  const handleSvPointer = React.useCallback((e) => {
+    if (!svRef.current) return;
+    const rect = svRef.current.getBoundingClientRect();
+    const s = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const v = Math.max(0, Math.min(1, 1 - (e.clientY - rect.top) / rect.height));
+    setHsv((p) => {
+      commitColor(p.h, s, v);
+      return { ...p, s, v };
+    });
+  }, [commitColor]);
+
+  React.useEffect(() => {
+    if (!dragging) return;
+    const handler = (e) => {
+      e.preventDefault();
+      const pt = e.touches ? e.touches[0] : e;
+      if (dragging === "wheel") handleWheelPointer(pt);
+      else handleSvPointer(pt);
+    };
+    const up = () => setDragging(null);
+    window.addEventListener("mousemove", handler, { passive: false });
+    window.addEventListener("mouseup", up);
+    window.addEventListener("touchmove", handler, { passive: false });
+    window.addEventListener("touchend", up);
+    return () => {
+      window.removeEventListener("mousemove", handler);
+      window.removeEventListener("mouseup", up);
+      window.removeEventListener("touchmove", handler);
+      window.removeEventListener("touchend", up);
+    };
+  }, [dragging, handleWheelPointer, handleSvPointer]);
+
+  // Hue indicator position on the ring
+  const hueAngle = (hsv.h * Math.PI) / 180;
+  const ringR = WHEEL_SIZE / 2 - RING_WIDTH / 2;
+  const hx = WHEEL_SIZE / 2 + ringR * Math.cos(hueAngle);
+  const hy = WHEEL_SIZE / 2 + ringR * Math.sin(hueAngle);
+
+  const hexValid = /^#[0-9a-fA-F]{6}$/.test(hexInput);
+
+  return (
+    <div className="flex flex-col items-center gap-3" data-testid="color-wheel">
+      {/* Wheel + SV square */}
+      <div
+        className="relative"
+        style={{ width: WHEEL_SIZE, height: WHEEL_SIZE }}
+      >
+        {/* Hue ring */}
+        <div
+          ref={wheelRef}
+          className="absolute inset-0 rounded-full cursor-crosshair"
+          style={{
+            background: `conic-gradient(
+              hsl(0,100%,50%),hsl(60,100%,50%),hsl(120,100%,50%),
+              hsl(180,100%,50%),hsl(240,100%,50%),hsl(300,100%,50%),hsl(360,100%,50%)
+            )`,
+            WebkitMask: `radial-gradient(circle, transparent ${WHEEL_SIZE / 2 - RING_WIDTH}px, black ${WHEEL_SIZE / 2 - RING_WIDTH}px, black ${WHEEL_SIZE / 2}px, transparent ${WHEEL_SIZE / 2}px)`,
+            mask: `radial-gradient(circle, transparent ${WHEEL_SIZE / 2 - RING_WIDTH}px, black ${WHEEL_SIZE / 2 - RING_WIDTH}px, black ${WHEEL_SIZE / 2}px, transparent ${WHEEL_SIZE / 2}px)`,
+          }}
+          onMouseDown={(e) => { setDragging("wheel"); handleWheelPointer(e); }}
+          onTouchStart={(e) => { setDragging("wheel"); handleWheelPointer(e.touches[0]); }}
+        />
+        {/* Hue indicator */}
+        <div
+          className="absolute w-5 h-5 rounded-full border-2 border-white shadow-lg pointer-events-none"
+          style={{
+            left: hx - 10,
+            top: hy - 10,
+            backgroundColor: hsvToHex(hsv.h, 1, 1),
+            boxShadow: "0 0 4px rgba(0,0,0,0.6)",
+          }}
+        />
+        {/* SV square — centered inside ring */}
+        <div
+          ref={svRef}
+          className="absolute cursor-crosshair rounded-md overflow-hidden"
+          style={{
+            width: SV_SIZE,
+            height: SV_SIZE,
+            left: (WHEEL_SIZE - SV_SIZE) / 2,
+            top: (WHEEL_SIZE - SV_SIZE) / 2,
+            background: `
+              linear-gradient(to top, #000, transparent),
+              linear-gradient(to right, #fff, ${hsvToHex(hsv.h, 1, 1)})
+            `,
+          }}
+          onMouseDown={(e) => { setDragging("sv"); handleSvPointer(e); }}
+          onTouchStart={(e) => { setDragging("sv"); handleSvPointer(e.touches[0]); }}
+        >
+          {/* SV indicator */}
+          <div
+            className="absolute w-4 h-4 rounded-full border-2 border-white shadow pointer-events-none"
+            style={{
+              left: `calc(${hsv.s * 100}% - 8px)`,
+              top: `calc(${(1 - hsv.v) * 100}% - 8px)`,
+              backgroundColor: hsvToHex(hsv.h, hsv.s, hsv.v),
+              boxShadow: "0 0 3px rgba(0,0,0,0.5)",
+            }}
+          />
+        </div>
+      </div>
+
+      {/* HEX input + current color preview */}
+      <div className="flex items-center gap-2 w-full max-w-[220px]">
+        <div
+          className="w-10 h-10 rounded-lg border border-gray-600 shrink-0"
+          style={{ backgroundColor: value || "#E8592F" }}
+        />
+        <input
+          type="text"
+          value={hexInput}
+          onChange={(e) => {
+            const v = e.target.value;
+            setHexInput(v);
+            if (/^#[0-9a-fA-F]{6}$/.test(v)) {
+              const next = hexToHsv(v);
+              setHsv(next);
+              onChange(v);
+            }
+          }}
+          className={`flex-1 px-3 py-2 bg-gray-800 border rounded-lg text-white text-sm font-mono uppercase
+            ${hexValid ? "border-gray-700 focus:border-[#E8592F]" : "border-red-500"} focus:outline-none`}
+          maxLength={7}
+          data-testid="hex-input"
+        />
+      </div>
+    </div>
+  );
+};
+
+// ============================================================================
+// COLOR SWATCH (kept for palette presets)
 // ============================================================================
 const ColorSwatch = ({ color, isSelected, onClick, size = "md" }) => {
-  const sizeClasses = {
-    sm: "w-8 h-8",
-    md: "w-10 h-10",
-    lg: "w-12 h-12"
-  };
-  
+  const sizeClasses = { sm: "w-8 h-8", md: "w-10 h-10", lg: "w-12 h-12" };
   return (
     <button
       onClick={onClick}
@@ -548,7 +756,6 @@ const PaintShop = () => {
   const [activeTab, setActiveTab] = useState("paint");
   const [activePalette, setActivePalette] = useState("copper_steel");
   const [zoom, setZoom] = useState(1);
-  const [customColor, setCustomColor] = useState("#E8592F");
   const [recentColors, setRecentColors] = useState([]);
   
   // Truck State - All customization options
@@ -851,71 +1058,53 @@ const PaintShop = () => {
             {/* PAINT TAB */}
             {activeTab === "paint" && (
               <>
-                {/* Color Palettes */}
+                {/* Color Wheel — main color selector */}
+                <div data-testid="paint-color-section">
+                  <label className="block text-sm text-gray-400 mb-3">Paint Color</label>
+                  <ColorWheel value={truckState.primaryColor} onChange={(hex) => selectColor(hex)} />
+                </div>
+
+                {/* Quick Palette Presets */}
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Color Palette</label>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {Object.entries(COLOR_PALETTES).map(([key, palette]) => (
+                  <label className="block text-sm text-gray-400 mb-2">Preset Palettes</label>
+                  <div className="flex flex-wrap gap-1.5 mb-3">
+                    {Object.entries(COLOR_PALETTES).filter(([k]) => k !== "custom").map(([key, palette]) => (
                       <button
                         key={key}
                         onClick={() => setActivePalette(key)}
-                        className={`px-3 py-1.5 text-xs rounded-full border transition-colors
-                          ${activePalette === key 
-                            ? "border-[#E8592F] bg-[#E8592F]/20 text-[#E8592F]" 
+                        className={`px-2.5 py-1 text-[11px] rounded-full border transition-colors
+                          ${activePalette === key
+                            ? "border-[#E8592F] bg-[#E8592F]/20 text-[#E8592F]"
                             : "border-gray-600 text-gray-400 hover:border-gray-400"}`}
+                        data-testid={`palette-${key}`}
                       >
                         {palette.name}
                       </button>
                     ))}
                   </div>
-                  
-                  {/* Color Swatches */}
-                  {activePalette !== "custom" ? (
-                    <div className="flex flex-wrap gap-2">
-                      {COLOR_PALETTES[activePalette]?.colors.map(color => (
-                        <ColorSwatch
-                          key={color.hex}
-                          color={color}
-                          isSelected={truckState.primaryColor === color.hex}
-                          onClick={() => selectColor(color.hex)}
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="color"
-                        value={customColor}
-                        onChange={(e) => setCustomColor(e.target.value)}
-                        className="w-12 h-12 rounded-lg cursor-pointer border-0"
+                  <div className="flex flex-wrap gap-2">
+                    {COLOR_PALETTES[activePalette]?.colors.map(color => (
+                      <ColorSwatch
+                        key={color.hex}
+                        color={color}
+                        isSelected={truckState.primaryColor === color.hex}
+                        onClick={() => selectColor(color.hex)}
                       />
-                      <input
-                        type="text"
-                        value={customColor}
-                        onChange={(e) => setCustomColor(e.target.value)}
-                        className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white uppercase"
-                        placeholder="#E8592F"
-                      />
-                      <button
-                        onClick={() => selectColor(customColor)}
-                        className="px-4 py-2 bg-[#E8592F] hover:bg-[#d14a24] text-white rounded-lg"
-                      >
-                        Apply
-                      </button>
-                    </div>
-                  )}
-                  
+                    ))}
+                  </div>
                   {/* Recent Colors */}
                   {recentColors.length > 0 && (
-                    <div className="mt-4">
-                      <label className="block text-xs text-gray-500 mb-2">Recent</label>
-                      <div className="flex gap-2">
+                    <div className="mt-3">
+                      <label className="block text-xs text-gray-500 mb-1.5">Recent</label>
+                      <div className="flex gap-1.5">
                         {recentColors.map(hex => (
                           <button
                             key={hex}
                             onClick={() => selectColor(hex)}
-                            className="w-8 h-8 rounded-full border border-gray-600 hover:border-gray-400"
+                            className={`w-7 h-7 rounded-full border transition-all
+                              ${truckState.primaryColor === hex ? "border-[#E8592F] scale-110" : "border-gray-600 hover:border-gray-400"}`}
                             style={{ backgroundColor: hex }}
+                            data-testid={`recent-color-${hex}`}
                           />
                         ))}
                       </div>
