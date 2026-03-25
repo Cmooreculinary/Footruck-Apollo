@@ -142,49 +142,49 @@ const COLOR_PALETTES = {
 };
 
 // ============================================================================
-// FINISH TYPES - 7 Paint Finishes with CSS Effects
+// FINISH TYPES - 7 Paint Finishes with DRAMATIC CSS Effects
 // ============================================================================
 const FINISH_TYPES = {
   MATTE: {
     name: "Matte",
-    filter: "contrast(0.92) saturate(0.85) brightness(0.97)",
+    filter: "contrast(0.85) saturate(0.7) brightness(0.92)",
     overlay: null,
     description: "Flat, chalky, no reflection"
   },
   GLOSS: {
     name: "Gloss",
-    filter: "contrast(1.08) saturate(1.15) brightness(1.02)",
-    overlay: "linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%)",
+    filter: "contrast(1.15) saturate(1.25) brightness(1.05)",
+    overlay: "linear-gradient(135deg, rgba(255,255,255,0.35) 0%, transparent 40%, rgba(255,255,255,0.08) 80%)",
     description: "Wet, reflective, showroom shine"
   },
   METALLIC: {
     name: "Metallic",
-    filter: "contrast(1.12) saturate(0.9) brightness(1.05)",
-    overlay: "radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.15) 0%, transparent 60%)",
+    filter: "contrast(1.2) saturate(0.85) brightness(1.1)",
+    overlay: "radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 50%), radial-gradient(ellipse at 70% 70%, rgba(255,255,255,0.1) 0%, transparent 50%)",
     description: "Metalflake sparkle, depth"
   },
   CHROME: {
     name: "Chrome",
-    filter: "contrast(1.3) saturate(0.3) brightness(1.15)",
-    overlay: "linear-gradient(180deg, rgba(255,255,255,0.25) 0%, transparent 30%, rgba(255,255,255,0.1) 70%, transparent 100%)",
+    filter: "contrast(1.5) saturate(0.2) brightness(1.25)",
+    overlay: "linear-gradient(180deg, rgba(255,255,255,0.5) 0%, transparent 25%, rgba(255,255,255,0.15) 50%, transparent 75%, rgba(255,255,255,0.3) 100%)",
     description: "Mirror finish, extreme reflection"
   },
   ENAMEL: {
     name: "Enamel",
-    filter: "contrast(1.05) saturate(1.25) brightness(1.0)",
-    overlay: null,
+    filter: "contrast(1.1) saturate(1.4) brightness(1.0)",
+    overlay: "linear-gradient(160deg, rgba(255,255,255,0.1) 0%, transparent 60%)",
     description: "Deep, rich, vintage diner look"
   },
   SATIN: {
     name: "Satin",
-    filter: "contrast(0.98) saturate(1.0) brightness(0.99)",
-    overlay: "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%)",
+    filter: "contrast(0.95) saturate(1.05) brightness(0.96)",
+    overlay: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%)",
     description: "Between matte and gloss"
   },
   PEARL: {
     name: "Pearl",
-    filter: "contrast(1.02) saturate(0.95) brightness(1.08)",
-    overlay: "linear-gradient(135deg, rgba(255,200,255,0.1) 0%, rgba(200,255,255,0.1) 50%, rgba(255,255,200,0.1) 100%)",
+    filter: "contrast(1.05) saturate(0.9) brightness(1.12)",
+    overlay: "linear-gradient(135deg, rgba(255,180,255,0.2) 0%, rgba(180,255,255,0.2) 35%, rgba(255,255,180,0.2) 70%, rgba(255,200,255,0.15) 100%)",
     description: "Color-shifting pearl effect"
   }
 };
@@ -237,37 +237,37 @@ const WRAP_PATTERNS = {
   none: { name: "No Wrap", css: null },
   stripes_h: {
     name: "Horizontal Stripes",
-    css: "repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(0,0,0,0.1) 10px, rgba(0,0,0,0.1) 20px)"
+    css: "repeating-linear-gradient(0deg, transparent, transparent 12px, rgba(255,255,255,0.45) 12px, rgba(255,255,255,0.45) 24px)"
   },
   stripes_d: {
     name: "Diagonal Stripes",
-    css: "repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.1) 10px, rgba(0,0,0,0.1) 20px)"
+    css: "repeating-linear-gradient(45deg, transparent, transparent 12px, rgba(255,255,255,0.45) 12px, rgba(255,255,255,0.45) 24px)"
   },
   carbon: {
     name: "Carbon Fiber",
-    css: "repeating-linear-gradient(45deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 2px, transparent 2px, transparent 4px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 2px, transparent 2px, transparent 4px)"
+    css: "repeating-linear-gradient(45deg, rgba(0,0,0,0.35) 0px, rgba(0,0,0,0.35) 3px, transparent 3px, transparent 6px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.35) 0px, rgba(0,0,0,0.35) 3px, transparent 3px, transparent 6px)"
   },
   dots: {
     name: "Polka Dots",
-    css: "radial-gradient(circle, rgba(0,0,0,0.1) 10%, transparent 10%), radial-gradient(circle, rgba(0,0,0,0.1) 10%, transparent 10%)",
+    css: "radial-gradient(circle, rgba(255,255,255,0.5) 12%, transparent 12%), radial-gradient(circle, rgba(255,255,255,0.5) 12%, transparent 12%)",
     size: "30px 30px",
     position: "0 0, 15px 15px"
   },
   hex: {
     name: "Hex Grid",
-    css: "repeating-linear-gradient(60deg, transparent, transparent 15px, rgba(0,0,0,0.05) 15px, rgba(0,0,0,0.05) 16px), repeating-linear-gradient(-60deg, transparent, transparent 15px, rgba(0,0,0,0.05) 15px, rgba(0,0,0,0.05) 16px)"
+    css: "repeating-linear-gradient(60deg, transparent, transparent 12px, rgba(255,255,255,0.3) 12px, rgba(255,255,255,0.3) 14px), repeating-linear-gradient(-60deg, transparent, transparent 12px, rgba(255,255,255,0.3) 12px, rgba(255,255,255,0.3) 14px)"
   },
   chevrons: {
     name: "Chevrons",
-    css: "repeating-linear-gradient(135deg, transparent, transparent 20px, rgba(0,0,0,0.08) 20px, rgba(0,0,0,0.08) 40px)"
+    css: "repeating-linear-gradient(135deg, transparent, transparent 20px, rgba(255,255,255,0.4) 20px, rgba(255,255,255,0.4) 40px)"
   },
   brushed: {
     name: "Brushed Metal",
-    css: "repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 3px)"
+    css: "repeating-linear-gradient(90deg, rgba(255,255,255,0.15) 0px, rgba(255,255,255,0.15) 1px, transparent 1px, transparent 4px)"
   },
   camo: {
     name: "Camo",
-    css: "radial-gradient(ellipse at 20% 30%, rgba(74,93,35,0.3) 0%, transparent 50%), radial-gradient(ellipse at 70% 60%, rgba(85,107,47,0.3) 0%, transparent 40%), radial-gradient(ellipse at 40% 80%, rgba(107,142,35,0.2) 0%, transparent 45%)"
+    css: "radial-gradient(ellipse at 20% 30%, rgba(74,93,35,0.6) 0%, transparent 50%), radial-gradient(ellipse at 70% 60%, rgba(85,107,47,0.6) 0%, transparent 40%), radial-gradient(ellipse at 40% 80%, rgba(107,142,35,0.5) 0%, transparent 45%)"
   }
 };
 
@@ -329,7 +329,7 @@ const TruckCanvas = ({ state, zoom = 1 }) => {
       )}
 
       {/* Blend group — isolated so multiply stays contained */}
-      <div className="absolute inset-0" style={{ isolation: "isolate" }}>
+      <div className="absolute inset-0 bg-black" style={{ isolation: "isolate" }}>
         {/* Layer 1: Truck image (white truck on black bg) */}
         <img
           src={truckImageUrl}
@@ -354,7 +354,7 @@ const TruckCanvas = ({ state, zoom = 1 }) => {
           </div>
         )}
 
-        {/* Layer 3: Wrap pattern (overlay blend — invisible on black, tints colored areas) */}
+        {/* Layer 3: Wrap pattern — overlay blend shows on colored truck, invisible on black bg */}
         {wrapPattern && wrapPattern.css && (
           <div
             className="absolute inset-0 pointer-events-none"
@@ -376,62 +376,71 @@ const TruckCanvas = ({ state, zoom = 1 }) => {
           />
         )}
 
-        {/* Layer 5: Racing stripe */}
-        {state.racingStripeEnabled && (
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: `linear-gradient(to bottom,
-                transparent 0%, transparent 42%,
-                ${state.racingStripeColor || "#FFFFFF"} 42%,
-                ${state.racingStripeColor || "#FFFFFF"} ${state.racingStripeWidth === "thin" ? "46%" : state.racingStripeWidth === "bold" ? "58%" : "52%"},
-                transparent ${state.racingStripeWidth === "thin" ? "46%" : state.racingStripeWidth === "bold" ? "58%" : "52%"},
-                transparent 100%)`,
-              mixBlendMode: "overlay",
-            }}
-          />
-        )}
+        {/* Layer 5: Racing stripe — overlay blend shows on truck, hidden on black bg */}
+        {/* Moved to accessories section outside blend group for better visibility */}
       </div>
 
       {/* Accessories — outside blend group, rendered normally */}
+      {state.racingStripeEnabled && (
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            top: "44%",
+            left: "5%",
+            right: "5%",
+            height: state.racingStripeWidth === "thin" ? "8px" : state.racingStripeWidth === "bold" ? "24px" : "14px",
+            backgroundColor: state.racingStripeColor || "#FFFFFF",
+            opacity: 0.85,
+            boxShadow: `0 0 8px ${state.racingStripeColor || "#FFFFFF"}60`,
+          }}
+        />
+      )}
       {state.lightsEnabled && (
         <div
-          className="absolute bottom-[15%] left-[20%] right-[20%] h-4 rounded-full blur-xl"
-          style={{ backgroundColor: state.lightsColor || state.primaryColor || "#FF6600", opacity: 0.8 }}
+          className="absolute bottom-[12%] left-[15%] right-[15%] h-6 rounded-full"
+          style={{
+            backgroundColor: state.lightsColor || state.primaryColor || "#FF6600",
+            opacity: 0.9,
+            boxShadow: `0 0 20px 8px ${state.lightsColor || state.primaryColor || "#FF6600"}80, 0 0 40px 16px ${state.lightsColor || state.primaryColor || "#FF6600"}40`,
+            filter: "blur(4px)",
+          }}
         />
       )}
       {state.awningEnabled && (
         <div
-          className="absolute top-[22%] left-[8%]"
+          className="absolute top-[18%] left-[6%]"
           style={{
             backgroundColor: state.awningColor || "#CC0000",
-            width: state.awningStyle === "full" ? "50%" : "30%",
-            height: "16px",
-            borderRadius: "0 0 8px 8px",
+            width: state.awningStyle === "full" ? "55%" : "35%",
+            height: "24px",
+            borderRadius: "0 0 12px 12px",
             backgroundImage:
               state.awningStyle === "striped"
-                ? `repeating-linear-gradient(90deg, ${state.awningColor || "#CC0000"}, ${state.awningColor || "#CC0000"} 8px, white 8px, white 16px)`
+                ? `repeating-linear-gradient(90deg, ${state.awningColor || "#CC0000"}, ${state.awningColor || "#CC0000"} 10px, white 10px, white 20px)`
+                : state.awningStyle === "scalloped"
+                ? `radial-gradient(circle at 50% 100%, transparent 8px, ${state.awningColor || "#CC0000"} 8px)`
                 : "none",
-            boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+            backgroundSize: state.awningStyle === "scalloped" ? "20px 24px" : "auto",
+            boxShadow: `0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3)`,
           }}
         />
       )}
       {state.signageEnabled && (
         <div
-          className="absolute top-[8%] left-1/2 -translate-x-1/2 px-6 py-2 rounded-lg"
+          className="absolute top-[6%] left-1/2 -translate-x-1/2 px-8 py-3 rounded-lg"
           style={{
             backgroundColor: state.signageIlluminated ? "#1a1a1a" : "#333",
-            border: "2px solid #555",
+            border: state.signageIlluminated ? `2px solid ${state.primaryColor || "#FF6600"}` : "2px solid #555",
             boxShadow: state.signageIlluminated
-              ? `0 0 15px ${state.primaryColor || "#FF6600"}, 0 0 30px ${state.primaryColor || "#FF6600"}40`
-              : "0 2px 4px rgba(0,0,0,0.5)",
+              ? `0 0 20px ${state.primaryColor || "#FF6600"}, 0 0 40px ${state.primaryColor || "#FF6600"}60, inset 0 0 10px ${state.primaryColor || "#FF6600"}30`
+              : "0 2px 8px rgba(0,0,0,0.5)",
           }}
         >
           <span
-            className="text-sm font-bold tracking-wider whitespace-nowrap"
+            className="text-base font-bold tracking-wider whitespace-nowrap"
             style={{
               color: state.signageIlluminated ? state.primaryColor || "#FF6600" : "#FFF",
-              textShadow: state.signageIlluminated ? `0 0 10px ${state.primaryColor || "#FF6600"}` : "none",
+              textShadow: state.signageIlluminated ? `0 0 10px ${state.primaryColor || "#FF6600"}, 0 0 20px ${state.primaryColor || "#FF6600"}80` : "none",
             }}
           >
             {state.businessName || "OPEN"}
