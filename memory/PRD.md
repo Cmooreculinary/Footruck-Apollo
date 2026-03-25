@@ -1,179 +1,71 @@
-# Food Truck Launch Pad - PRD
+# Food Truck Launch Pad (FTLP)
 
-## Problem Statement
-Build a comprehensive platform for food truck entrepreneurs covering the journey from concept to launch with 14 feature modules across 7 phases.
+## Original Problem Statement
+Build a "Food Truck Launch Pad" full-stack application with React frontend, FastAPI backend, and MongoDB. Features include interactive "Paint Shop" and "Kitchen Builder" modules, user authentication (Google Auth), Stripe subscription payments, and a real-time visual truck configurator.
 
-## Hero Image / Branding
-![Food Truck Launch Pad](https://customer-assets.emergentagent.com/job_750cf976-26d8-4bfa-9e94-eee06e714e86/artifacts/svuwg9mb_274d8457-be63-45b6-9aaa-51fbc158cbbf.png)
+## Core Architecture
+- **Frontend:** React + TailwindCSS + Shadcn/UI (port 3000)
+- **Backend:** FastAPI + Pydantic (port 8001, prefixed with /api)
+- **Database:** MongoDB via MONGO_URL
+- **Auth:** Emergent-managed Google Auth
+- **Payments:** Stripe subscriptions (live Price IDs)
 
-## Architecture & Tech Stack
-- **Frontend**: React.js with Tailwind CSS
-- **Theme**: Industrial-luxe dark theme with orange primary (#E8592F / #ec7f13)
-- **Fonts**: Space Grotesk, Oswald, Work Sans, Lexend
-- **Backend**: FastAPI (Python)
-- **Database**: MongoDB
-- **Auth**: Emergent-managed Google OAuth
+## Key Technical Implementation
 
-## User Personas
-1. **Aspiring Food Truck Entrepreneur** - First-time business owners
-2. **Existing Restaurant Owner** - Expanding into mobile food service
-3. **Culinary Professional** - Chefs transitioning to food truck ownership
+### Paint Shop Visual Configurator
+- **Truck Images:** 6 photorealistic truck models stored as processed PNGs in `/frontend/public/trucks/`
+- **Image Processing:** Original images (mixed white/transparent backgrounds) processed via Python PIL to have solid BLACK backgrounds using flood-fill + dilation + feathering
+- **Color Technique:** `mix-blend-mode: multiply` overlay on top of truck image. Black areas stay black (no bleed), white truck body gets colored.
+- **Color Wheel:** HSV-based circular hue ring + saturation/brightness square, smooth drag interaction, HEX input, palette presets
+
+### DB Schema
+- `users`: { google_id, name, email, picture }
+- `subscriptions`: { user_id, stripe_subscription_id, ... }
+- `truck_designs`: { user_id, base_model, primary_color, secondary_color, finish, business_name, ... }
 
 ## What's Been Implemented
 
-### NEW: User Authentication (March 2026) ✅
-Google OAuth integration via Emergent Auth:
-- **AuthContext** - React context managing auth state
-- **AuthCallback** - Handles OAuth redirect with session exchange
-- **Session Management** - HTTP-only cookies for secure sessions
-- **User Profile** - Shows name and avatar in dashboard header
-- **Sign Out** - Clears session and redirects to login
+### Completed Features
+1. React SPA with full routing (Landing, Dashboard, Paint Shop, Kitchen Builder, etc.)
+2. Google Auth login via Emergent-managed auth
+3. Stripe subscription integration (Standard/Pro plans)
+4. Real-time Paint Shop visual configurator with:
+   - 6 truck chassis models with processed black-background images
+   - HSV color wheel with hue ring + SV square + HEX input
+   - 6 preset color palettes + recent colors
+   - 7 finish types (Matte, Gloss, Metallic, Chrome, Enamel, Satin, Pearl)
+   - Two-tone paint with split patterns
+   - Business name/text overlay with fonts and styling
+   - Logo upload positioning
+   - Accessories (awning, LED underglow, roof signage, racing stripe)
+   - Save/Load design persistence
+5. Landing page with optimized hero image loading (0.55s)
+6. Source code ZIP download
 
-Backend endpoints:
-- `POST /api/auth/session` - Exchange OAuth session_id for session_token
-- `GET /api/auth/me` - Get current authenticated user
-- `POST /api/auth/logout` - Clear session and logout
-
-### NEW: Equipment Showroom (March 2026) ✅
-Complete equipment catalog and build configurator:
-- **8 Equipment Categories**: Chassis, Cooking, Refrigeration, Smallwares, HVAC, Plumbing, Electrical, Serving & POS
-- **60+ Products** across 3 tiers (Standard, Premium, Elite)
-- **Tier Filtering** and search functionality
-- **"Your Build" Shopping Cart** with real-time cost tracking
-- **Product Detail Modals** with full specs and features
-- **Save Build** persists configuration to backend
-- **36 Photorealistic Product Images** generated from prompt kit (all chassis, cooking, refrigeration, etc.)
-
-### NEW: PDF Export (March 2026) ✅
-Export functionality for layouts and recipes:
-- **Recipe Builder PDF** - Complete recipe with ingredients, steps, and cost breakdown
-- **Kitchen Builder PDF** - Floor plan layout with equipment list and total cost
-- **jsPDF + html2canvas** integration for high-quality exports
-
-### NEW: Landing Page (March 2026) ✅
-Beautiful landing page with:
-- **Hero Image** - Custom Food Truck Launch Pad branding
-- **CTA Buttons** - "Launch Your Truck" and "Browse Equipment"
-- **Feature Grid** - 6 key modules highlighted
-- **Stats Bar** - 14 modules, 60+ items, 8 categories, 7 phases
-- **Open Graph / Twitter Cards** - Social sharing with hero image thumbnail
-- **Footer Navigation** - Links to Dashboard, Showroom, Paint Shop
-
-### NEW: Paint Shop v2.0 (March 2026) ✅
-Full exterior truck configurator with:
-- **6 Base Truck Models**: Step Van Classic, Step Van Modern, Cargo Van, Food Trailer, Flatbed Build-Out, Vintage/Retro
-- **30+ Paint Colors** across 6 categories
-- **5 Finish Types**: High Gloss, Satin, Matte, Metallic, Pearl
-- **6 Two-Tone Patterns**
-- **Wraps & Graphics**
-- **Serving Windows, Awnings, 15+ Accessories, Wheels**
-- **Real-time 2.5D SVG Truck Preview**
-- **Cost Estimator**
-
-### NEW: Kitchen Builder v2.0 (March 2026) ✅
-Interior equipment layout designer with:
-- **100+ Equipment Items** across 7 categories
-- **Top-Down Floor Plan** with 6" grid snap
-- **Drag-and-Drop Placement** with collision detection
-- **Health Code Validation**
-- **Space Utilization Meter**
-- **Equipment Cost Calculator**
-
-### Data Persistence (March 2026) ✅
-All 13 pages now have working save functionality with backend API endpoints.
-
-### Dead Links Fixed (March 2026) ✅
-All 35 `href="#"` dead links replaced with toast notifications.
-
-### Social Media/SEO Optimization ✅
-React Helmet Async, Open Graph, Twitter Cards, sitemap.xml
-
-### All Feature Modules (14 Total)
-1. **Equipment Showroom** - `/showroom` ← NEW
-2. **Paint Shop v2.0** - `/paint-shop`
-3. **Kitchen Builder v2.0** - `/kitchen-builder`
-3. **Day One Simulator** - `/day-one`
-4. **Signature Dish Developer** - `/signature-dish`
-5. **Crew Quarters Training** - `/crew-quarters`
-6. **Dream Kitchen Readiness** - `/dream-kitchen`
-7. **Truck Design (Legacy)** - `/truck-design`
-8. **Payroll Planning** - `/payroll`
-9. **Scaling & Prep Calculator** - `/scaling-prep`
-10. **Paper Trail Permits** - `/paper-trail`
-11. **Break-Even Analyzer** - `/break-even`
-12. **Target Customer Profiling** - `/target-customer`
-13. **Recipe Builder** - `/recipe-builder`
+### Bug Fixes Applied
+- **P0 Color Bleed Fix:** Processed all 6 truck images with PIL to ensure black backgrounds. Used flood-fill from edges (threshold=200), dilation (2px), and gaussian feathering for clean edges. Verified all 6 models have zero background bleed.
+- **React setState Warning:** Fixed ColorWheel to not call onChange inside setState callback
+- **truck_04 Special Processing:** Required more aggressive edge dilation due to original white background with subtle gradients
 
 ## Prioritized Backlog
 
-### P0 - Critical ✅ COMPLETE
-- ✅ All 13 feature modules implemented
-- ✅ Backend API for data persistence
-- ✅ User authentication (Google OAuth)
-- ✅ Dead links fixed
+### P0 (None - all critical items resolved)
 
-### P1 - High Priority
-- Associate saved data with authenticated user (user_id on documents)
-- Load user's saved data on page mount
-- Form validation (client & server-side)
+### P1 (Next)
+- Implement remaining Paint Shop features: Wraps library, additional view angles (front/rear)
+- Verify Save/Load persistence: complete configurator state saves/loads correctly
+- App-wide UX Polish: form validation, universal loading states
+- Design Gallery: view, name, and manage saved truck designs
 
-### P2 - Medium Priority
-- PDF export for permits, recipes, personas, floor plans
-- Real data integration for state wage tools
+### P2 (Future)
+- Shareable Designs: URL-encoded design sharing
+- "Get Quote" functionality
 - Confirmation dialogs for destructive actions
-- 3D truck preview upgrade (Three.js)
+- Mobile responsiveness audit
+- Social media preview images for production
 
-### P3 - Nice to Have
-- Multi-user collaboration
-- Mobile native app
-- Payment integration (Stripe)
-- Equipment drag repositioning
-
-## Test Results
-- **Iteration 5**: Backend 23/23 PASSED, Frontend 9/9 PASSED
-- **Iteration 6**: Frontend 100% PASSED (Paint Shop, Kitchen Builder)
-- **Iteration 7**: Frontend 100% PASSED (Equipment Showroom)
-- **Iteration 8**: Frontend 100% PASSED - All action items completed:
-  - Showroom: 59 photorealistic images across 8 categories
-  - PDF Export: Recipe Builder + Kitchen Builder functional
-  - Data Loading: Break-Even + Payroll load saved data on mount
-  - Navigation: Landing page at /, Dashboard at /dashboard
-- **Iteration 9**: Frontend 100% PASSED (March 2026) - Paint Shop Bug Fix Verification:
-  - ✅ Paint Shop color selection confirmed FIXED (no page background bleed)
-  - ✅ Colors apply only to truck preview using inline styles + mix-blend-mode
-  - ✅ All color palettes, custom hex, color picker working
-  - ✅ Two-tone patterns, finish types, save design all functional
-  - ✅ No global CSS variable injection - page backgrounds remain unchanged
-- **Iteration 10**: Frontend 100% PASSED (March 2026) - Paint Shop Final Fix:
-  - ✅ BUG FIX VERIFIED: Color selection NO LONGER affects page backgrounds
-  - ✅ Page wrapper: rgb(15, 15, 20) - UNCHANGED before/after color selection
-  - ✅ Header: rgba(15, 15, 20, 0.95) - UNCHANGED
-  - ✅ Sidebar: rgb(17, 17, 24) - UNCHANGED
-  - ✅ Color properly scoped using background-blend-mode: multiply
-  - ✅ All color features working: palettes, hex input, color picker, save
-- **Iteration 11**: Frontend 100% PASSED (March 2026) - Paint Shop Complete Rebuild:
-  - ✅ 6 Truck Chassis Models - All selectable with instant preview updates
-  - ✅ 7 Color Palettes - Classic Fleet, Copper & Steel, Street Food, Coastal, Luxury, Neon City, Custom
-  - ✅ 7 Finish Types - Matte, Gloss, Metallic, Chrome, Enamel, Satin, Pearl with CSS filters
-  - ✅ Two-Tone Paint System - 7 split patterns with clip-path masking
-  - ✅ 9 Wrap Patterns - CSS-generated overlays with opacity control
-  - ✅ Business Name Lettering - Real-time text on truck with 5 fonts, colors, sizes
-  - ✅ Logo Upload - PNG/SVG/WebP with scale, rotation, position controls
-  - ✅ 4 Accessories - Awning, LED Underglow, Roof Signage, Racing Stripe
-  - ✅ Save Design - API integration fixed and working
-  - ✅ Background Integrity - Colors properly scoped to truck preview only
-- **Stripe Subscription Integration** (March 2026):
-  - ✅ Standard Plan: price_1TEEq1HAM0vSVVVHrdIhHNWE ($10 first month, $14/mo)
-  - ✅ Pro Plan: price_1TEErmHAM0vSVVVHp1OvOsGx ($15 first month, $20/mo)
-  - ✅ Subscription mode checkout (not one-time payment)
-  - ✅ Webhook handlers for subscription lifecycle events
-  - ✅ Login required before checkout (security)
-
-## Files of Reference
-- `/app/frontend/src/contexts/AuthContext.js` - Auth state management
-- `/app/frontend/src/components/AuthCallback.jsx` - OAuth callback handler
-- `/app/frontend/src/pages/Showroom.jsx` - Equipment Showroom ← NEW
-- `/app/frontend/src/pages/PaintShop.jsx` - Paint Shop v2.0
-- `/app/frontend/src/pages/KitchenBuilder.jsx` - Kitchen Builder v2.0
-- `/app/backend/server.py` - All API endpoints including auth
-- `/app/frontend/src/App.js` - Routes and AuthProvider
+## Key Files
+- `/app/frontend/src/pages/PaintShop.jsx` — Main configurator (ColorWheel, TruckCanvas, controls)
+- `/app/frontend/public/trucks/` — Processed truck images (black backgrounds)
+- `/app/backend/server.py` — API endpoints including Stripe, auth, design CRUD
+- `/app/frontend/src/pages/LandingPage.jsx` — Hero with preload optimization
