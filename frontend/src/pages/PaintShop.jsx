@@ -529,6 +529,8 @@ const ColorWheel = ({ value, onChange }) => {
   const [dragging, setDragging] = React.useState(null); // "wheel" | "sv"
   const [hsv, setHsv] = React.useState(() => hexToHsv(value || "#E8592F"));
   const [hexInput, setHexInput] = React.useState(value || "#E8592F");
+  const hsvRef = React.useRef(hsv);
+  hsvRef.current = hsv;
 
   // Sync external value changes
   React.useEffect(() => {
@@ -543,7 +545,7 @@ const ColorWheel = ({ value, onChange }) => {
   const RING_WIDTH = 24;
   const SV_SIZE = WHEEL_SIZE - RING_WIDTH * 2 - 16;
 
-  const commitColor = React.useCallback((h, s, v) => {
+  const emit = React.useCallback((h, s, v) => {
     const hex = hsvToHex(h, s, v);
     setHexInput(hex.toUpperCase());
     onChange(hex);
@@ -557,11 +559,9 @@ const ColorWheel = ({ value, onChange }) => {
     const cy = rect.top + rect.height / 2;
     const angle = (Math.atan2(e.clientY - cy, e.clientX - cx) * 180) / Math.PI;
     const hue = (angle + 360) % 360;
-    setHsv((p) => {
-      commitColor(hue, p.s, p.v);
-      return { ...p, h: hue };
-    });
-  }, [commitColor]);
+    setHsv((p) => ({ ...p, h: hue }));
+    emit(hue, hsvRef.current.s, hsvRef.current.v);
+  }, [emit]);
 
   // --- SV square drag ---
   const handleSvPointer = React.useCallback((e) => {
@@ -569,11 +569,9 @@ const ColorWheel = ({ value, onChange }) => {
     const rect = svRef.current.getBoundingClientRect();
     const s = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     const v = Math.max(0, Math.min(1, 1 - (e.clientY - rect.top) / rect.height));
-    setHsv((p) => {
-      commitColor(p.h, s, v);
-      return { ...p, s, v };
-    });
-  }, [commitColor]);
+    setHsv((p) => ({ ...p, s, v }));
+    emit(hsvRef.current.h, s, v);
+  }, [emit]);
 
   React.useEffect(() => {
     if (!dragging) return;
