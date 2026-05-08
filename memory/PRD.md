@@ -9,38 +9,44 @@ Build a "Food Truck Launch Pad" full-stack application with React frontend, Fast
 - **Auth**: Emergent-managed Google Auth
 - **Payments**: Stripe live subscriptions
 
+## Design System (May 2026 - Premium Overhaul)
+- **Fonts**: Outfit (headings), Manrope (body)
+- **Primary accent**: #E8592F (warm copper)
+- **Dark background**: #0a0d14
+- **Glass morphism nav**: rgba(10,13,20,0.8) + backdrop-filter blur(20px)
+- **CSS utilities**: `.glass`, `.text-gradient-warm`, `.animate-fade-in-up`, `.noise-overlay`
+- **Icons**: Lucide React
+
 ## Completed Features
 
 ### Core Application
-- [x] React frontend with routing (Landing, Dashboard, Paint Shop, Kitchen Builder, Showroom)
+- [x] React frontend with routing (Landing, Dashboard, Paint Shop, Kitchen Builder, Showroom, Pricing, 10+ module pages)
 - [x] FastAPI backend with MongoDB persistence
 - [x] Emergent-managed Google Auth integration
 - [x] Stripe subscription integration (Standard + Pro plans with live Price IDs)
 - [x] Source code ZIP download
 
-### Paint Shop - Real-Time Visual Configurator (P1A - COMPLETE)
+### Premium Creative Director Overhaul (May 2026)
+- [x] **Landing Page**: Full-bleed hero with cinematic food truck imagery, bold "Build Your Food Truck Empire" headline, feature showcase with alternating images, how-it-works steps, tools grid, final CTA with trust signals, footer
+- [x] **Dashboard**: Reorganized into 4 categories (Design & Build, Menu & Recipes, Business Planning, Operations), 14 modules with premium card design, "Popular" badge for Paint Shop
+- [x] **Paint Shop**: Premium glassmorphism header, wider canvas preview, polished control tabs, consistent dark theme
+- [x] **All Pages**: Consistent glass navigation bars, unified dark theme (#0a0d14), Outfit/Manrope typography, warm copper accent
+- [x] **Showroom**: Updated sidebar branding and background
+- [x] **Kitchen Builder**: Updated header with glass morphism
+- [x] **Pricing Page**: Updated header, badge styling, consistent colors
+
+### Paint Shop - Real-Time Visual Configurator
 - [x] 6 photorealistic truck chassis models (black background processed images)
-- [x] Color application with NO background bleed (mix-blend-mode: multiply)
+- [x] Color application with NO background bleed (mix-blend-mode: multiply + bg-black isolation)
 - [x] HSV Color Wheel with circular hue ring + SV square
 - [x] 6 preset color palettes (Classic Fleet, Copper & Steel, Street Food, Coastal, Luxury, Neon City)
-- [x] Recent colors tracking
 - [x] 7 finish types (Matte, Gloss, Metallic, Chrome, Enamel, Satin, Pearl)
 - [x] Two-tone paint with 7 split patterns
-- [x] 9 wrap patterns (Stripes, Carbon Fiber, Polka Dots, Hex Grid, Chevrons, Brushed Metal, Camo)
-- [x] Wrap opacity slider
-- [x] Racing stripe (thin/medium/bold widths, custom color)
-- [x] Awning/Canopy (solid/striped/scalloped styles, custom color)
-- [x] LED Underglow with glow effect and custom color
-- [x] Roof Signage with illuminated option
-- [x] Business name lettering with 5 fonts, custom color, size, outline
-- [x] Logo upload with position/scale/rotation controls
-- [x] Custom photo upload
-- [x] Save/Load design persistence
-- [x] Reset design to defaults
-- [x] Zoom controls
-
-### Landing Page
-- [x] Optimized hero image loading (preload + fetchpriority)
+- [x] 9 wrap patterns with visible overlay effects
+- [x] Racing stripe, Awning/Canopy, LED Underglow, Roof Signage
+- [x] Business name lettering with fonts, color, size, outline
+- [x] Logo upload, Custom photo upload
+- [x] Save/Load design persistence + Reset
 
 ## Pending / Upcoming Tasks (Priority Order)
 
@@ -52,15 +58,9 @@ Build a "Food Truck Launch Pad" full-stack application with React frontend, Fast
 - [ ] "Get Quote" feature
 - [ ] Design Gallery (view, name, manage saved truck designs)
 - [ ] Shareable design URLs
-- [ ] Confirmation dialogs for destructive actions (Reset Design)
+- [ ] Confirmation dialogs for destructive actions
 - [ ] Additional view angles (front/rear)
-
-## Key Technical Details
-- Truck images: `/frontend/public/trucks/truck_01-06.png` (black backgrounds, white trucks)
-- Color technique: `mix-blend-mode: multiply` overlay colors white areas, leaves black untouched
-- Wraps: `mix-blend-mode: overlay` shows patterns only on colored truck areas
-- Accessories (awning, LED, signage, racing stripe): Absolute positioned elements outside blend group
-- Color isolation group uses `isolation: isolate` with `bg-black` to prevent letterbox bleed
+- [ ] Mobile responsive refinement for landing page and dashboard
 
 ## DB Schema
 - **users**: `{ google_id, name, email, picture }`
