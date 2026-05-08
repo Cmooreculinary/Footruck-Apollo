@@ -283,18 +283,81 @@ const LETTERING_FONTS = {
 };
 
 // ============================================================================
+// DRAGGABLE ELEMENT — For moving text & logos on the canvas
+// ============================================================================
+const DraggableElement = ({ canvasRef, x, y, onDrag, children }) => {
+  const [dragging, setDragging] = React.useState(false);
+  const offsetRef = React.useRef({ ox: 0, oy: 0 });
+
+  const toPercent = React.useCallback((clientX, clientY) => {
+    if (!canvasRef.current) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const px = Math.max(5, Math.min(95, ((clientX - rect.left) / rect.width) * 100));
+    const py = Math.max(5, Math.min(95, ((clientY - rect.top) / rect.height) * 100));
+    onDrag?.(Math.round(px), Math.round(py));
+  }, [canvasRef, onDrag]);
+
+  React.useEffect(() => {
+    if (!dragging) return;
+    const move = (e) => {
+      e.preventDefault();
+      const pt = e.touches ? e.touches[0] : e;
+      toPercent(pt.clientX - offsetRef.current.ox, pt.clientY - offsetRef.current.oy);
+    };
+    const up = () => setDragging(false);
+    window.addEventListener("mousemove", move, { passive: false });
+    window.addEventListener("mouseup", up);
+    window.addEventListener("touchmove", move, { passive: false });
+    window.addEventListener("touchend", up);
+    return () => {
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseup", up);
+      window.removeEventListener("touchmove", move);
+      window.removeEventListener("touchend", up);
+    };
+  }, [dragging, toPercent]);
+
+  const handleDown = (e) => {
+    e.stopPropagation();
+    const pt = e.touches ? e.touches[0] : e;
+    offsetRef.current = { ox: 0, oy: 0 };
+    setDragging(true);
+  };
+
+  return (
+    <div
+      className="absolute z-30 group"
+      style={{
+        left: `${x}%`,
+        top: `${y}%`,
+        transform: "translate(-50%, -50%)",
+        cursor: dragging ? "grabbing" : "grab",
+      }}
+      onMouseDown={handleDown}
+      onTouchStart={handleDown}
+      data-testid="draggable-element"
+    >
+      {children}
+      {/* Drag indicator ring */}
+      <div className={`absolute -inset-2 border-2 border-dashed rounded-lg pointer-events-none transition-opacity duration-150 ${dragging ? "border-[#E8592F] opacity-100" : "border-white/30 opacity-0 group-hover:opacity-100"}`} />
+    </div>
+  );
+};
+
+// ============================================================================
 // TRUCK CANVAS COMPONENT - Isolated Truck Preview with All Effects
 // All truck images now have BLACK backgrounds (processed via PIL).
 // Technique: render truck normally, then overlay selected color with
 // mix-blend-mode: multiply. multiply(color, black)=black, multiply(color, white)=color.
 // ============================================================================
-const TruckCanvas = ({ state, zoom = 1 }) => {
+const TruckCanvas = ({ state, zoom = 1, onDragText, onDragLogo }) => {
   const truckModel = TRUCK_MODELS[state.truckModel] || TRUCK_MODELS.truck_01;
   const finishType = FINISH_TYPES[state.finish] || FINISH_TYPES.GLOSS;
   const splitPattern = TWO_TONE_SPLITS[state.twoToneSplit];
   const wrapPattern = WRAP_PATTERNS[state.wrapPattern];
   const [imgLoaded, setImgLoaded] = React.useState(false);
   const [imgError, setImgError] = React.useState(false);
+  const canvasRef = React.useRef(null);
 
   const getContrastColor = (hexColor) => {
     if (!hexColor) return "#FFFFFF";
@@ -312,6 +375,7 @@ const TruckCanvas = ({ state, zoom = 1 }) => {
 
   return (
     <div
+      ref={canvasRef}
       className="relative w-full h-full overflow-hidden rounded-xl bg-black"
       style={{ transform: `scale(${zoom})`, transformOrigin: "center center" }}
       data-testid="truck-canvas"
@@ -386,42 +450,42 @@ const TruckCanvas = ({ state, zoom = 1 }) => {
           className="absolute pointer-events-none"
           style={{
             top: "44%",
-            left: "5%",
-            right: "5%",
-            height: state.racingStripeWidth === "thin" ? "8px" : state.racingStripeWidth === "bold" ? "24px" : "14px",
+            left: "12%",
+            right: "12%",
+            height: state.racingStripeWidth === "thin" ? "6px" : state.racingStripeWidth === "bold" ? "18px" : "10px",
             backgroundColor: state.racingStripeColor || "#FFFFFF",
             opacity: 0.85,
-            boxShadow: `0 0 8px ${state.racingStripeColor || "#FFFFFF"}60`,
+            borderRadius: "2px",
           }}
         />
       )}
       {state.lightsEnabled && (
         <div
-          className="absolute bottom-[12%] left-[15%] right-[15%] h-6 rounded-full"
+          className="absolute bottom-[14%] left-[14%] right-[14%] h-4 rounded-full"
           style={{
             backgroundColor: state.lightsColor || state.primaryColor || "#FF6600",
-            opacity: 0.9,
-            boxShadow: `0 0 20px 8px ${state.lightsColor || state.primaryColor || "#FF6600"}80, 0 0 40px 16px ${state.lightsColor || state.primaryColor || "#FF6600"}40`,
-            filter: "blur(4px)",
+            opacity: 0.85,
+            boxShadow: `0 0 16px 6px ${state.lightsColor || state.primaryColor || "#FF6600"}80, 0 0 32px 12px ${state.lightsColor || state.primaryColor || "#FF6600"}30`,
+            filter: "blur(3px)",
           }}
         />
       )}
       {state.awningEnabled && (
         <div
-          className="absolute top-[18%] left-[6%]"
+          className="absolute top-[20%] left-[12%]"
           style={{
             backgroundColor: state.awningColor || "#CC0000",
-            width: state.awningStyle === "full" ? "55%" : "35%",
-            height: "24px",
-            borderRadius: "0 0 12px 12px",
+            width: state.awningStyle === "full" ? "50%" : "32%",
+            height: "20px",
+            borderRadius: "0 0 10px 10px",
             backgroundImage:
               state.awningStyle === "striped"
-                ? `repeating-linear-gradient(90deg, ${state.awningColor || "#CC0000"}, ${state.awningColor || "#CC0000"} 10px, white 10px, white 20px)`
+                ? `repeating-linear-gradient(90deg, ${state.awningColor || "#CC0000"}, ${state.awningColor || "#CC0000"} 8px, white 8px, white 16px)`
                 : state.awningStyle === "scalloped"
-                ? `radial-gradient(circle at 50% 100%, transparent 8px, ${state.awningColor || "#CC0000"} 8px)`
+                ? `radial-gradient(circle at 50% 100%, transparent 7px, ${state.awningColor || "#CC0000"} 7px)`
                 : "none",
-            backgroundSize: state.awningStyle === "scalloped" ? "20px 24px" : "auto",
-            boxShadow: `0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3)`,
+            backgroundSize: state.awningStyle === "scalloped" ? "18px 20px" : "auto",
+            boxShadow: `0 3px 10px rgba(0,0,0,0.5)`,
           }}
         />
       )}
@@ -448,29 +512,30 @@ const TruckCanvas = ({ state, zoom = 1 }) => {
         </div>
       )}
       {state.logoUrl && (
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            left: `${state.logoX || 50}%`,
-            top: `${state.logoY || 35}%`,
-            transform: `translate(-50%, -50%) scale(${state.logoScale || 1}) rotate(${state.logoRotation || 0}deg)`,
-            maxWidth: "25%",
-            maxHeight: "25%",
-            filter: "drop-shadow(2px 2px 4px rgba(0,0,0,0.5))",
-          }}
+        <DraggableElement
+          canvasRef={canvasRef}
+          x={state.logoX || 50}
+          y={state.logoY || 35}
+          onDrag={(x, y) => onDragLogo?.(x, y)}
         >
-          <img src={state.logoUrl} alt="Logo" className="max-w-full max-h-full object-contain" />
-        </div>
+          <div
+            style={{
+              transform: `scale(${state.logoScale || 1}) rotate(${state.logoRotation || 0}deg)`,
+              maxWidth: "120px",
+              maxHeight: "120px",
+              filter: "drop-shadow(2px 2px 4px rgba(0,0,0,0.5))",
+            }}
+          >
+            <img src={state.logoUrl} alt="Logo" className="max-w-full max-h-full object-contain" draggable="false" />
+          </div>
+        </DraggableElement>
       )}
       {state.businessName && (
-        <div
-          className="absolute pointer-events-none text-center"
-          style={{
-            left: `${state.letteringX || 50}%`,
-            top: `${state.letteringY || 40}%`,
-            transform: "translate(-50%, -50%)",
-            width: "70%",
-          }}
+        <DraggableElement
+          canvasRef={canvasRef}
+          x={state.letteringX || 50}
+          y={state.letteringY || 40}
+          onDrag={(x, y) => onDragText?.(x, y)}
         >
           <span
             style={{
@@ -490,11 +555,12 @@ const TruckCanvas = ({ state, zoom = 1 }) => {
                 : state.letterSpacing === "ultra" ? "0.2em"
                 : "0.02em",
               whiteSpace: "nowrap",
+              userSelect: "none",
             }}
           >
             {state.businessName}
           </span>
-        </div>
+        </DraggableElement>
       )}
       <div className="absolute top-2 left-2 px-2 py-1 bg-black/60 rounded text-[10px] text-white/70 uppercase tracking-wider">
         {state.viewAngle?.replace("-", " ") || "Side View"}
@@ -812,7 +878,6 @@ const PaintShop = () => {
       try {
         const savedDesign = await api.getLatestTruckDesign();
         if (savedDesign) {
-          // Map backend schema to truckState
           setTruckState(prev => ({
             ...prev,
             primaryColor: savedDesign.primary_color || prev.primaryColor,
@@ -823,11 +888,28 @@ const PaintShop = () => {
             twoToneEnabled: !!savedDesign.split_pattern,
             twoToneSplit: savedDesign.split_pattern || prev.twoToneSplit,
             wrapPattern: savedDesign.wrap_id || "none",
+            wrapOpacity: savedDesign.wrap_opacity ?? prev.wrapOpacity,
+            letteringFont: savedDesign.lettering_font || prev.letteringFont,
+            letteringColor: savedDesign.lettering_color || prev.letteringColor,
+            letteringSize: savedDesign.lettering_size ?? prev.letteringSize,
+            letteringX: savedDesign.lettering_x ?? prev.letteringX,
+            letteringY: savedDesign.lettering_y ?? prev.letteringY,
+            letteringOutline: savedDesign.lettering_outline || prev.letteringOutline,
+            letterSpacing: savedDesign.letter_spacing || prev.letterSpacing,
             awningEnabled: !!savedDesign.awning,
             awningStyle: savedDesign.awning || prev.awningStyle,
+            awningColor: savedDesign.awning_color || prev.awningColor,
             lightsEnabled: savedDesign.accessories?.includes("led_underglow") || false,
+            lightsColor: savedDesign.lights_color || prev.lightsColor,
             signageEnabled: savedDesign.accessories?.includes("roof_signage") || false,
+            signageIlluminated: savedDesign.signage_illuminated ?? prev.signageIlluminated,
             racingStripeEnabled: savedDesign.accessories?.includes("racing_stripe") || false,
+            racingStripeColor: savedDesign.racing_stripe_color || prev.racingStripeColor,
+            racingStripeWidth: savedDesign.racing_stripe_width || prev.racingStripeWidth,
+            logoX: savedDesign.logo_x ?? prev.logoX,
+            logoY: savedDesign.logo_y ?? prev.logoY,
+            logoScale: savedDesign.logo_scale ?? prev.logoScale,
+            logoRotation: savedDesign.logo_rotation ?? prev.logoRotation,
           }));
         }
       } catch (error) {
@@ -863,11 +945,10 @@ const PaintShop = () => {
     }
   };
   
-  // Save design
+  // Save design — full state persistence
   const saveDesign = async () => {
     setIsSaving(true);
     try {
-      // Map truckState to backend schema
       const designPayload = {
         primary_color: truckState.primaryColor || "#FFFFFF",
         accent_color: truckState.secondaryColor || "#2C2C2C",
@@ -876,12 +957,29 @@ const PaintShop = () => {
         base_model: truckState.truckModel || "truck_01",
         split_pattern: truckState.twoToneEnabled ? truckState.twoToneSplit : null,
         wrap_id: truckState.wrapPattern !== "none" ? truckState.wrapPattern : null,
+        wrap_opacity: truckState.wrapOpacity,
+        lettering_font: truckState.letteringFont,
+        lettering_color: truckState.letteringColor,
+        lettering_size: truckState.letteringSize,
+        lettering_x: truckState.letteringX,
+        lettering_y: truckState.letteringY,
+        lettering_outline: truckState.letteringOutline,
+        letter_spacing: truckState.letterSpacing,
         awning: truckState.awningEnabled ? truckState.awningStyle : null,
+        awning_color: truckState.awningColor,
+        lights_color: truckState.lightsColor,
+        signage_illuminated: truckState.signageIlluminated,
+        racing_stripe_color: truckState.racingStripeColor,
+        racing_stripe_width: truckState.racingStripeWidth,
         accessories: [
           truckState.lightsEnabled ? "led_underglow" : null,
           truckState.signageEnabled ? "roof_signage" : null,
           truckState.racingStripeEnabled ? "racing_stripe" : null,
-        ].filter(Boolean)
+        ].filter(Boolean),
+        logo_x: truckState.logoX,
+        logo_y: truckState.logoY,
+        logo_scale: truckState.logoScale,
+        logo_rotation: truckState.logoRotation,
       };
       await api.saveTruckDesign(designPayload);
       toast.success("Design saved successfully!");
@@ -1031,7 +1129,12 @@ const PaintShop = () => {
           
           {/* Truck Canvas */}
           <div className="aspect-[3/2] bg-black rounded-xl overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-white/5">
-            <TruckCanvas state={truckState} zoom={zoom} />
+            <TruckCanvas
+              state={truckState}
+              zoom={zoom}
+              onDragText={(x, y) => updateState({ letteringX: x, letteringY: y })}
+              onDragLogo={(x, y) => updateState({ logoX: x, logoY: y })}
+            />
           </div>
           
           {/* Truck Model Selector */}
@@ -1261,8 +1364,12 @@ const PaintShop = () => {
                     placeholder="Enter your business name"
                     className="w-full px-4 py-3 bg-white/[0.06] border border-white/10 rounded-lg text-white focus:border-[#E8592F] focus:outline-none"
                     maxLength={28}
+                    data-testid="business-name-input"
                   />
-                  <span className="text-xs text-zinc-500">{truckState.businessName.length}/28</span>
+                  <div className="flex justify-between mt-1">
+                    <span className="text-xs text-zinc-600">{truckState.businessName.length}/28</span>
+                    {truckState.businessName && <span className="text-xs text-[#E8592F]">Drag text on the preview to reposition</span>}
+                  </div>
                 </div>
                 
                 <div>

@@ -166,13 +166,35 @@ class TruckDesign(BaseModel):
     finish_type: str
     texture_type: Optional[str] = None  # Legacy field
     business_name: str
-    # New Paint Shop v2 fields
+    # Truck model & paint
     base_model: Optional[str] = None
     split_pattern: Optional[str] = None
     wrap_id: Optional[str] = None
-    serving_window: Optional[str] = None
+    wrap_opacity: Optional[float] = None
+    # Lettering
+    lettering_font: Optional[str] = None
+    lettering_color: Optional[str] = None
+    lettering_size: Optional[int] = None
+    lettering_x: Optional[float] = None
+    lettering_y: Optional[float] = None
+    lettering_outline: Optional[str] = None
+    letter_spacing: Optional[str] = None
+    # Accessories
     awning: Optional[str] = None
+    awning_color: Optional[str] = None
+    lights_color: Optional[str] = None
+    signage_illuminated: Optional[bool] = None
+    racing_stripe_color: Optional[str] = None
+    racing_stripe_width: Optional[str] = None
     accessories: Optional[List[str]] = None
+    # Logo
+    logo_url: Optional[str] = None
+    logo_x: Optional[float] = None
+    logo_y: Optional[float] = None
+    logo_scale: Optional[float] = None
+    logo_rotation: Optional[float] = None
+    # Legacy
+    serving_window: Optional[str] = None
     wheels: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -181,15 +203,32 @@ class TruckDesignCreate(BaseModel):
     primary_color: str
     accent_color: str
     finish_type: str
-    texture_type: Optional[str] = None  # Legacy field
+    texture_type: Optional[str] = None
     business_name: str
-    # New Paint Shop v2 fields
     base_model: Optional[str] = None
     split_pattern: Optional[str] = None
     wrap_id: Optional[str] = None
-    serving_window: Optional[str] = None
+    wrap_opacity: Optional[float] = None
+    lettering_font: Optional[str] = None
+    lettering_color: Optional[str] = None
+    lettering_size: Optional[int] = None
+    lettering_x: Optional[float] = None
+    lettering_y: Optional[float] = None
+    lettering_outline: Optional[str] = None
+    letter_spacing: Optional[str] = None
     awning: Optional[str] = None
+    awning_color: Optional[str] = None
+    lights_color: Optional[str] = None
+    signage_illuminated: Optional[bool] = None
+    racing_stripe_color: Optional[str] = None
+    racing_stripe_width: Optional[str] = None
     accessories: Optional[List[str]] = None
+    logo_url: Optional[str] = None
+    logo_x: Optional[float] = None
+    logo_y: Optional[float] = None
+    logo_scale: Optional[float] = None
+    logo_rotation: Optional[float] = None
+    serving_window: Optional[str] = None
     wheels: Optional[str] = None
 
 
@@ -905,8 +944,15 @@ async def create_truck_design(input: TruckDesignCreate, request: Request):
     user = await get_current_user(request)
     if user:
         doc["user_id"] = user.user_id
+        # Upsert: update existing design for this user, or insert new
+        await db.truck_designs.update_one(
+            {"user_id": user.user_id},
+            {"$set": doc},
+            upsert=True
+        )
+    else:
+        await db.truck_designs.insert_one(doc)
     
-    await db.truck_designs.insert_one(doc)
     return design_obj
 
 @api_router.get("/truck-designs", response_model=List[TruckDesign])
