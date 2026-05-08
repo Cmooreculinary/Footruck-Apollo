@@ -228,15 +228,17 @@ const PricingPage = () => {
       />
 
       {/* Header */}
-      <header className="border-b border-slate-800 bg-slate-900/50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <Truck className="w-7 h-7 text-orange-500" />
-            <span className="font-bold text-lg">Food Truck Launch Pad</span>
+      <header className="glass sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+            <div className="w-8 h-8 rounded-lg bg-[#E8592F] flex items-center justify-center">
+              <Truck className="w-4 h-4 text-white" />
+            </div>
+            <span className="font-heading text-lg font-bold">FTLP</span>
           </Link>
           <Link 
             to="/dashboard" 
-            className="text-slate-400 hover:text-white transition-colors text-sm"
+            className="text-zinc-500 hover:text-white transition-colors text-sm font-medium"
           >
             Back to Dashboard
           </Link>
@@ -245,19 +247,19 @@ const PricingPage = () => {
 
       {/* Hero */}
       <section className="py-16 px-4 text-center">
-        <div className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/30 rounded-full px-4 py-2 mb-6">
-          <Clock className="w-4 h-4 text-green-500" />
-          <span className="text-green-400 text-sm font-semibold">24-Hour Free Trial • No Credit Card</span>
+        <div className="inline-flex items-center gap-2 bg-[#E8592F]/10 border border-[#E8592F]/30 rounded-full px-4 py-2 mb-6">
+          <Clock className="w-4 h-4 text-[#E8592F]" />
+          <span className="text-[#E8592F] text-sm font-semibold">24-Hour Free Trial • No Credit Card</span>
         </div>
         
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">
+        <h1 className="font-heading text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
           Simple, Transparent Pricing
         </h1>
-        <p className="text-slate-400 text-lg max-w-2xl mx-auto mb-4">
+        <p className="text-zinc-500 text-lg max-w-2xl mx-auto mb-4">
           Start your food truck journey today. Try any plan free for 24 hours, 
           then continue at our introductory rate.
         </p>
-        <div className="flex items-center justify-center gap-6 text-sm text-slate-500">
+        <div className="flex items-center justify-center gap-6 text-sm text-zinc-500">
           <span className="flex items-center gap-1.5">
             <Shield className="w-4 h-4 text-green-500" />
             No credit card required
@@ -420,7 +422,7 @@ const PricingPage = () => {
       </section>
 
       {/* Feature Highlights */}
-      <section className="py-16 px-4 bg-slate-900/50 border-t border-slate-800">
+      <section className="py-16 px-4 bg-[#0d1018] border-t border-white/5">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl font-bold text-center mb-12">All Plans Include</h2>
           <div className="grid md:grid-cols-3 gap-8">

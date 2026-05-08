@@ -717,7 +717,7 @@ const Showroom = () => {
   };
 
   return (
-    <div style={{ display:"flex", minHeight:"100vh", background:"#0B0F17", fontFamily:"'Outfit',sans-serif" }}>
+    <div style={{ display:"flex", minHeight:"100vh", background:"#0a0d14", fontFamily:"'Manrope',sans-serif" }}>
       <SEO 
         title="Equipment Showroom - Food Truck Launch Pad"
         description="Browse and configure commercial food truck equipment. Chassis, cooking, refrigeration, HVAC, plumbing, electrical, and serving equipment."
@@ -725,16 +725,17 @@ const Showroom = () => {
       />
       
       {/* Sidebar */}
-      <aside style={{ width:240, background:"#0F172A", borderRight:"1px solid #1E293B", display:"flex", flexDirection:"column", position:"sticky", top:0, height:"100vh", overflow:"auto" }}>
-        <div style={{ padding:"20px 16px", borderBottom:"1px solid #1E293B" }}>
-          <Link to="/dashboard" style={{ display:"flex", alignItems:"center", gap:8, textDecoration:"none", marginBottom:12 }}>
-            <Truck className="w-6 h-6" style={{ color:"#E8592F" }} />
+      <aside style={{ width:240, background:"#0d1018", borderRight:"1px solid rgba(255,255,255,0.05)", display:"flex", flexDirection:"column", position:"sticky", top:0, height:"100vh", overflow:"auto" }}>
+        <div style={{ padding:"16px 16px", borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
+          <Link to="/dashboard" style={{ display:"flex", alignItems:"center", gap:10, textDecoration:"none", marginBottom:12 }}>
+            <div style={{ width:32, height:32, borderRadius:8, background:"#E8592F", display:"flex", alignItems:"center", justifyContent:"center" }}>
+              <Truck className="w-4 h-4" style={{ color:"white" }} />
+            </div>
             <div>
-              <div style={{ color:"#E8592F", fontSize:10, fontWeight:800, letterSpacing:"0.1em" }}>FOOD TRUCK</div>
-              <div style={{ color:"#E8ECF2", fontSize:14, fontWeight:800 }}>LAUNCHPAD</div>
+              <div style={{ color:"#fff", fontSize:15, fontWeight:700, fontFamily:"'Outfit',sans-serif" }}>FTLP</div>
             </div>
           </Link>
-          <div style={{ color:"#64748B", fontSize:11, marginTop:8 }}>The Showroom</div>
+          <div style={{ color:"#52525b", fontSize:12, fontWeight:600, letterSpacing:"0.05em" }}>Equipment Showroom</div>
         </div>
         
         <div style={{ flex:1, padding:"12px 10px" }}>

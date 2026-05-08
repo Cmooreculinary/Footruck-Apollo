@@ -177,7 +177,7 @@ const RecipeBuilder = () => {
   };
 
   return (
-    <div className="bg-[#141210] font-display text-slate-100 min-h-screen">
+    <div className="bg-[#0a0d14] font-display text-slate-100 min-h-screen">
       <SEO 
         title="Recipe Builder - Smoked Brisket Tacos"
         description="Build and cost your food truck recipes with industrial precision. Ingredient costing, cooking methods, batch yields, and cost per serving."
@@ -317,7 +317,7 @@ const RecipeBuilder = () => {
             </div>
             <div className="p-4 space-y-3 flex-1" data-testid="ingredients-list">
               {ingredients.map((item) => (
-                <div key={item.id} className="bg-[#141210] border border-border-col rounded-xl p-4">
+                <div key={item.id} className="bg-[#0a0d14] border border-border-col rounded-xl p-4">
                   <div className="flex items-center justify-between mb-2">
                     <p className="font-bold text-sm text-white uppercase tracking-tighter">{item.name}</p>
                     <span className="text-[10px] text-slate-600">{item.sku}</span>
@@ -330,7 +330,7 @@ const RecipeBuilder = () => {
                 </div>
               ))}
             </div>
-            <div className="p-5 border-t border-border-col bg-[#141210]/50">
+            <div className="p-5 border-t border-border-col bg-[#0a0d14]/50">
               <div className="flex justify-between text-sm mb-2">
                 <span className="text-slate-400 font-medium">Ingredient Subtotal</span>
                 <span className="text-white font-bold">${ingredientSubtotal.toFixed(2)}</span>
@@ -343,7 +343,7 @@ const RecipeBuilder = () => {
           </aside>
 
           {/* Right: Cooking Method */}
-          <main className="flex-1 overflow-y-auto p-8 bg-[#141210]">
+          <main className="flex-1 overflow-y-auto p-8 bg-[#0a0d14]">
             <div className="flex items-center justify-between mb-6">
               <h2 className="font-header text-2xl font-bold uppercase tracking-wide">Cooking Method</h2>
               <button 
@@ -380,7 +380,7 @@ const RecipeBuilder = () => {
                   <div className="p-6">
                     {activeStep === step.id ? (
                       <textarea 
-                        className="w-full bg-[#141210] border border-border-col rounded-lg p-4 text-slate-300 text-sm leading-relaxed focus:outline-none focus:border-primary resize-none h-24"
+                        className="w-full bg-[#0a0d14] border border-border-col rounded-lg p-4 text-slate-300 text-sm leading-relaxed focus:outline-none focus:border-primary resize-none h-24"
                         value={step.content}
                         onChange={(e) => updateStepContent(step.id, e.target.value)}
                       />

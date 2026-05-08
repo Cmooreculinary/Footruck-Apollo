@@ -323,7 +323,7 @@ const TruckCanvas = ({ state, zoom = 1 }) => {
         </div>
       )}
       {imgError && (
-        <div className="absolute inset-0 flex items-center justify-center z-20 text-gray-500 text-sm">
+        <div className="absolute inset-0 flex items-center justify-center z-20 text-zinc-500 text-sm">
           Failed to load truck image
         </div>
       )}
@@ -676,7 +676,7 @@ const ColorWheel = ({ value, onChange }) => {
       {/* HEX input + current color preview */}
       <div className="flex items-center gap-2 w-full max-w-[220px]">
         <div
-          className="w-10 h-10 rounded-lg border border-gray-600 shrink-0"
+          className="w-10 h-10 rounded-lg border border-white/10 shrink-0"
           style={{ backgroundColor: value || "#E8592F" }}
         />
         <input
@@ -691,8 +691,8 @@ const ColorWheel = ({ value, onChange }) => {
               onChange(v);
             }
           }}
-          className={`flex-1 px-3 py-2 bg-gray-800 border rounded-lg text-white text-sm font-mono uppercase
-            ${hexValid ? "border-gray-700 focus:border-[#E8592F]" : "border-red-500"} focus:outline-none`}
+          className={`flex-1 px-3 py-2 bg-white/[0.06] border rounded-lg text-white text-sm font-mono uppercase
+            ${hexValid ? "border-white/10 focus:border-[#E8592F]" : "border-red-500"} focus:outline-none`}
           maxLength={7}
           data-testid="hex-input"
         />
@@ -710,7 +710,7 @@ const ColorSwatch = ({ color, isSelected, onClick, size = "md" }) => {
     <button
       onClick={onClick}
       className={`${sizeClasses[size]} rounded-full border-2 transition-all duration-150 flex items-center justify-center
-        ${isSelected ? "border-[#E8592F] scale-110 ring-2 ring-[#E8592F] ring-offset-2 ring-offset-[#1a1a2e]" : "border-gray-600 hover:border-gray-400"}`}
+        ${isSelected ? "border-[#E8592F] scale-110 ring-2 ring-[#E8592F] ring-offset-2 ring-offset-[#1a1a2e]" : "border-white/10 hover:border-white/20"}`}
       style={{ backgroundColor: color.hex }}
       title={color.name}
       data-testid={`color-swatch-${color.hex}`}
@@ -734,19 +734,19 @@ const ControlTabs = ({ activeTab, setActiveTab }) => {
   ];
   
   return (
-    <div className="flex border-b border-gray-700 mb-4">
+    <div className="flex border-b border-white/5 mb-6">
       {tabs.map(tab => (
         <button
           key={tab.id}
           onClick={() => setActiveTab(tab.id)}
-          className={`flex-1 py-3 px-2 flex flex-col items-center gap-1 transition-colors
+          className={`flex-1 py-3 px-2 flex flex-col items-center gap-1 transition-colors text-xs font-medium
             ${activeTab === tab.id 
-              ? "text-[#E8592F] border-b-2 border-[#E8592F] bg-[#E8592F]/10" 
-              : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/50"}`}
+              ? "text-[#E8592F] border-b-2 border-[#E8592F] bg-[#E8592F]/5" 
+              : "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.02]"}`}
           data-testid={`tab-${tab.id}`}
         >
-          <tab.icon className="w-5 h-5" />
-          <span className="text-xs">{tab.label}</span>
+          <tab.icon className="w-4 h-4" />
+          <span>{tab.label}</span>
         </button>
       ))}
     </div>
@@ -951,74 +951,78 @@ const PaintShop = () => {
   
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#1a1a2e] to-[#0f0f14] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0a0d14] flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-[#E8592F] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">Loading Paint Shop...</p>
+          <p className="text-zinc-500 font-medium">Loading Paint Shop...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1a1a2e] to-[#0f0f14]" data-testid="paint-shop">
+    <div className="min-h-screen bg-[#0a0d14]" data-testid="paint-shop">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0f0f14]/95 backdrop-blur-md border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <header className="sticky top-0 z-50 glass">
+        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
           <button
             onClick={() => navigate("/dashboard")}
-            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-sm font-medium"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-4 h-4" />
             <span>Dashboard</span>
           </button>
           
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Palette className="w-6 h-6 text-[#E8592F]" />
+          <h1 className="font-heading text-lg font-bold text-white flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-[#E8592F] flex items-center justify-center">
+              <Palette className="w-4 h-4 text-white" />
+            </div>
             Paint Shop
           </h1>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               onClick={resetDesign}
-              className="p-2 text-gray-400 hover:text-white transition-colors"
+              className="p-2 text-zinc-500 hover:text-white transition-colors rounded-lg hover:bg-white/5"
               title="Reset Design"
+              data-testid="reset-design-btn"
             >
-              <RotateCcw className="w-5 h-5" />
+              <RotateCcw className="w-4 h-4" />
             </button>
             <button
               onClick={saveDesign}
               disabled={isSaving}
-              className="flex items-center gap-2 px-4 py-2 bg-[#E8592F] hover:bg-[#d14a24] text-white rounded-lg transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-5 py-2 bg-[#E8592F] hover:bg-[#d14a24] text-white text-sm font-semibold rounded-full transition-colors disabled:opacity-50"
+              data-testid="save-design-btn"
             >
               <Save className="w-4 h-4" />
-              {isSaving ? "Saving..." : "Save"}
+              {isSaving ? "Saving..." : "Save Design"}
             </button>
           </div>
         </div>
       </header>
       
       {/* Main Content - Split View */}
-      <div className="max-w-7xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-6">
         
         {/* Left: Truck Preview */}
-        <div className="bg-[#111118] rounded-2xl p-4 border border-gray-800">
+        <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5">
           {/* Preview Controls */}
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm text-gray-400">
+            <span className="font-heading text-sm font-semibold text-white">
               {TRUCK_MODELS[truckState.truckModel]?.name || "Classic Step Van"}
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <button
                 onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
-                className="p-2 text-gray-400 hover:text-white bg-gray-800 rounded-lg"
+                className="p-2 text-zinc-500 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
               >
                 <ZoomOut className="w-4 h-4" />
               </button>
-              <span className="text-xs text-gray-500 w-12 text-center">{Math.round(zoom * 100)}%</span>
+              <span className="text-xs text-zinc-600 w-10 text-center font-mono">{Math.round(zoom * 100)}%</span>
               <button
                 onClick={() => setZoom(Math.min(2, zoom + 0.1))}
-                className="p-2 text-gray-400 hover:text-white bg-gray-800 rounded-lg"
+                className="p-2 text-zinc-500 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
               >
                 <ZoomIn className="w-4 h-4" />
               </button>
@@ -1026,22 +1030,22 @@ const PaintShop = () => {
           </div>
           
           {/* Truck Canvas */}
-          <div className="aspect-[3/2] bg-black rounded-xl overflow-hidden">
+          <div className="aspect-[3/2] bg-black rounded-xl overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-white/5">
             <TruckCanvas state={truckState} zoom={zoom} />
           </div>
           
           {/* Truck Model Selector */}
-          <div className="mt-4">
-            <label className="block text-sm text-gray-400 mb-2">Truck Model</label>
+          <div className="mt-5">
+            <label className="block text-xs text-zinc-500 font-semibold uppercase tracking-wider mb-3">Select Chassis</label>
             <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
               {Object.values(TRUCK_MODELS).map(model => (
                 <button
                   key={model.id}
                   onClick={() => updateState({ truckModel: model.id })}
-                  className={`p-2 rounded-lg border transition-all text-center
+                  className={`p-2 rounded-xl border transition-all text-center
                     ${truckState.truckModel === model.id 
                       ? "border-[#E8592F] bg-[#E8592F]/10" 
-                      : "border-gray-700 hover:border-gray-500"}`}
+                      : "border-white/5 hover:border-white/15 bg-white/[0.02]"}`}
                   title={model.description}
                 >
                   <img 
@@ -1049,7 +1053,7 @@ const PaintShop = () => {
                     alt={model.name}
                     className="w-full h-12 object-contain mb-1"
                   />
-                  <span className="text-[10px] text-gray-400 line-clamp-1">{model.name}</span>
+                  <span className="text-[10px] text-zinc-500 line-clamp-1">{model.name}</span>
                 </button>
               ))}
             </div>
@@ -1057,7 +1061,7 @@ const PaintShop = () => {
         </div>
         
         {/* Right: Control Panel */}
-        <div className="bg-[#111118] rounded-2xl p-4 border border-gray-800">
+        <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5">
           <ControlTabs activeTab={activeTab} setActiveTab={setActiveTab} />
           
           <div className="space-y-6 max-h-[600px] overflow-y-auto pr-2">
@@ -1067,13 +1071,13 @@ const PaintShop = () => {
               <>
                 {/* Color Wheel — main color selector */}
                 <div data-testid="paint-color-section">
-                  <label className="block text-sm text-gray-400 mb-3">Paint Color</label>
+                  <label className="block text-sm text-zinc-400 mb-3">Paint Color</label>
                   <ColorWheel value={truckState.primaryColor} onChange={(hex) => selectColor(hex)} />
                 </div>
 
                 {/* Quick Palette Presets */}
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Preset Palettes</label>
+                  <label className="block text-sm text-zinc-400 mb-2">Preset Palettes</label>
                   <div className="flex flex-wrap gap-1.5 mb-3">
                     {Object.entries(COLOR_PALETTES).filter(([k]) => k !== "custom").map(([key, palette]) => (
                       <button
@@ -1082,7 +1086,7 @@ const PaintShop = () => {
                         className={`px-2.5 py-1 text-[11px] rounded-full border transition-colors
                           ${activePalette === key
                             ? "border-[#E8592F] bg-[#E8592F]/20 text-[#E8592F]"
-                            : "border-gray-600 text-gray-400 hover:border-gray-400"}`}
+                            : "border-white/10 text-zinc-400 hover:border-white/20"}`}
                         data-testid={`palette-${key}`}
                       >
                         {palette.name}
@@ -1102,14 +1106,14 @@ const PaintShop = () => {
                   {/* Recent Colors */}
                   {recentColors.length > 0 && (
                     <div className="mt-3">
-                      <label className="block text-xs text-gray-500 mb-1.5">Recent</label>
+                      <label className="block text-xs text-zinc-500 mb-1.5">Recent</label>
                       <div className="flex gap-1.5">
                         {recentColors.map(hex => (
                           <button
                             key={hex}
                             onClick={() => selectColor(hex)}
                             className={`w-7 h-7 rounded-full border transition-all
-                              ${truckState.primaryColor === hex ? "border-[#E8592F] scale-110" : "border-gray-600 hover:border-gray-400"}`}
+                              ${truckState.primaryColor === hex ? "border-[#E8592F] scale-110" : "border-white/10 hover:border-white/20"}`}
                             style={{ backgroundColor: hex }}
                             data-testid={`recent-color-${hex}`}
                           />
@@ -1121,7 +1125,7 @@ const PaintShop = () => {
                 
                 {/* Finish Type */}
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Finish Type</label>
+                  <label className="block text-sm text-zinc-400 mb-2">Finish Type</label>
                   <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
                     {Object.entries(FINISH_TYPES).map(([key, finish]) => (
                       <button
@@ -1130,10 +1134,10 @@ const PaintShop = () => {
                         className={`p-2 rounded-lg border text-center transition-all
                           ${truckState.finish === key 
                             ? "border-[#E8592F] bg-[#E8592F]/10" 
-                            : "border-gray-700 hover:border-gray-500"}`}
+                            : "border-white/10 hover:border-white/15"}`}
                         title={finish.description}
                       >
-                        <span className="text-xs text-gray-300">{finish.name}</span>
+                        <span className="text-xs text-zinc-300">{finish.name}</span>
                       </button>
                     ))}
                   </div>
@@ -1142,11 +1146,11 @@ const PaintShop = () => {
                 {/* Two-Tone Toggle */}
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <label className="text-sm text-gray-400">Two-Tone Paint</label>
+                    <label className="text-sm text-zinc-400">Two-Tone Paint</label>
                     <button
                       onClick={() => updateState({ twoToneEnabled: !truckState.twoToneEnabled })}
                       className={`relative w-12 h-6 rounded-full transition-colors
-                        ${truckState.twoToneEnabled ? "bg-[#E8592F]" : "bg-gray-700"}`}
+                        ${truckState.twoToneEnabled ? "bg-[#E8592F]" : "bg-zinc-700"}`}
                     >
                       <span 
                         className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
@@ -1159,7 +1163,7 @@ const PaintShop = () => {
                     <div className="space-y-3 pl-4 border-l-2 border-[#E8592F]/30">
                       {/* Secondary Color */}
                       <div>
-                        <label className="block text-xs text-gray-500 mb-2">Secondary Color</label>
+                        <label className="block text-xs text-zinc-500 mb-2">Secondary Color</label>
                         <div className="flex flex-wrap gap-2">
                           {COLOR_PALETTES[activePalette]?.colors.map(color => (
                             <ColorSwatch
@@ -1175,7 +1179,7 @@ const PaintShop = () => {
                       
                       {/* Split Pattern */}
                       <div>
-                        <label className="block text-xs text-gray-500 mb-2">Split Pattern</label>
+                        <label className="block text-xs text-zinc-500 mb-2">Split Pattern</label>
                         <div className="grid grid-cols-4 gap-2">
                           {Object.entries(TWO_TONE_SPLITS).map(([key, split]) => (
                             <button
@@ -1184,10 +1188,10 @@ const PaintShop = () => {
                               className={`p-2 rounded-lg border text-center
                                 ${truckState.twoToneSplit === key 
                                   ? "border-[#E8592F] bg-[#E8592F]/10" 
-                                  : "border-gray-700 hover:border-gray-500"}`}
+                                  : "border-white/10 hover:border-white/15"}`}
                               title={split.description}
                             >
-                              <span className="text-[10px] text-gray-400">{split.name}</span>
+                              <span className="text-[10px] text-zinc-400">{split.name}</span>
                             </button>
                           ))}
                         </div>
@@ -1202,7 +1206,7 @@ const PaintShop = () => {
             {activeTab === "wraps" && (
               <>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Wrap Pattern</label>
+                  <label className="block text-sm text-zinc-400 mb-2">Wrap Pattern</label>
                   <div className="grid grid-cols-3 gap-2">
                     {Object.entries(WRAP_PATTERNS).map(([key, pattern]) => (
                       <button
@@ -1211,16 +1215,16 @@ const PaintShop = () => {
                         className={`p-3 rounded-lg border text-center transition-all
                           ${truckState.wrapPattern === key 
                             ? "border-[#E8592F] bg-[#E8592F]/10" 
-                            : "border-gray-700 hover:border-gray-500"}`}
+                            : "border-white/10 hover:border-white/15"}`}
                       >
                         <div 
-                          className="w-full h-8 rounded mb-2 bg-gray-700"
+                          className="w-full h-8 rounded mb-2 bg-zinc-700"
                           style={{ 
                             background: pattern.css || "#374151",
                             backgroundSize: pattern.size || "auto"
                           }}
                         />
-                        <span className="text-xs text-gray-300">{pattern.name}</span>
+                        <span className="text-xs text-zinc-300">{pattern.name}</span>
                       </button>
                     ))}
                   </div>
@@ -1228,7 +1232,7 @@ const PaintShop = () => {
                 
                 {truckState.wrapPattern !== "none" && (
                   <div>
-                    <label className="block text-sm text-gray-400 mb-2">
+                    <label className="block text-sm text-zinc-400 mb-2">
                       Wrap Opacity: {Math.round(truckState.wrapOpacity * 100)}%
                     </label>
                     <input
@@ -1249,20 +1253,20 @@ const PaintShop = () => {
             {activeTab === "lettering" && (
               <>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Business Name</label>
+                  <label className="block text-sm text-zinc-400 mb-2">Business Name</label>
                   <input
                     type="text"
                     value={truckState.businessName}
                     onChange={(e) => updateState({ businessName: e.target.value.slice(0, 28) })}
                     placeholder="Enter your business name"
-                    className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:border-[#E8592F] focus:outline-none"
+                    className="w-full px-4 py-3 bg-white/[0.06] border border-white/10 rounded-lg text-white focus:border-[#E8592F] focus:outline-none"
                     maxLength={28}
                   />
-                  <span className="text-xs text-gray-500">{truckState.businessName.length}/28</span>
+                  <span className="text-xs text-zinc-500">{truckState.businessName.length}/28</span>
                 </div>
                 
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Font Style</label>
+                  <label className="block text-sm text-zinc-400 mb-2">Font Style</label>
                   <div className="grid grid-cols-5 gap-2">
                     {Object.entries(LETTERING_FONTS).map(([key, font]) => (
                       <button
@@ -1271,10 +1275,10 @@ const PaintShop = () => {
                         className={`p-2 rounded-lg border text-center
                           ${truckState.letteringFont === key 
                             ? "border-[#E8592F] bg-[#E8592F]/10" 
-                            : "border-gray-700 hover:border-gray-500"}`}
+                            : "border-white/10 hover:border-white/15"}`}
                       >
                         <span 
-                          className="text-sm text-gray-300"
+                          className="text-sm text-zinc-300"
                           style={{ fontFamily: font.fontFamily }}
                         >
                           {font.name}
@@ -1285,14 +1289,14 @@ const PaintShop = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Text Color</label>
+                  <label className="block text-sm text-zinc-400 mb-2">Text Color</label>
                   <div className="flex flex-wrap gap-2">
                     {["#FFFFFF", "#000000", "#E8592F", "#FFD700", "#FF0000", "#00FF00", "#0000FF", "#FF00FF"].map(hex => (
                       <button
                         key={hex}
                         onClick={() => updateState({ letteringColor: hex })}
                         className={`w-8 h-8 rounded-full border-2 transition-all
-                          ${truckState.letteringColor === hex ? "border-[#E8592F] scale-110" : "border-gray-600"}`}
+                          ${truckState.letteringColor === hex ? "border-[#E8592F] scale-110" : "border-white/10"}`}
                         style={{ backgroundColor: hex }}
                       />
                     ))}
@@ -1300,7 +1304,7 @@ const PaintShop = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">
+                  <label className="block text-sm text-zinc-400 mb-2">
                     Text Size: {["XS", "S", "M", "L", "XL"][truckState.letteringSize - 1]}
                   </label>
                   <input
@@ -1314,7 +1318,7 @@ const PaintShop = () => {
                 </div>
                 
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Text Outline</label>
+                  <label className="block text-sm text-zinc-400 mb-2">Text Outline</label>
                   <div className="flex gap-2">
                     {[["none", "None"], ["thin", "Thin"], ["bold", "Bold"]].map(([value, label]) => (
                       <button
@@ -1323,7 +1327,7 @@ const PaintShop = () => {
                         className={`flex-1 py-2 rounded-lg border text-sm
                           ${truckState.letteringOutline === value 
                             ? "border-[#E8592F] bg-[#E8592F]/10 text-[#E8592F]" 
-                            : "border-gray-700 text-gray-400 hover:border-gray-500"}`}
+                            : "border-white/10 text-zinc-400 hover:border-white/15"}`}
                       >
                         {label}
                       </button>
@@ -1337,11 +1341,11 @@ const PaintShop = () => {
             {activeTab === "logo" && (
               <>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Upload Logo</label>
+                  <label className="block text-sm text-zinc-400 mb-2">Upload Logo</label>
                   {!truckState.logoUrl ? (
-                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-[#E8592F] transition-colors">
-                      <Upload className="w-8 h-8 text-gray-500 mb-2" />
-                      <span className="text-sm text-gray-500">PNG, SVG, WebP (max 5MB)</span>
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/10 rounded-lg cursor-pointer hover:border-[#E8592F] transition-colors">
+                      <Upload className="w-8 h-8 text-zinc-500 mb-2" />
+                      <span className="text-sm text-zinc-500">PNG, SVG, WebP (max 5MB)</span>
                       <input
                         type="file"
                         accept=".png,.svg,.webp"
@@ -1354,7 +1358,7 @@ const PaintShop = () => {
                       <img 
                         src={truckState.logoUrl} 
                         alt="Logo preview" 
-                        className="w-full h-32 object-contain bg-gray-800 rounded-lg"
+                        className="w-full h-32 object-contain bg-white/[0.06] rounded-lg"
                       />
                       <button
                         onClick={() => updateState({ logoUrl: null })}
@@ -1369,7 +1373,7 @@ const PaintShop = () => {
                 {truckState.logoUrl && (
                   <>
                     <div>
-                      <label className="block text-sm text-gray-400 mb-2">
+                      <label className="block text-sm text-zinc-400 mb-2">
                         Scale: {truckState.logoScale.toFixed(1)}x
                       </label>
                       <input
@@ -1384,7 +1388,7 @@ const PaintShop = () => {
                     </div>
                     
                     <div>
-                      <label className="block text-sm text-gray-400 mb-2">
+                      <label className="block text-sm text-zinc-400 mb-2">
                         Rotation: {truckState.logoRotation}°
                       </label>
                       <input
@@ -1399,7 +1403,7 @@ const PaintShop = () => {
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm text-gray-400 mb-2">
+                        <label className="block text-sm text-zinc-400 mb-2">
                           Position X: {truckState.logoX}%
                         </label>
                         <input
@@ -1412,7 +1416,7 @@ const PaintShop = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm text-gray-400 mb-2">
+                        <label className="block text-sm text-zinc-400 mb-2">
                           Position Y: {truckState.logoY}%
                         </label>
                         <input
@@ -1434,34 +1438,34 @@ const PaintShop = () => {
             {activeTab === "extras" && (
               <>
                 {/* Awning */}
-                <div className="p-4 bg-gray-800/50 rounded-lg">
+                <div className="p-4 bg-white/[0.04] rounded-lg">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm text-gray-300">Awning / Canopy</span>
+                    <span className="text-sm text-zinc-300">Awning / Canopy</span>
                     <button
                       onClick={() => updateState({ awningEnabled: !truckState.awningEnabled })}
                       className={`relative w-12 h-6 rounded-full transition-colors
-                        ${truckState.awningEnabled ? "bg-[#E8592F]" : "bg-gray-700"}`}
+                        ${truckState.awningEnabled ? "bg-[#E8592F]" : "bg-zinc-700"}`}
                     >
                       <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
                         ${truckState.awningEnabled ? "left-7" : "left-1"}`} />
                     </button>
                   </div>
                   {truckState.awningEnabled && (
-                    <div className="space-y-3 pt-3 border-t border-gray-700">
+                    <div className="space-y-3 pt-3 border-t border-white/10">
                       <div className="flex gap-2">
                         {["solid", "striped", "scalloped"].map(style => (
                           <button
                             key={style}
                             onClick={() => updateState({ awningStyle: style })}
                             className={`flex-1 py-1 text-xs rounded border
-                              ${truckState.awningStyle === style ? "border-[#E8592F] text-[#E8592F]" : "border-gray-600 text-gray-400"}`}
+                              ${truckState.awningStyle === style ? "border-[#E8592F] text-[#E8592F]" : "border-white/10 text-zinc-400"}`}
                           >
                             {style.charAt(0).toUpperCase() + style.slice(1)}
                           </button>
                         ))}
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-500">Color:</span>
+                        <span className="text-xs text-zinc-500">Color:</span>
                         <input
                           type="color"
                           value={truckState.awningColor}
@@ -1474,21 +1478,21 @@ const PaintShop = () => {
                 </div>
                 
                 {/* LED Lights */}
-                <div className="p-4 bg-gray-800/50 rounded-lg">
+                <div className="p-4 bg-white/[0.04] rounded-lg">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm text-gray-300">LED Underglow</span>
+                    <span className="text-sm text-zinc-300">LED Underglow</span>
                     <button
                       onClick={() => updateState({ lightsEnabled: !truckState.lightsEnabled })}
                       className={`relative w-12 h-6 rounded-full transition-colors
-                        ${truckState.lightsEnabled ? "bg-[#E8592F]" : "bg-gray-700"}`}
+                        ${truckState.lightsEnabled ? "bg-[#E8592F]" : "bg-zinc-700"}`}
                     >
                       <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
                         ${truckState.lightsEnabled ? "left-7" : "left-1"}`} />
                     </button>
                   </div>
                   {truckState.lightsEnabled && (
-                    <div className="flex items-center gap-2 pt-3 border-t border-gray-700">
-                      <span className="text-xs text-gray-500">Color:</span>
+                    <div className="flex items-center gap-2 pt-3 border-t border-white/10">
+                      <span className="text-xs text-zinc-500">Color:</span>
                       <input
                         type="color"
                         value={truckState.lightsColor}
@@ -1500,21 +1504,21 @@ const PaintShop = () => {
                 </div>
                 
                 {/* Roof Signage */}
-                <div className="p-4 bg-gray-800/50 rounded-lg">
+                <div className="p-4 bg-white/[0.04] rounded-lg">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm text-gray-300">Roof Signage</span>
+                    <span className="text-sm text-zinc-300">Roof Signage</span>
                     <button
                       onClick={() => updateState({ signageEnabled: !truckState.signageEnabled })}
                       className={`relative w-12 h-6 rounded-full transition-colors
-                        ${truckState.signageEnabled ? "bg-[#E8592F]" : "bg-gray-700"}`}
+                        ${truckState.signageEnabled ? "bg-[#E8592F]" : "bg-zinc-700"}`}
                     >
                       <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
                         ${truckState.signageEnabled ? "left-7" : "left-1"}`} />
                     </button>
                   </div>
                   {truckState.signageEnabled && (
-                    <div className="flex items-center gap-4 pt-3 border-t border-gray-700">
-                      <label className="flex items-center gap-2 text-xs text-gray-400">
+                    <div className="flex items-center gap-4 pt-3 border-t border-white/10">
+                      <label className="flex items-center gap-2 text-xs text-zinc-400">
                         <input
                           type="checkbox"
                           checked={truckState.signageIlluminated}
@@ -1528,34 +1532,34 @@ const PaintShop = () => {
                 </div>
                 
                 {/* Racing Stripe */}
-                <div className="p-4 bg-gray-800/50 rounded-lg">
+                <div className="p-4 bg-white/[0.04] rounded-lg">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm text-gray-300">Racing Stripe</span>
+                    <span className="text-sm text-zinc-300">Racing Stripe</span>
                     <button
                       onClick={() => updateState({ racingStripeEnabled: !truckState.racingStripeEnabled })}
                       className={`relative w-12 h-6 rounded-full transition-colors
-                        ${truckState.racingStripeEnabled ? "bg-[#E8592F]" : "bg-gray-700"}`}
+                        ${truckState.racingStripeEnabled ? "bg-[#E8592F]" : "bg-zinc-700"}`}
                     >
                       <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
                         ${truckState.racingStripeEnabled ? "left-7" : "left-1"}`} />
                     </button>
                   </div>
                   {truckState.racingStripeEnabled && (
-                    <div className="space-y-3 pt-3 border-t border-gray-700">
+                    <div className="space-y-3 pt-3 border-t border-white/10">
                       <div className="flex gap-2">
                         {["thin", "medium", "bold"].map(width => (
                           <button
                             key={width}
                             onClick={() => updateState({ racingStripeWidth: width })}
                             className={`flex-1 py-1 text-xs rounded border
-                              ${truckState.racingStripeWidth === width ? "border-[#E8592F] text-[#E8592F]" : "border-gray-600 text-gray-400"}`}
+                              ${truckState.racingStripeWidth === width ? "border-[#E8592F] text-[#E8592F]" : "border-white/10 text-zinc-400"}`}
                           >
                             {width.charAt(0).toUpperCase() + width.slice(1)}
                           </button>
                         ))}
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-500">Color:</span>
+                        <span className="text-xs text-zinc-500">Color:</span>
                         <input
                           type="color"
                           value={truckState.racingStripeColor}
@@ -1572,15 +1576,15 @@ const PaintShop = () => {
             {/* PHOTO TAB */}
             {activeTab === "photo" && (
               <div>
-                <label className="block text-sm text-gray-400 mb-2">Upload Your Own Truck Photo</label>
-                <p className="text-xs text-gray-500 mb-4">
+                <label className="block text-sm text-zinc-400 mb-2">Upload Your Own Truck Photo</label>
+                <p className="text-xs text-zinc-500 mb-4">
                   Upload a photo of your actual truck to preview custom paint on it. 
                   Works best with light-colored trucks on a plain background.
                 </p>
                 {!truckState.userPhotoUrl ? (
-                  <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-[#E8592F] transition-colors">
-                    <Camera className="w-10 h-10 text-gray-500 mb-2" />
-                    <span className="text-sm text-gray-500">JPG, PNG, WebP (max 10MB)</span>
+                  <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-white/10 rounded-lg cursor-pointer hover:border-[#E8592F] transition-colors">
+                    <Camera className="w-10 h-10 text-zinc-500 mb-2" />
+                    <span className="text-sm text-zinc-500">JPG, PNG, WebP (max 10MB)</span>
                     <input
                       type="file"
                       accept=".jpg,.jpeg,.png,.webp"
@@ -1608,7 +1612,7 @@ const PaintShop = () => {
                       <img 
                         src={truckState.userPhotoUrl} 
                         alt="Your truck" 
-                        className="w-full h-40 object-contain bg-gray-800 rounded-lg"
+                        className="w-full h-40 object-contain bg-white/[0.06] rounded-lg"
                       />
                       <button
                         onClick={() => updateState({ userPhotoUrl: null })}
@@ -1619,7 +1623,7 @@ const PaintShop = () => {
                     </div>
                     <button
                       onClick={() => updateState({ userPhotoUrl: null })}
-                      className="w-full py-2 border border-gray-600 text-gray-400 rounded-lg hover:border-gray-400"
+                      className="w-full py-2 border border-white/10 text-zinc-400 rounded-lg hover:border-white/20"
                     >
                       Use Model Truck Instead
                     </button>

@@ -293,7 +293,7 @@ const KitchenBuilder = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f0f14] text-white font-sans">
+    <div className="min-h-screen bg-[#0a0d14] text-white font-sans">
       <SEO 
         title="Kitchen Builder - Equipment Layout"
         description="Design your food truck kitchen layout. Drag and drop commercial equipment, check compliance, and optimize your workspace."
@@ -301,20 +301,21 @@ const KitchenBuilder = () => {
       />
       
       {/* Header */}
-      <header className="border-b border-white/10 bg-[#0f0f14]/95 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-[1800px] mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link to="/dashboard" className="text-[#E8592F]">
-              <Truck className="w-8 h-8" />
+      <header className="glass sticky top-0 z-50">
+        <div className="max-w-[1800px] mx-auto px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link to="/dashboard" className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-[#E8592F] flex items-center justify-center">
+                <Truck className="w-4 h-4 text-white" />
+              </div>
             </Link>
             <div>
-              <h1 className="text-xl font-bold uppercase tracking-wide">Kitchen Builder</h1>
-              <p className="text-xs text-white/50 uppercase tracking-widest">Interior Layout v2.0</p>
+              <h1 className="font-heading text-lg font-bold">Kitchen Builder</h1>
             </div>
           </div>
           
           <div className="flex items-center gap-4">
-            <Link to="/paint-shop" className="text-white/60 hover:text-white text-sm font-medium transition-colors flex items-center gap-1">
+            <Link to="/paint-shop" className="text-zinc-500 hover:text-white text-sm font-medium transition-colors flex items-center gap-1">
               <ArrowLeft className="w-4 h-4" /> Paint Shop
             </Link>
             <span className="text-[#E8592F] text-sm font-bold border-b-2 border-[#E8592F] pb-1">Kitchen Builder</span>
