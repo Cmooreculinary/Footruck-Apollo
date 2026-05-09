@@ -14,77 +14,66 @@ Build a "Food Truck Launch Pad" full-stack application with React frontend, Fast
 - **Primary accent**: #E8592F (warm copper)
 - **Dark background**: #0a0d14
 - **Glass morphism nav**: rgba(10,13,20,0.8) + backdrop-filter blur(20px)
-- **CSS utilities**: `.glass`, `.text-gradient-warm`, `.animate-fade-in-up`
 - **Icons**: Lucide React
 
 ## Completed Features
 
 ### Core Application
-- [x] React frontend with routing (Landing, Dashboard, Paint Shop, Kitchen Builder, Showroom, Pricing, 10+ module pages)
+- [x] React frontend with routing (Landing, Dashboard, Paint Shop, Kitchen Builder, Showroom, Pricing, 10+ modules)
 - [x] FastAPI backend with MongoDB persistence
-- [x] Emergent-managed Google Auth integration
-- [x] Stripe subscription integration (Standard + Pro plans)
+- [x] Emergent-managed Google Auth
+- [x] Stripe subscription (Standard + Pro)
 - [x] Source code ZIP download
 
-### Premium Creative Director Overhaul (May 2026)
-- [x] Full-bleed hero landing page with cinematic food truck imagery
-- [x] Dashboard reorganized into 4 categories (Design & Build, Menu & Recipes, Business Planning, Operations)
-- [x] Glassmorphism navigation across all pages
-- [x] Outfit + Manrope typography, unified dark theme
+### Premium Creative Overhaul (May 2026)
+- [x] Full-bleed hero landing page with cinematic imagery
+- [x] Dashboard reorganized into 4 categories
+- [x] Glassmorphism nav across all pages
+- [x] Outfit + Manrope typography
 
-### Paint Shop - Ship-Ready (May 2026)
-- [x] 6 photorealistic truck chassis models (cleaned black backgrounds, no watermarks)
-- [x] Color application with ZERO background bleed (mix-blend-mode: multiply + bg-black isolation)
-- [x] **DRAGGABLE TEXT** — business name text can be clicked and dragged to reposition anywhere on canvas
+### Paint Shop — Ship-Ready (May 2026)
+- [x] **6 ultra-realistic truck images** generated via GPT Image 1 (cinematic dusk lighting, matte automotive paint, warm service window glow, realistic wheels/trim)
+- [x] **Dual-layer color system**: multiply (kills background) + color at 60% opacity (vivid hue) — ZERO background bleed confirmed
+- [x] **Draggable text** — business name repositionable via click+drag on canvas
 - [x] Draggable logo positioning
 - [x] HSV Color Wheel with hue ring + SV square
-- [x] 6 preset color palettes
+- [x] 6 preset color palettes + recent colors tracking
 - [x] 7 finish types with CSS filters (Matte, Gloss, Metallic, Chrome, Enamel, Satin, Pearl)
 - [x] Two-tone paint with 7 split patterns
 - [x] 9 wrap patterns (overlay blend, visible only on truck body)
-- [x] Racing stripe (confined to truck body bounds, 12%-88% canvas width)
-- [x] Awning/Canopy with solid/striped/scalloped styles + custom color
-- [x] LED Underglow with glow effect + custom color
+- [x] Racing stripe (confined to truck body bounds)
+- [x] Awning/Canopy with solid/striped/scalloped + custom color
+- [x] LED Underglow with glow + custom color
 - [x] Roof Signage with illuminated option
-- [x] Business name lettering with 5 fonts, custom color, size, outline, letter spacing
-- [x] Logo upload with position/scale/rotation controls
-- [x] Custom photo upload
-- [x] **FULL STATE PERSISTENCE** — all fields saved/loaded via backend API (upsert pattern)
+- [x] Business name lettering with 5 fonts, custom color, size, outline, spacing
+- [x] Logo upload + Custom photo upload
+- [x] **Full state persistence** — all fields saved/loaded via upsert API
 - [x] Reset design to defaults
+- [x] Image watermarks cleaned, edge artifacts removed
 
-### Backend API — Paint Shop Endpoints
-- `POST /api/truck-designs` — Upsert design (creates or updates for authenticated user)
-- `GET /api/truck-designs/latest` — Get latest design for user
-- `GET /api/truck-designs` — Get all designs for user
+### Truck Models
+1. Classic Step Van (truck_01)
+2. Modern Sprinter Van (truck_02)
+3. Large Box Truck (truck_03)
+4. Compact Transit Van (truck_04)
+5. Retro Airstream Trailer (truck_05)
+6. Open-Air Trailer (truck_06)
 
-### Full TruckDesign Schema
-```
-{
-  primary_color, accent_color, finish_type, business_name, base_model,
-  split_pattern, wrap_id, wrap_opacity,
-  lettering_font, lettering_color, lettering_size, lettering_x, lettering_y,
-  lettering_outline, letter_spacing,
-  awning, awning_color, lights_color, signage_illuminated,
-  racing_stripe_color, racing_stripe_width,
-  logo_url, logo_x, logo_y, logo_scale, logo_rotation,
-  accessories[]
-}
-```
+### Color System Technical Detail
+- Images: GPT Image 1 generated, 1536x1024 PNG, pure black backgrounds, brightness-boosted truck bodies
+- Layer 1: `mix-blend-mode: multiply` — ensures all black pixels stay black regardless of color
+- Layer 2: `mix-blend-mode: color` at 60% opacity — pushes vivid hue onto lit truck areas
+- Wraps: `mix-blend-mode: overlay` — visible on colored truck, invisible on black background
+- Accessories: Positioned absolute elements outside the blend group
 
 ## Pending / Upcoming Tasks
 
-### P1 - Next Up
-- [ ] App-wide UX robustness audit (buttons, selectors, loading states, validation)
-- [ ] Mobile responsive refinement for Paint Shop
+### P1
+- [ ] App-wide UX robustness audit (loading states, validation)
+- [ ] Mobile responsive refinement
 
-### P2 - Future
-- [ ] "Get Quote" feature
-- [ ] Design Gallery (view, name, manage saved truck designs)
+### P2
+- [ ] Design Gallery (view/name/manage saved designs)
 - [ ] Shareable design URLs
+- [ ] "Get Quote" feature
 - [ ] Confirmation dialogs for destructive actions
-- [ ] Additional view angles (front/rear)
-
-## DB Schema
-- **users**: `{ google_id, name, email, picture }`
-- **subscriptions**: `{ user_id, stripe_subscription_id, ... }`
-- **truck_designs**: Full schema above with all customization fields
