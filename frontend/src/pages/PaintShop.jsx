@@ -405,17 +405,24 @@ const TruckCanvas = ({ state, zoom = 1, onDragText, onDragLogo }) => {
           onError={() => setImgError(true)}
         />
 
-        {/* Layer 2: Color overlay — multiply colors white areas, leaves black untouched */}
+        {/* Layer 2: Dual-layer color system — multiply kills background, color adds vivid hue */}
         {hasColor && (
-          <div className="absolute inset-0" style={{ mixBlendMode: "multiply" }}>
-            <div className="absolute inset-0" style={{ backgroundColor: state.primaryColor }} />
-            {state.twoToneEnabled && state.secondaryColor && splitPattern && (
-              <div
-                className="absolute inset-0"
-                style={{ backgroundColor: state.secondaryColor, clipPath: splitPattern.clipPath }}
-              />
-            )}
-          </div>
+          <>
+            {/* Base: multiply ensures dark areas stay black */}
+            <div className="absolute inset-0" style={{ mixBlendMode: "multiply" }}>
+              <div className="absolute inset-0" style={{ backgroundColor: state.primaryColor }} />
+              {state.twoToneEnabled && state.secondaryColor && splitPattern && (
+                <div className="absolute inset-0" style={{ backgroundColor: state.secondaryColor, clipPath: splitPattern.clipPath }} />
+              )}
+            </div>
+            {/* Boost: color blend pushes vivid hue onto the lit truck areas */}
+            <div className="absolute inset-0" style={{ mixBlendMode: "color", opacity: 0.6 }}>
+              <div className="absolute inset-0" style={{ backgroundColor: state.primaryColor }} />
+              {state.twoToneEnabled && state.secondaryColor && splitPattern && (
+                <div className="absolute inset-0" style={{ backgroundColor: state.secondaryColor, clipPath: splitPattern.clipPath }} />
+              )}
+            </div>
+          </>
         )}
 
         {/* Layer 3: Wrap pattern — overlay blend shows on colored truck, invisible on black bg */}

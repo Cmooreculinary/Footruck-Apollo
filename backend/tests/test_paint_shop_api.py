@@ -8,7 +8,17 @@ import requests
 import os
 import uuid
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+# Read from frontend .env file for the public URL
+from pathlib import Path
+_env_path = Path(__file__).parent.parent.parent / 'frontend' / '.env'
+_base_url = ''
+if _env_path.exists():
+    with open(_env_path) as f:
+        for line in f:
+            if line.startswith('REACT_APP_BACKEND_URL='):
+                _base_url = line.split('=', 1)[1].strip().strip('"').strip("'")
+                break
+BASE_URL = _base_url or os.environ.get('REACT_APP_BACKEND_URL', 'https://design-studio-614.preview.emergentagent.com').rstrip('/')
 
 class TestPaintShopAPI:
     """Test Paint Shop truck design API endpoints"""
