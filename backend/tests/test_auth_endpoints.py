@@ -13,9 +13,9 @@ import time
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://design-studio-614.preview.emergentagent.com')
 
-# Test session token - created in MongoDB for testing
-TEST_SESSION_TOKEN = "test_session_1773610469848"
-TEST_USER_ID = "test-user-1773610469848"
+# Test session token - loaded from environment for security
+TEST_SESSION_TOKEN = os.environ.get("TEST_SESSION_TOKEN", "")
+TEST_USER_ID = os.environ.get("TEST_USER_ID", "")
 
 
 class TestAuthMe:

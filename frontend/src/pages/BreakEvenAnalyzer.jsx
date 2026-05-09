@@ -31,12 +31,13 @@ const BreakEvenAnalyzer = () => {
           toast.success("Scenario loaded", { description: "Your saved analysis has been restored." });
         }
       } catch (error) {
-        // No saved scenario
+        console.error("Failed to load saved scenario:", error);
       } finally {
         setIsLoading(false);
       }
     };
     loadSavedScenario();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Calculations

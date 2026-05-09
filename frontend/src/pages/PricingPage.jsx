@@ -79,6 +79,7 @@ const PricingPage = () => {
       // Clear params
       navigate("/pricing", { replace: true });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, navigate]);
 
   // Check subscription status on load
@@ -92,12 +93,13 @@ const PricingPage = () => {
         const response = await apiClient.request("/api/subscription/status");
         setSubscription(response.subscription);
       } catch (error) {
-        // No subscription
+        console.error("Failed to load subscription:", error);
       } finally {
         setIsLoading(false);
       }
     };
     checkSubscription();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated]);
 
   const pollPaymentStatus = async (sessionId, attempts = 0) => {

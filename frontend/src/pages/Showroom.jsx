@@ -285,7 +285,7 @@ function ProductSVG({ item, size = 160 }) {
       <g>
         <rect x="35" y="75" width="130" height="65" rx="6" fill="#1E293B"/>
         <rect x="40" y="80" width="120" height="40" rx="3" fill="#2A3A4E"/>
-        {[50,80,110,140].map((x,i)=><rect key={i} x={x} y="85" width="15" height="30" rx="2" fill="#0B0F17" opacity="0.5"/>)}
+        {[50,80,110,140].map((x)=><rect key={x} x={x} y="85" width="15" height="30" rx="2" fill="#0B0F17" opacity="0.5"/>)}
         <rect x="35" y="125" width="130" height="15" rx="4" fill="#0B0F17"/>
       </g>
     );
@@ -304,9 +304,9 @@ function ProductSVG({ item, size = 160 }) {
       <g>
         <rect x="45" y="55" width="110" height="95" rx="8" fill="#1E293B"/>
         <rect x="50" y="60" width="100" height="70" rx="4" fill="#0B0F17"/>
-        {[55,72,89].map((y,i)=><rect key={i} x="55" y={y} width="90" height="2" fill="#2A3A4E"/>)}
+        {[55,72,89].map((y)=><rect key={y} x="55" y={y} width="90" height="2" fill="#2A3A4E"/>)}
         <rect x="55" y="135" width="90" height="10" rx="3" fill="#2A3A4E"/>
-        {[65,95,125].map((x,i)=><circle key={i} cx={x} cy="140" r="3" fill={tc} opacity="0.6"/>)}
+        {[65,95,125].map((x)=><circle key={x} cx={x} cy="140" r="3" fill={tc} opacity="0.6"/>)}
       </g>
     );
   } else if (t === "range") {
@@ -314,8 +314,8 @@ function ProductSVG({ item, size = 160 }) {
       <g>
         <rect x="45" y="75" width="110" height="70" rx="6" fill="#1E293B"/>
         <rect x="50" y="80" width="100" height="45" rx="3" fill="#0B0F17"/>
-        {[65,105].map((x,i)=><circle key={i} cx={x} cy="102" r="18" fill="none" stroke={tc} strokeWidth="2"/>)}
-        {[55,80,105,130].map((x,i)=><circle key={i} cx={x} cy="135" r="4" fill="#2A3A4E"/>)}
+        {[65,105].map((x)=><circle key={x} cx={x} cy="102" r="18" fill="none" stroke={tc} strokeWidth="2"/>)}
+        {[55,80,105,130].map((x)=><circle key={x} cx={x} cy="135" r="4" fill="#2A3A4E"/>)}
       </g>
     );
   } else if (t === "grill") {
@@ -323,7 +323,7 @@ function ProductSVG({ item, size = 160 }) {
       <g>
         <rect x="50" y="60" width="100" height="80" rx="6" fill="#1E293B"/>
         <rect x="55" y="65" width="90" height="55" rx="3" fill="#0B0F17"/>
-        {[72,82,92,102].map((y,i)=><rect key={i} x="60" y={y} width="80" height="3" rx="1" fill="#2A3A4E"/>)}
+        {[72,82,92,102].map((y)=><rect key={y} x="60" y={y} width="80" height="3" rx="1" fill="#2A3A4E"/>)}
         <rect x="55" y="125" width="90" height="10" rx="3" fill="#2A3A4E"/>
       </g>
     );
@@ -342,7 +342,7 @@ function ProductSVG({ item, size = 160 }) {
       <g>
         <rect x="25" y="80" width="150" height="65" rx="6" fill="#1E293B"/>
         <rect x="30" y="85" width="140" height="15" rx="3" fill="#2A3A4E"/>
-        {[30,55,80,105,130,148].map((x,i)=><rect key={i} x={x} y="87" width="15" height="10" rx="2" fill="#0B0F17"/>)}
+        {[30,55,80,105,130,148].map((x)=><rect key={x} x={x} y="87" width="15" height="10" rx="2" fill="#0B0F17"/>)}
         <rect x="30" y="105" width="140" height="35" rx="3" fill="#0B0F17"/>
       </g>
     );
@@ -362,7 +362,7 @@ function ProductSVG({ item, size = 160 }) {
       <g>
         <path d="M30 120 L40 70 L160 70 L170 120 Z" fill="#1E293B"/>
         <rect x="45" y="75" width="110" height="35" rx="4" fill="#0B0F17"/>
-        {[55,85,115,145].map((x,i)=><rect key={i} x={x} y="80" width="20" height="25" rx="2" fill="#2A3A4E"/>)}
+        {[55,85,115,145].map((x)=><rect key={x} x={x} y="80" width="20" height="25" rx="2" fill="#2A3A4E"/>)}
         <rect x="30" y="115" width="140" height="8" rx="2" fill="#2A3A4E"/>
       </g>
     );
@@ -371,7 +371,7 @@ function ProductSVG({ item, size = 160 }) {
       <g>
         <rect x="60" y="50" width="80" height="100" rx="8" fill="#EF4444" opacity="0.2"/>
         <rect x="65" y="55" width="70" height="90" rx="6" fill="#1E293B"/>
-        {[40,87,134].map((x,i)=><circle key={i} cx={x+40} cy="90" r="8" fill="#EF4444" opacity="0.6"/>)}
+        {[40,87,134].map((x)=><circle key={x} cx={x+40} cy="90" r="8" fill="#EF4444" opacity="0.6"/>)}
         <rect x="85" y="125" width="30" height="12" rx="3" fill="#EF4444"/>
         <text x="100" y="134" fill="#FFF" fontSize="8" textAnchor="middle" fontWeight="bold">PULL</text>
       </g>
@@ -405,10 +405,10 @@ function ProductSVG({ item, size = 160 }) {
       <g>
         <rect x="20" y="80" width="160" height="60" rx="6" fill="#1E293B"/>
         <rect x="25" y="85" width="150" height="40" rx="4" fill="#0B0F17"/>
-        {[25,72,119].map((x,i)=><rect key={i} x={x} y="90" width="40" height="30" rx="3" fill="#2A3A4E"/>)}
+        {[25,72,119].map((x)=><rect key={x} x={x} y="90" width="40" height="30" rx="3" fill="#2A3A4E"/>)}
         <rect x="90" y="55" width="6" height="30" rx="2" fill="#2A3A4E"/>
         <circle cx="93" cy="55" r="8" fill="#2A3A4E"/>
-        {[20,162].map((x,i)=><rect key={i} x={x} y="85" width="5" height="50" rx="2" fill="#0B0F17"/>)}
+        {[20,162].map((x)=><rect key={x} x={x} y="85" width="5" height="50" rx="2" fill="#0B0F17"/>)}
       </g>
     );
   } else if (t === "tank" || t === "heater" || t === "pump" || t === "filter" || t === "faucet") {
@@ -430,7 +430,7 @@ function ProductSVG({ item, size = 160 }) {
         <rect x="45" y="75" width="110" height="50" rx="4" fill="#0B0F17"/>
         <text x="100" y="105" fill={tc} fontSize="12" textAnchor="middle" fontWeight="bold">7500W</text>
         <rect x="45" y="130" width="110" height="10" rx="3" fill="#2A3A4E"/>
-        {[90,110,130,150].map((x,i)=><rect key={i} x={x-30} y="132" width="8" height="6" rx="1" fill="#0B0F17"/>)}
+        {[90,110,130,150].map((x)=><rect key={x} x={x-30} y="132" width="8" height="6" rx="1" fill="#0B0F17"/>)}
       </g>
     );
   } else if (t === "panel") {
@@ -459,7 +459,7 @@ function ProductSVG({ item, size = 160 }) {
         <rect x="50" y="70" width="100" height="70" rx="8" fill="#1E293B"/>
         <rect x="55" y="75" width="90" height="60" rx="4" fill="#0B0F17"/>
         <text x="100" y="100" fill={tc} fontSize="10" textAnchor="middle" fontWeight="bold">120V</text>
-        {[100,120,140].map((x,i)=><circle key={i} cx={x-20} cy="120" r="6" fill="#2A3A4E"/>)}
+        {[100,120,140].map((x)=><circle key={x} cx={x-20} cy="120" r="6" fill="#2A3A4E"/>)}
       </g>
     );
   } else if (t === "counter" || t === "window" || t === "exterior") {
@@ -552,7 +552,7 @@ function Card({ item, selected, onSelect, onDetail }) {
         <h3 style={{ color:"#E8ECF2", fontSize:13, fontWeight:700, marginBottom:4, fontFamily:"'Outfit',sans-serif", lineHeight:1.3 }}>{item.name}</h3>
         <p style={{ color:"#64748B", fontSize:10, marginBottom:10, fontFamily:"'Outfit',sans-serif" }}>{item.dims}{item.specs?` · ${item.specs[0]}`:""}</p>
         <div style={{ display:"flex", flexWrap:"wrap", gap:4, marginBottom:8 }}>
-          {item.features.slice(0,3).map((f,i)=><span key={i} style={{ fontSize:9, background:"#1E293B", color:"#8896A8", padding:"3px 8px", borderRadius:6 }}>{f}</span>)}
+          {item.features.slice(0,3).map((f)=><span key={f} style={{ fontSize:9, background:"#1E293B", color:"#8896A8", padding:"3px 8px", borderRadius:6 }}>{f}</span>)}
           {item.features.length>3 && <span style={{ fontSize:9, color:"#64748B", padding:"3px 8px" }}>+{item.features.length-3}</span>}
         </div>
         <button 
@@ -606,8 +606,8 @@ function Modal({ item, selected, onClose, onSelect }) {
             </div>
             <h2 style={{ color:"#E8ECF2", fontSize:22, fontWeight:800, marginBottom:16, fontFamily:"'Outfit',sans-serif" }}>{item.name}</h2>
             <div style={{ display:"flex", flexWrap:"wrap", gap:10, marginBottom:20 }}>
-              {[{l:"Dimensions",v:item.dims}, ...item.specs.map(s=>({l:s.includes("BTU")?"Power":s.includes("°F")?"Temp":s.includes("lb")?"Weight":"Spec",v:s}))].map((sp,i)=>(
-                <div key={i} style={{ background:"#1E293B", padding:"8px 14px", borderRadius:10 }}>
+              {[{l:"Dimensions",v:item.dims}, ...item.specs.map(s=>({l:s.includes("BTU")?"Power":s.includes("°F")?"Temp":s.includes("lb")?"Weight":"Spec",v:s}))].map((sp)=>(
+                <div key={`${sp.l}-${sp.v}`} style={{ background:"#1E293B", padding:"8px 14px", borderRadius:10 }}>
                   <div style={{ color:"#64748B", fontSize:9, marginBottom:2, textTransform:"uppercase", letterSpacing:"0.06em" }}>{sp.l}</div>
                   <div style={{ color:"#E8ECF2", fontSize:12, fontWeight:600 }}>{sp.v}</div>
                 </div>
@@ -616,7 +616,7 @@ function Modal({ item, selected, onClose, onSelect }) {
             <div style={{ marginBottom:20 }}>
               <div style={{ color:"#64748B", fontSize:10, marginBottom:8, textTransform:"uppercase", letterSpacing:"0.08em" }}>Features</div>
               <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
-                {item.features.map((f,i)=><span key={i} style={{ fontSize:10, background:"#0B0F17", color:"#8896A8", padding:"5px 10px", borderRadius:8, border:"1px solid #1E293B" }}>✓ {f}</span>)}
+                {item.features.map((f)=><span key={f} style={{ fontSize:10, background:"#0B0F17", color:"#8896A8", padding:"5px 10px", borderRadius:8, border:"1px solid #1E293B" }}>✓ {f}</span>)}
               </div>
             </div>
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", paddingTop:16, borderTop:"1px solid #1E293B" }}>

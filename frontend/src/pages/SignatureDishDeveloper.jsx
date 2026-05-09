@@ -33,12 +33,13 @@ const SignatureDishDeveloper = () => {
           toast.success("Dish loaded", { description: "Your saved dish has been restored." });
         }
       } catch (error) {
-        // No saved dish found
+        console.error("Failed to load saved dish:", error);
       } finally {
         setIsLoading(false);
       }
     };
     loadSavedDish();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Validation helper
@@ -251,7 +252,7 @@ const SignatureDishDeveloper = () => {
                   <div className="flex gap-2 flex-wrap">
                     {flavorProfiles.map((profile, index) => (
                       <span 
-                        key={index} 
+                        key={`${profile}-${index}`} 
                         className="px-3 py-1 bg-primary-dark/20 border border-primary-dark/40 rounded-full text-xs font-bold text-primary-dark flex items-center gap-2 group"
                       >
                         {profile}

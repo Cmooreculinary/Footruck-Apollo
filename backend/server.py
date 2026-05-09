@@ -639,7 +639,6 @@ async def get_subscription_status(request: Request):
 @api_router.post("/subscription/checkout")
 async def create_checkout_session(request: Request):
     """Create Stripe checkout session for subscription"""
-    import stripe
     
     user = await get_current_user(request)
     if not user:
@@ -777,10 +776,92 @@ async def get_checkout_status(session_id: str, request: Request):
         raise HTTPException(status_code=400, detail=str(e))
 
 
+async def _handle_checkout_completed(data: dict):
+    """Process checkout.session.completed event"""
+    session_id = data.get("id")
+    subscription_id = data.get("subscription")
+    metadata = data.get("metadata", {})
+
+    await db.payment_transactions.update_one(
+        {"session_id": session_id},
+        {"$set": {
+            "payment_status": "paid",
+            "stripe_subscription_id": subscription_id,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+
+    user_id = metadata.get("user_id")
+    plan_id = metadata.get("plan_id", "standard")
+    if user_id:
+        now = datetime.now(timezone.utc)
+        period_end = now + timedelta(days=30)
+        await db.subscriptions.update_one(
+            {"user_id": user_id},
+            {"$set": {
+                "status": "active",
+                "plan_id": plan_id,
+                "stripe_subscription_id": subscription_id,
+                "subscription_started_at": now.isoformat(),
+                "current_period_end": period_end.isoformat(),
+                "updated_at": now.isoformat()
+            }},
+            upsert=True
+        )
+        logging.info(f"Subscription activated for user {user_id}")
+
+
+async def _handle_subscription_updated(data: dict):
+    """Process customer.subscription.updated event"""
+    subscription_id = data.get("id")
+    status = data.get("status")
+    current_period_end = data.get("current_period_end")
+
+    if not subscription_id:
+        return
+    update_data = {
+        "status": status,
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    if current_period_end:
+        update_data["current_period_end"] = datetime.fromtimestamp(current_period_end, timezone.utc).isoformat()
+    await db.subscriptions.update_one(
+        {"stripe_subscription_id": subscription_id},
+        {"$set": update_data}
+    )
+
+
+async def _handle_subscription_cancelled(data: dict):
+    """Process subscription deleted/canceled event"""
+    subscription_id = data.get("id")
+    if subscription_id:
+        await db.subscriptions.update_one(
+            {"stripe_subscription_id": subscription_id},
+            {"$set": {"status": "cancelled", "updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
+
+
+async def _handle_subscription_status_change(data: dict, new_status: str):
+    """Process invoice payment success/failure"""
+    subscription_id = data.get("subscription")
+    if subscription_id:
+        await db.subscriptions.update_one(
+            {"stripe_subscription_id": subscription_id},
+            {"$set": {"status": new_status, "updated_at": datetime.now(timezone.utc).isoformat()}}
+        )
+
+
+_WEBHOOK_HANDLERS = {
+    "checkout.session.completed": _handle_checkout_completed,
+    "customer.subscription.updated": _handle_subscription_updated,
+    "customer.subscription.deleted": _handle_subscription_cancelled,
+    "customer.subscription.canceled": _handle_subscription_cancelled,
+}
+
+
 @api_router.post("/webhook/stripe")
 async def stripe_webhook(request: Request):
     """Handle Stripe webhooks for subscriptions"""
-    import stripe
     
     api_key = os.environ.get("STRIPE_API_KEY")
     if not api_key:
@@ -790,108 +871,19 @@ async def stripe_webhook(request: Request):
     
     try:
         body = await request.body()
-        signature = request.headers.get("Stripe-Signature")
-        
-        # For now, we'll process without signature verification
-        # In production, you'd set up a webhook signing secret
         payload = json.loads(body)
         event_type = payload.get("type", "")
         data = payload.get("data", {}).get("object", {})
         
         logging.info(f"Stripe webhook received: {event_type}")
         
-        # Handle checkout session completed
-        if event_type == "checkout.session.completed":
-            session_id = data.get("id")
-            subscription_id = data.get("subscription")
-            customer_email = data.get("customer_email")
-            metadata = data.get("metadata", {})
-            
-            # Update transaction
-            await db.payment_transactions.update_one(
-                {"session_id": session_id},
-                {"$set": {
-                    "payment_status": "paid",
-                    "stripe_subscription_id": subscription_id,
-                    "updated_at": datetime.now(timezone.utc).isoformat()
-                }}
-            )
-            
-            # Activate subscription
-            user_id = metadata.get("user_id")
-            plan_id = metadata.get("plan_id", "standard")
-            if user_id:
-                now = datetime.now(timezone.utc)
-                period_end = now + timedelta(days=30)
-                
-                await db.subscriptions.update_one(
-                    {"user_id": user_id},
-                    {"$set": {
-                        "status": "active",
-                        "plan_id": plan_id,
-                        "stripe_subscription_id": subscription_id,
-                        "subscription_started_at": now.isoformat(),
-                        "current_period_end": period_end.isoformat(),
-                        "updated_at": now.isoformat()
-                    }},
-                    upsert=True
-                )
-                logging.info(f"Subscription activated for user {user_id}")
-        
-        # Handle subscription updated
-        elif event_type == "customer.subscription.updated":
-            subscription_id = data.get("id")
-            status = data.get("status")
-            current_period_end = data.get("current_period_end")
-            
-            if subscription_id:
-                update_data = {
-                    "status": status,
-                    "updated_at": datetime.now(timezone.utc).isoformat()
-                }
-                if current_period_end:
-                    update_data["current_period_end"] = datetime.fromtimestamp(current_period_end, timezone.utc).isoformat()
-                
-                await db.subscriptions.update_one(
-                    {"stripe_subscription_id": subscription_id},
-                    {"$set": update_data}
-                )
-        
-        # Handle subscription cancelled/deleted
-        elif event_type in ["customer.subscription.deleted", "customer.subscription.canceled"]:
-            subscription_id = data.get("id")
-            if subscription_id:
-                await db.subscriptions.update_one(
-                    {"stripe_subscription_id": subscription_id},
-                    {"$set": {
-                        "status": "cancelled",
-                        "updated_at": datetime.now(timezone.utc).isoformat()
-                    }}
-                )
-        
-        # Handle invoice payment succeeded (for recurring)
+        handler = _WEBHOOK_HANDLERS.get(event_type)
+        if handler:
+            await handler(data)
         elif event_type == "invoice.payment_succeeded":
-            subscription_id = data.get("subscription")
-            if subscription_id:
-                await db.subscriptions.update_one(
-                    {"stripe_subscription_id": subscription_id},
-                    {"$set": {
-                        "status": "active",
-                        "updated_at": datetime.now(timezone.utc).isoformat()
-                    }}
-                )
-        
-        # Handle payment failed
+            await _handle_subscription_status_change(data, "active")
         elif event_type == "invoice.payment_failed":
-            subscription_id = data.get("subscription")
-            if subscription_id:
-                await db.subscriptions.update_one(
-                    {"stripe_subscription_id": subscription_id},
-                    {"$set": {
-                        "status": "past_due",
-                        "updated_at": datetime.now(timezone.utc).isoformat()
-                    }}
-                )
+            await _handle_subscription_status_change(data, "past_due")
         
         return {"status": "success", "event": event_type}
     except Exception as e:

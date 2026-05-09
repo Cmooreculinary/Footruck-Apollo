@@ -28,12 +28,13 @@ const PayrollPlanning = () => {
           toast.success("Payroll loaded", { description: "Your saved payroll plan has been restored." });
         }
       } catch (error) {
-        // No saved data
+        console.error("Failed to load saved payroll data:", error);
       } finally {
         setIsLoading(false);
       }
     };
     loadSavedPayroll();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSavePayroll = async () => {

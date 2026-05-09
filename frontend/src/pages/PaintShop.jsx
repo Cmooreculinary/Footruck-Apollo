@@ -933,6 +933,7 @@ const PaintShop = () => {
     }
     
     loadDesign();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   // Add color to recent colors

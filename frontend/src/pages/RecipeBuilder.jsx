@@ -60,12 +60,13 @@ const RecipeBuilder = () => {
           toast.success("Recipe loaded", { description: "Your saved recipe has been restored." });
         }
       } catch (error) {
-        // No saved recipe found - use defaults
+        console.error("Failed to load saved recipe:", error);
       } finally {
         setIsLoading(false);
       }
     };
     loadSavedRecipe();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Form validation
