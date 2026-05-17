@@ -265,3 +265,39 @@ export const exportKitchenLayoutToPDF = async (layoutData, canvasElement) => {
 };
 
 export default { exportToPDF, exportRecipeToPDF, exportKitchenLayoutToPDF };
+
+// CSV download utility
+export const exportRowsToCSV = (rows, filename = 'export.csv') => {
+  if (!rows || !rows.length) return;
+  const headers = Object.keys(rows[0]);
+  const escape = (v) => {
+    const s = v == null ? '' : String(v);
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  const csv = [
+    headers.join(','),
+    ...rows.map((r) => headers.map((h) => escape(r[h])).join(',')),
+  ].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+// File -> base64 dataURL with size validation
+export const fileToDataUrl = (file, maxBytes = 2 * 1024 * 1024) =>
+  new Promise((resolve, reject) => {
+    if (!file) return reject(new Error('No file selected'));
+    if (file.size > maxBytes) {
+      return reject(new Error(`File exceeds ${(maxBytes / 1024 / 1024).toFixed(1)}MB limit`));
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target?.result);
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.readAsDataURL(file);
+  });

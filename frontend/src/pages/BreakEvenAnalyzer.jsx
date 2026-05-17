@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Truck, Upload, Save, Wallet, ShoppingBag, Calendar, Flag, CheckCircle, ArrowRight, Loader2 } from "lucide-react";
+import { Truck, Upload, Save, Wallet, ShoppingBag, Calendar, Flag, CheckCircle, ArrowRight, Loader2, FileDown } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { apiClient } from "@/lib/api";
 import { SkeletonForm, Skeleton } from "@/components/ui/skeleton-loader";
+import { exportToPDF } from "@/lib/pdfExport";
 
 const BreakEvenAnalyzer = () => {
   const [fixedExpenses, setFixedExpenses] = useState(4500);
@@ -14,7 +15,9 @@ const BreakEvenAnalyzer = () => {
   const [avgCustomersPerDay, setAvgCustomersPerDay] = useState(65);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
   const [scenarioName, setScenarioName] = useState("My Break-Even Scenario");
+  const importInputRef = useRef(null);
 
   // Load saved scenario on mount
   useEffect(() => {
@@ -73,6 +76,74 @@ const BreakEvenAnalyzer = () => {
     }
   };
 
+  const applyImportedRow = (row) => {
+    // Accept both flexible CSV header names and the JSON keys we export
+    const num = (k1, k2) => {
+      const v = row[k1] ?? row[k2];
+      const n = parseFloat(v);
+      return Number.isFinite(n) ? n : null;
+    };
+    const fe = num("fixed_expenses", "Fixed Expenses");
+    const mp = num("avg_menu_price", "Menu Price");
+    const cp = num("avg_cost_per_plate", "Cost Per Plate");
+    const od = num("operating_days", "Operating Days");
+    const cd = num("avg_customers_per_day", "Customers Per Day");
+    const name = row.name || row.scenario_name || row["Scenario Name"];
+    if (fe != null) setFixedExpenses(fe);
+    if (mp != null) setAvgMenuPrice(mp);
+    if (cp != null) setAvgCostPerPlate(cp);
+    if (od != null) setOperatingDays(parseInt(od));
+    if (cd != null) setAvgCustomersPerDay(parseInt(cd));
+    if (name) setScenarioName(name);
+  };
+
+  const parseCSV = (text) => {
+    const lines = text.trim().split(/\r?\n/).filter(Boolean);
+    if (lines.length < 2) return null;
+    const headers = lines[0].split(",").map((h) => h.trim().replace(/^"|"$/g, ""));
+    const values = lines[1].split(",").map((v) => v.trim().replace(/^"|"$/g, ""));
+    const row = {};
+    headers.forEach((h, i) => { row[h] = values[i]; });
+    return row;
+  };
+
+  const onImportFile = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    try {
+      const text = await file.text();
+      let row;
+      if (file.name.toLowerCase().endsWith(".json")) {
+        const parsed = JSON.parse(text);
+        row = Array.isArray(parsed) ? parsed[0] : parsed;
+      } else {
+        row = parseCSV(text);
+      }
+      if (!row) throw new Error("No data rows found");
+      applyImportedRow(row);
+      toast.success("Data imported", { description: "Inputs updated from file." });
+    } catch (err) {
+      toast.error("Import failed", { description: err.message || "Invalid file format." });
+    }
+  };
+
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    try {
+      await exportToPDF(
+        "break-even-report",
+        `break-even-${scenarioName.toLowerCase().replace(/\s+/g, "-")}`,
+        { orientation: "portrait" }
+      );
+      toast.success("PDF exported", { description: "Your break-even report is downloading." });
+    } catch (err) {
+      toast.error("Export failed", { description: err.message || "Please try again." });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="bg-background-dark text-white font-work overflow-x-hidden antialiased min-h-screen">
       <SEO 
@@ -124,12 +195,30 @@ const BreakEvenAnalyzer = () => {
                 <p className="text-text-muted text-lg max-w-2xl">Determine exactly how many burgers, tacos, or bowls you need to sell to cover your monthly costs.</p>
               </div>
               <div className="flex gap-3">
+                <input
+                  ref={importInputRef}
+                  type="file"
+                  className="hidden"
+                  accept=".csv,.json,text/csv,application/json"
+                  onChange={onImportFile}
+                  data-testid="import-file-input"
+                />
                 <button 
-                  onClick={() => toast.info("Import coming soon", { description: "Data import feature is in development." })}
+                  onClick={() => importInputRef.current?.click()}
                   className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border-dark bg-surface-dark text-text-muted hover:text-white hover:border-primary transition-colors text-sm font-medium"
+                  data-testid="import-data-btn"
                 >
                   <Upload className="w-4 h-4" />
                   Import Data
+                </button>
+                <button 
+                  onClick={handleExportPDF}
+                  disabled={isExporting}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border-dark bg-surface-dark text-text-muted hover:text-white hover:border-primary transition-colors text-sm font-medium disabled:opacity-50"
+                  data-testid="export-pdf-btn"
+                >
+                  {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
+                  {isExporting ? "Exporting..." : "Export PDF"}
                 </button>
                 <button 
                   onClick={handleSaveScenario}
@@ -144,7 +233,7 @@ const BreakEvenAnalyzer = () => {
           </div>
 
           {/* Content Grid */}
-          <div className="w-full max-w-[1200px] px-4 md:px-6">
+          <div className="w-full max-w-[1200px] px-4 md:px-6" id="break-even-report">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               {/* Left Column - Inputs */}
               <div className="lg:col-span-4 flex flex-col gap-6">

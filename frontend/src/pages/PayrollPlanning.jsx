@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { apiClient } from "@/lib/api";
 import { SkeletonTable } from "@/components/ui/skeleton-loader";
+import { exportToPDF } from "@/lib/pdfExport";
 
 const crewData = [
   { initials: "MA", name: "Marco A.", color: "primary", shifts: ["08:00", "08:00", "08:00", "OFF", "10:00", "10:00"], total: "44:00" },
@@ -54,8 +55,16 @@ const PayrollPlanning = () => {
     }
   };
 
-  const handleExportReport = () => {
-    toast.info("Export coming soon", { description: "Report export is in development." });
+  const handleExportReport = async () => {
+    setIsExporting(true);
+    try {
+      await exportToPDF("payroll-report", "payroll-plan", { orientation: "landscape" });
+      toast.success("Report exported", { description: "Your payroll PDF is downloading." });
+    } catch (err) {
+      toast.error("Export failed", { description: err.message || "Please try again." });
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const handleAddShift = () => {
@@ -127,7 +136,7 @@ const PayrollPlanning = () => {
           </header>
 
           {/* Content */}
-          <main className="flex-1 overflow-y-auto p-8">
+          <main className="flex-1 overflow-y-auto p-8" id="payroll-report">
             <div className="flex items-start justify-between mb-8">
               <div>
                 <h1 className="font-header text-4xl font-bold uppercase tracking-tight">
@@ -138,9 +147,12 @@ const PayrollPlanning = () => {
               <div className="flex gap-3">
                 <button 
                   onClick={handleExportReport}
-                  className="flex items-center gap-2 px-4 py-2.5 border border-border-col rounded-lg text-sm font-semibold hover:bg-surface transition-colors"
+                  disabled={isExporting}
+                  className="flex items-center gap-2 px-4 py-2.5 border border-border-col rounded-lg text-sm font-semibold hover:bg-surface transition-colors disabled:opacity-50"
+                  data-testid="export-report-btn"
                 >
-                  <Download className="w-4 h-4" /> Export Report
+                  {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                  {isExporting ? "Exporting..." : "Export Report"}
                 </button>
                 <button 
                   onClick={handleAddShift}

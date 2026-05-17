@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Truck, Palette, Layers, Type, Sparkles, Settings, RotateCcw, Camera, Upload, Printer, Check, Droplets, Sun, Zap, Loader2 } from "lucide-react";
+import { Truck, Palette, Layers, Type, Sparkles, Settings, RotateCcw, Camera, Upload, Printer, Check, Droplets, Sun, Zap, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { apiClient } from "@/lib/api";
+import { fileToDataUrl } from "@/lib/pdfExport";
 
 // Color palettes organized by category
 const colorPalettes = {
@@ -81,6 +82,9 @@ const TruckDesignStudio = () => {
   const [activeCategory, setActiveCategory] = useState("Classic");
   const [isSaving, setIsSaving] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+  const logoInputRef = useRef(null);
 
   const currentFinish = finishes.find(f => f.id === finishType);
 
@@ -93,6 +97,7 @@ const TruckDesignStudio = () => {
         finish_type: finishType,
         texture_type: textureType,
         business_name: businessName,
+        logo_url: logoUrl,
       });
       toast.success("Design saved successfully!", {
         description: "Your truck design has been saved to your account."
@@ -129,7 +134,32 @@ const TruckDesignStudio = () => {
     setFinishType("matte");
     setTextureType("solid");
     setBusinessName("YOUR BRAND");
+    setLogoUrl(null);
     toast.info("Design reset to defaults");
+  };
+
+  const handleLogoUploadClick = () => {
+    logoInputRef.current?.click();
+  };
+
+  const onLogoSelected = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Invalid file", { description: "Please select an image file (PNG, JPG, SVG)." });
+      return;
+    }
+    setIsUploadingLogo(true);
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      setLogoUrl(dataUrl);
+      toast.success("Logo applied", { description: "Save the design to keep it." });
+    } catch (err) {
+      toast.error("Upload failed", { description: err.message });
+    } finally {
+      setIsUploadingLogo(false);
+    }
   };
 
   return (
@@ -301,6 +331,19 @@ const TruckDesignStudio = () => {
                 >
                   {businessName}
                 </text>
+
+                {/* Logo (user uploaded) */}
+                {logoUrl && (
+                  <image
+                    href={logoUrl}
+                    x="430"
+                    y="160"
+                    width="120"
+                    height="60"
+                    preserveAspectRatio="xMidYMid meet"
+                    data-testid="truck-logo-preview"
+                  />
+                )}
               </g>
               
               {/* Wheels */}
@@ -569,13 +612,64 @@ const TruckDesignStudio = () => {
             </div>
             
             {/* Upload Logo */}
-            <div 
-              onClick={() => toast.info("Logo upload coming soon", { description: "This feature is in development." })}
-              className="mt-4 border-2 border-dashed border-steel/50 rounded-lg p-4 flex flex-col items-center gap-2 hover:border-primary/50 cursor-pointer transition-all"
-            >
-              <Upload className="w-6 h-6 text-slate-500" />
-              <span className="text-[10px] uppercase font-bold text-slate-400">Upload Logo</span>
-            </div>
+            <input
+              ref={logoInputRef}
+              type="file"
+              className="hidden"
+              accept="image/png,image/jpeg,image/jpg,image/svg+xml,image/webp"
+              onChange={onLogoSelected}
+              data-testid="logo-file-input"
+            />
+            {logoUrl ? (
+              <div className="mt-4 border border-steel/40 rounded-lg p-3 bg-background-dark/60" data-testid="logo-applied-card">
+                <div className="flex items-center gap-3">
+                  <img 
+                    src={logoUrl} 
+                    alt="Uploaded logo"
+                    className="w-14 h-14 object-contain bg-white/5 rounded border border-steel/30"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[10px] uppercase font-bold text-primary tracking-wider">Logo Applied</p>
+                    <p className="text-[10px] text-slate-500 mt-0.5">Save design to keep it</p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <button
+                      onClick={handleLogoUploadClick}
+                      className="p-1.5 hover:bg-steel/30 rounded text-slate-400 hover:text-primary"
+                      title="Replace"
+                    >
+                      <Upload className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => setLogoUrl(null)}
+                      className="p-1.5 hover:bg-red-500/20 rounded text-slate-400 hover:text-red-400"
+                      title="Remove"
+                      data-testid="logo-remove-btn"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={handleLogoUploadClick}
+                disabled={isUploadingLogo}
+                className="mt-4 w-full border-2 border-dashed border-steel/50 rounded-lg p-4 flex flex-col items-center gap-2 hover:border-primary/50 cursor-pointer transition-all disabled:opacity-50"
+                data-testid="upload-logo-btn"
+              >
+                {isUploadingLogo ? (
+                  <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                ) : (
+                  <Upload className="w-6 h-6 text-slate-500" />
+                )}
+                <span className="text-[10px] uppercase font-bold text-slate-400">
+                  {isUploadingLogo ? "Reading..." : "Upload Logo"}
+                </span>
+                <span className="text-[9px] text-slate-600">PNG, JPG, SVG · Max 2MB</span>
+              </button>
+            )}
           </div>
         </aside>
       </div>

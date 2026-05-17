@@ -180,6 +180,24 @@ class ApiClient {
     return this.request('/api/training-progress');
   }
 
+  // Training Documents
+  async uploadTrainingDocument(doc) {
+    return this.request('/api/training-documents', {
+      method: 'POST',
+      body: JSON.stringify(doc),
+    });
+  }
+
+  async listTrainingDocuments() {
+    return this.request('/api/training-documents');
+  }
+
+  async deleteTrainingDocument(docId) {
+    return this.request(`/api/training-documents/${docId}`, {
+      method: 'DELETE',
+    });
+  }
+
   // Simulation Progress endpoints
   async saveSimulationProgress(progress) {
     return this.request('/api/simulation-progress', {

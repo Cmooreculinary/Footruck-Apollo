@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Truck, Box, Thermometer, Users, AlertTriangle, Shield, Award, Upload, Lock, CheckCircle, PlayCircle, Loader2 } from "lucide-react";
+import { Truck, Box, Thermometer, Users, AlertTriangle, Shield, Award, Upload, Lock, CheckCircle, PlayCircle, Loader2, FileText, Trash2, Download, X } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { apiClient } from "@/lib/api";
+import { fileToDataUrl } from "@/lib/pdfExport";
 
 const trainingModules = [
   {
@@ -36,6 +37,22 @@ const CrewQuartersTraining = () => {
   const [activeCategory, setActiveCategory] = useState("all");
   const [trainingModulesState, setTrainingModulesState] = useState(trainingModules);
   const [savingModuleId, setSavingModuleId] = useState(null);
+  const [documents, setDocuments] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [previewDoc, setPreviewDoc] = useState(null);
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    const loadDocs = async () => {
+      try {
+        const docs = await apiClient.listTrainingDocuments();
+        setDocuments(docs || []);
+      } catch (e) {
+        console.error("Failed to load documents", e);
+      }
+    };
+    loadDocs();
+  }, []);
 
   const handleMarkAsTrained = async (moduleId) => {
     setSavingModuleId(moduleId);
@@ -58,11 +75,59 @@ const CrewQuartersTraining = () => {
   };
 
   const handleUploadDoc = () => {
-    toast.info("Upload coming soon", { description: "Document upload is in development." });
+    fileInputRef.current?.click();
+  };
+
+  const onFileSelected = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // reset for re-upload
+    if (!file) return;
+    setIsUploading(true);
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      const created = await apiClient.uploadTrainingDocument({
+        name: file.name,
+        category: activeCategory === "all" ? "general" : activeCategory,
+        file_type: file.type || "application/octet-stream",
+        size: file.size,
+        data_url: dataUrl,
+      });
+      setDocuments((prev) => [created, ...prev]);
+      toast.success("Document uploaded", { description: `${file.name} added to your vault.` });
+    } catch (err) {
+      toast.error("Upload failed", { description: err.message || "Please try again." });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleDeleteDoc = async (docId) => {
+    try {
+      await apiClient.deleteTrainingDocument(docId);
+      setDocuments((prev) => prev.filter((d) => d.id !== docId));
+      toast.success("Document removed");
+    } catch (err) {
+      toast.error("Failed to delete");
+    }
+  };
+
+  const handleDownloadDoc = (doc) => {
+    const a = document.createElement("a");
+    a.href = doc.data_url;
+    a.download = doc.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   const handleOpenEmergencyManual = () => {
     toast.info("Opening manual...", { description: "Emergency manual viewer is in development." });
+  };
+
+  const formatBytes = (bytes) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
   };
 
   return (
@@ -146,8 +211,12 @@ const CrewQuartersTraining = () => {
 
             {/* Documentation Vault */}
             <div className="bg-industrial/50 rounded-xl p-6 border border-steel/20">
-              <h3 className="text-slate-100 text-xs font-bold uppercase tracking-widest mb-4 border-b border-steel/30 pb-2">Documentation Vault</h3>
-              <div className="flex flex-col gap-4">
+              <h3 className="text-slate-100 text-xs font-bold uppercase tracking-widest mb-4 border-b border-steel/30 pb-2 flex items-center justify-between">
+                <span>Documentation Vault</span>
+                <span className="text-[10px] text-primary normal-case tracking-normal">{documents.length} files</span>
+              </h3>
+              <div className="flex flex-col gap-3" data-testid="doc-vault">
+                {/* Static system docs */}
                 <div className="flex items-center justify-between p-3 bg-background-dark rounded border border-steel/30">
                   <div className="flex items-center gap-2">
                     <Shield className="w-5 h-5 text-primary" />
@@ -168,12 +237,64 @@ const CrewQuartersTraining = () => {
                   </div>
                   <Lock className="w-4 h-4 text-slate-500" />
                 </div>
+
+                {/* User uploaded docs */}
+                {documents.map((doc) => (
+                  <div 
+                    key={doc.id} 
+                    className="group flex items-center justify-between p-3 bg-background-dark rounded border border-steel/30 hover:border-primary/40 transition-colors"
+                    data-testid={`doc-row-${doc.id}`}
+                  >
+                    <button
+                      onClick={() => setPreviewDoc(doc)}
+                      className="flex items-center gap-2 flex-1 min-w-0 text-left"
+                    >
+                      <FileText className="w-5 h-5 text-primary shrink-0" />
+                      <div className="text-xs min-w-0">
+                        <p className="text-slate-200 font-medium truncate">{doc.name}</p>
+                        <p className="text-slate-500 uppercase tracking-wider text-[10px]">
+                          {doc.category} · {formatBytes(doc.size)}
+                        </p>
+                      </div>
+                    </button>
+                    <div className="flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => handleDownloadDoc(doc)}
+                        className="p-1.5 hover:bg-steel/30 rounded text-slate-400 hover:text-primary"
+                        title="Download"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteDoc(doc.id)}
+                        className="p-1.5 hover:bg-red-500/20 rounded text-slate-400 hover:text-red-400"
+                        title="Delete"
+                        data-testid={`doc-delete-${doc.id}`}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.txt"
+                  onChange={onFileSelected}
+                  data-testid="doc-file-input"
+                />
                 <button 
                   onClick={handleUploadDoc}
-                  className="w-full py-2 border-2 border-dashed border-steel/50 rounded text-slate-500 text-xs font-bold uppercase hover:border-primary/50 hover:text-primary transition-all"
+                  disabled={isUploading}
+                  className="w-full py-3 border-2 border-dashed border-steel/50 rounded text-slate-500 text-xs font-bold uppercase hover:border-primary/50 hover:text-primary transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  data-testid="upload-doc-btn"
                 >
-                  Upload New Doc
+                  {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                  {isUploading ? "Uploading..." : "Upload New Doc"}
                 </button>
+                <p className="text-[10px] text-slate-600 text-center -mt-1">PDF, PNG, JPG, DOC · Max 2MB</p>
               </div>
             </div>
           </aside>
@@ -326,6 +447,55 @@ const CrewQuartersTraining = () => {
           <button className="hover:text-primary transition-colors" onClick={() => toast.info("System Status coming soon")}>System Status</button>
         </div>
       </footer>
+
+      {/* Doc Preview Modal */}
+      {previewDoc && (
+        <div 
+          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-6"
+          onClick={() => setPreviewDoc(null)}
+          data-testid="doc-preview-modal"
+        >
+          <div 
+            className="bg-industrial border border-steel/40 rounded-xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-4 border-b border-steel/30">
+              <div className="flex items-center gap-3 min-w-0">
+                <FileText className="w-5 h-5 text-primary shrink-0" />
+                <h3 className="text-slate-100 font-bold truncate">{previewDoc.name}</h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleDownloadDoc(previewDoc)}
+                  className="px-3 py-1.5 bg-primary text-white text-xs font-bold uppercase tracking-wider rounded hover:bg-primary/90 flex items-center gap-1.5"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Download
+                </button>
+                <button
+                  onClick={() => setPreviewDoc(null)}
+                  className="p-2 text-slate-400 hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-auto bg-black/40 p-2">
+              {previewDoc.file_type?.startsWith("image/") ? (
+                <img src={previewDoc.data_url} alt={previewDoc.name} className="max-w-full mx-auto" />
+              ) : previewDoc.file_type === "application/pdf" ? (
+                <iframe src={previewDoc.data_url} title={previewDoc.name} className="w-full h-[70vh] bg-white rounded" />
+              ) : (
+                <div className="p-12 text-center text-slate-400">
+                  <FileText className="w-16 h-16 mx-auto mb-4 opacity-40" />
+                  <p>Preview not available for this file type.</p>
+                  <p className="text-xs text-slate-500 mt-2">Click Download to open it.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

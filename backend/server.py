@@ -415,6 +415,25 @@ class SimulationProgressCreate(BaseModel):
     satisfaction: int = 0
 
 
+class TrainingDocument(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    category: str = "general"  # safety, service, emergency, general
+    file_type: str  # mime type, e.g. application/pdf
+    size: int  # bytes
+    data_url: str  # base64 data URL (kept small: <2MB validated client side)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class TrainingDocumentCreate(BaseModel):
+    name: str
+    category: str = "general"
+    file_type: str
+    size: int
+    data_url: str
+
+
 # ==================== HELPER FUNCTIONS ====================
 
 def serialize_doc(doc):
@@ -1202,6 +1221,39 @@ async def get_simulation_progress(request: Request):
     query = {"user_id": user.user_id} if user else {}
     progress = await db.simulation_progress.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(p) for p in progress]
+
+
+# Training Document endpoints
+@api_router.post("/training-documents", response_model=TrainingDocument)
+async def create_training_document(input: TrainingDocumentCreate, request: Request):
+    # Limit per-document payload to ~2.5MB of base64 to prevent abuse
+    if len(input.data_url) > 3_500_000:
+        raise HTTPException(status_code=413, detail="File too large. Max 2MB.")
+    doc_obj = TrainingDocument(**input.model_dump())
+    doc = serialize_doc(doc_obj.model_dump())
+    user = await get_current_user(request)
+    if user:
+        doc["user_id"] = user.user_id
+    await db.training_documents.insert_one(doc)
+    return doc_obj
+
+@api_router.get("/training-documents", response_model=List[TrainingDocument])
+async def list_training_documents(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    docs = await db.training_documents.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return [deserialize_doc(d) for d in docs]
+
+@api_router.delete("/training-documents/{doc_id}")
+async def delete_training_document(doc_id: str, request: Request):
+    user = await get_current_user(request)
+    query = {"id": doc_id}
+    if user:
+        query["user_id"] = user.user_id
+    result = await db.training_documents.delete_one(query)
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Document not found")
+    return {"deleted": True}
 
 
 # Include the router in the main app
