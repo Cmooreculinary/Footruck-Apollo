@@ -739,40 +739,39 @@ async def create_checkout_session(request: Request):
 @api_router.get("/subscription/checkout/status/{session_id}")
 async def get_checkout_status(session_id: str, request: Request):
     """Check payment status and update subscription"""
-    from emergentintegrations.payments.stripe.checkout import StripeCheckout
-    
-    api_key = os.environ.get("STRIPE_API_KEY")
-    if not api_key:
+    if not stripe.api_key:
+        stripe.api_key = os.environ.get("STRIPE_API_KEY")
+    if not stripe.api_key:
         raise HTTPException(status_code=500, detail="Stripe not configured")
-    
-    host_url = str(request.base_url).rstrip("/")
-    webhook_url = f"{host_url}/api/webhook/stripe"
-    stripe_checkout = StripeCheckout(api_key=api_key, webhook_url=webhook_url)
-    
+
     try:
-        status = await stripe_checkout.get_checkout_status(session_id)
-        
+        session = stripe.checkout.Session.retrieve(session_id)
+        payment_status = session.payment_status
+        session_status = session.status
+        amount_total = session.amount_total
+        currency = session.currency
+
         # Find the transaction
         transaction = await db.payment_transactions.find_one(
             {"session_id": session_id},
             {"_id": 0}
         )
-        
-        if transaction and transaction.get("payment_status") != status.payment_status:
+
+        if transaction and transaction.get("payment_status") != payment_status:
             # Update transaction
             await db.payment_transactions.update_one(
                 {"session_id": session_id},
                 {"$set": {
-                    "payment_status": status.payment_status,
+                    "payment_status": payment_status,
                     "updated_at": datetime.now(timezone.utc).isoformat()
                 }}
             )
-            
+
             # If payment successful, activate subscription
-            if status.payment_status == "paid" and transaction.get("user_id"):
+            if payment_status == "paid" and transaction.get("user_id"):
                 now = datetime.now(timezone.utc)
                 period_end = now + timedelta(days=30)
-                
+
                 await db.subscriptions.update_one(
                     {"user_id": transaction["user_id"]},
                     {"$set": {
@@ -783,12 +782,12 @@ async def get_checkout_status(session_id: str, request: Request):
                     }},
                     upsert=True
                 )
-        
+
         return {
-            "status": status.status,
-            "payment_status": status.payment_status,
-            "amount_total": status.amount_total,
-            "currency": status.currency
+            "status": session_status,
+            "payment_status": payment_status,
+            "amount_total": amount_total,
+            "currency": currency
         }
     except Exception as e:
         logging.error(f"Checkout status error: {e}")
