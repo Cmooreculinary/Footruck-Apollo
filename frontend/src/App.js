@@ -1,14 +1,14 @@
 import React from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Truck, BookOpen, Palette, Users, Calculator, FileText, DollarSign, Utensils, Gauge, Timer, School, ClipboardList, Banknote, Compass, BarChart2, UserCircle, BookMarked, Paintbrush, ChefHat, LogIn, LogOut, User, Store, Settings, Camera } from "lucide-react";
 import { Toaster } from "sonner";
 import SEO from "@/components/SEO";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
-import AuthCallback from "@/components/AuthCallback";
 
 // Import pages
 import LandingPage from "@/pages/LandingPage";
+import LoginPage from "@/pages/LoginPage";
 import DayOneSimulator from "@/pages/DayOneSimulator";
 import SignatureDishDeveloper from "@/pages/SignatureDishDeveloper";
 import CrewQuartersTraining from "@/pages/CrewQuartersTraining";
@@ -110,7 +110,7 @@ const Dashboard = () => {
               </div>
             ) : (
               <button onClick={login} className="flex items-center gap-2 px-5 py-2.5 bg-[#E8592F] text-white rounded-full text-sm font-semibold hover:bg-[#d14a24] transition-colors" data-testid="login-btn">
-                <LogIn className="w-4 h-4" /> Sign In with Google
+                <LogIn className="w-4 h-4" /> Sign In
               </button>
             )}
           </div>
@@ -171,18 +171,11 @@ const Dashboard = () => {
   );
 };
 
-// Handle auth callback in hash
 const AppContent = () => {
-  const location = useLocation();
-  
-  // Check if this is an auth callback
-  if (location.hash?.includes('session_id=')) {
-    return <AuthCallback />;
-  }
-
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/dream-kitchen" element={<DreamKitchen />} />
       <Route path="/day-one" element={<DayOneSimulator />} />
