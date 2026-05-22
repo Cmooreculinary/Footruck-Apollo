@@ -1,8 +1,8 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 
-const DEFAULT_IMAGE = "https://design-studio-614.preview.emergentagent.com/og-image.png";
-const SITE_URL = "https://design-studio-614.preview.emergentagent.com";
+const DEFAULT_IMAGE = "/og-image.png";
+const SITE_URL = "https://footruck-apollo.onrender.com";
 
 const SEO = ({ 
   title = "Food Truck Launch Pad",

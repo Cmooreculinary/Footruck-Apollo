@@ -19,75 +19,7 @@ const TIERS = {
 // ═══════════════════════════════════════════════════════════════
 // PRODUCT IMAGES — Photorealistic images for key products
 // ═══════════════════════════════════════════════════════════════
-const PRODUCT_IMAGES = {
-  // Chassis (6 products - all covered)
-  "ch-1": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/0c43c993e3eb3ab7f6161b687f9f22274f356679a903bccc146ae5a7c5e42a35.png",
-  "ch-2": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/77062c3071627f8cb8555d50d2ee84ff653f175e37a09b9042f88cc77999271d.png",
-  "ch-3": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/0708a76dadca310e34c96f89664d545a87013c90b41925018ce60d2cbc985aef.png",
-  "ch-4": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/a3fc0da0aab34ae3b4a4df9fb684d35e7b57d853c296095f35c73fbdc2faf6d2.png",
-  "ch-5": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/fe9d43e88821c4a6b270c20b91bee2f8fb71c00656ee74631507a5b4c2e11330.png",
-  "ch-6": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/b307f34ec3488ef4e39b7df4fde5843ae7228a7f3f405ddb9d1b4466373966f6.png",
-  // Cooking (9 products covered)
-  "ck-1": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/f0af09061d569b0376d4044c9aba5d948cccf217191f909c6084c6b9bd88eec7.png",
-  "ck-2": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/f529a113b5be54e0dfb06e0ef7525b7048f9074015f4dccc7293f65c279201e6.png",
-  "ck-3": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/239480c3ae14811b240e65d49c556bb62db27f5264263d833cb9c5822d6a7668.png",
-  "ck-4": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/0bf7c9cc11e7679933742bf625c8d794b51b0e8e49e4d22fe1054cf9c6864f1c.png",
-  "ck-5": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/1ed510872627aa5947dfc4d47817c39e3870cce0bbf8032e1c72f2b81e42896f.png",
-  "ck-6": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/730b5e403655015baf5dacf10908785122d9378f41f1153943b294b22c3be6b3.png",
-  "ck-7": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/c05baa45db259c6f81ee8036f845e810ba1e386fc92b4b936fd3d2b0ceabd7e8.png",
-  "ck-8": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/fb722f6a21a127adc1fa0ebdeba9394d95322ffcfd1d7cb8ffe1be31b29d6d9f.png",
-  "ck-9": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/a547d50bff7aee8dc19485932f058307e42b692fc98dca20603e661bb6576ea6.png",
-  "ck-10": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/3180abd18a4ecd98b696a025c0946e858ca4c88af5159cdcc842587b3ca8194c.png",
-  "ck-11": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/004fd5cd0b02a7ad2f66c85c7311b8aacda95181091d0e8d8e7d492972fa205a.png",
-  // Refrigeration (7 products covered)
-  "rf-1": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/67a10bdf5c9cf051eba13af84a2cb45ce6d90acd15a9b09e9791992f24bc6a3f.png",
-  "rf-2": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/e8b972b9120a61341c6f16bd63546743a36945de120230bded336b1aca2f35c9.png",
-  "rf-3": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/760e4370310e8f597357d68232e7d64dbf9c7160e4bd014503e18e3ba4641d13.png",
-  "rf-4": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/33947a96577fc9a08cebe6fa90cd7d5b12549da78a2efabff285fc3e3bcbe7b5.png",
-  "rf-5": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/fc77387760a1a35a5e4d178ea8a3d65a1955f97eb48ade486e6bffe0a7423768.png",
-  "rf-6": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/52a123bb0852d541af67ff5f1a623d17fde622dedec2b8870b3f5eae4d3f516f.png",
-  "rf-7": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/b2e2c2e1393263757a67be283044170fdd2c2ca065607177303b6321978c2858.png",
-  // HVAC (6 products covered)
-  "hv-1": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/4e0090f20f1b7395be4e496086ebe49825ff8244d657d7fd5439681b229caf92.png",
-  "hv-2": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/525a220afe75f951c30f1d83e9da46893ce247e874afe194120dd324bda93096.png",
-  "hv-3": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/10625e53d2cdf6212655c86838f0b90de72cd6f271f72a954e64fcb11c125c20.png",
-  "hv-4": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/58a1b23ef107f4b326c8362c8104b8eef886b44bf87cd3530a0172bfff5d42b2.png",
-  "hv-5": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/a3d7d41572934720a3d15e0b6ad39c12b0e6cd3fc634b450fd35fe5cbd60252a.png",
-  "hv-6": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/f0a8c8f263c0f426aec4786fa8a29a4697c1a4ccf565081ad1eeb2589128a26b.png",
-  // Plumbing (7 products covered)
-  "pl-1": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/dcfb5067a3af90747881e61e2db73faf621e781e967387c7043d728e881cca68.png",
-  "pl-2": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/d3fc56c4e4dec7db031a679c2f71f47f8b84fb72e7cd0f2f70efaec0ae202a2c.png",
-  "pl-3": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/4a15cfcb7b081d816c8311ce6b0ce936143e0e9096df644ea5f2fa7996a91e72.png",
-  "pl-4": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/72a2099af45b94f99f63f3162fe9ccb9516b3bb7d4a6f512f493f8b84f5aa8bd.png",
-  "pl-5": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/065a60de719d145f07e43a4278378cf6879db5c1cc1e46fb52d8ae3c983dc60f.png",
-  "pl-6": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/74838853b33b4334b3329565d6b936c1afcb30820fc977796976a313e67f4444.png",
-  "pl-7": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/f3968218ec42635d05fbb431ff7bab49136dfd4dcd0f815f4e5ed2aa2cabf0da.png",
-  // Electrical (5 products covered)
-  "el-1": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/e0650335d3a22ab5a310c2f398801b1ca9a9bc41d3da6c63ea6d2a96870919dd.png",
-  "el-2": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/c1aea9d1aef92d443cef6040f0053d3d0493caac57c21c469bfb83d303a4708c.png",
-  "el-3": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/121646019babfd35113cfac38d77c070255e1477d9c771e29deaea53b9baf229.png",
-  "el-4": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/65e887249076f2e6e14365ab1e95789c913d65f82a07d5227c6fd4afc4a7074d.png",
-  "el-5": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/685e4169c5ed8d1b6a55aba30fea79749f6cc64a5f91f45c74bc8fbb87177e35.png",
-  // Smallwares (9 products covered)
-  "sw-1": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/9ab32b6a16e069a8fe838206bc2d49367d3c27cefc27ab0d7a515b2493129215.png",
-  "sw-2": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/550b1c1ed1a7eb42c0490bd6a0244e1d6295d3823b5abceb228146a8a718e324.png",
-  "sw-3": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/faf69a7a908478c65abe77ea9fd796c39118adec99206e36b01a9d8d454fa54f.png",
-  "sw-4": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/9f6ff65b38e52118e6a24ff1bf9df5c09f414d5c741842b4e8e18a104c01e2e5.png",
-  "sw-5": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/d2da30c34fe31e09caaaa4c61c1e824c4abda3645f286ccd1ba343fa3c03bf66.png",
-  "sw-6": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/58f6546b34780bd5410515f934ef63b7400abdace288cf686ce5e66b31af858b.png",
-  "sw-7": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/fc2de57a301b0ce219877b8ad9ff78e6e697550c07939aee016566001434778a.png",
-  "sw-8": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/ef1cff85593e0f7d359a83b493dcdd288feaced9f6c39da07f500c2b023ad59c.png",
-  "sw-9": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/1aaadc3ccbf41f3d302cc73abfda5355479fa2cb9b248febdd0cd218da634dbb.png",
-  // Serving & POS (8 products covered)
-  "sv-1": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/044cf315962bbf0f72c7146425e7e039c81fad2328f8713c6a01a413caf45f6e.png",
-  "sv-2": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/b720e4b0fbeea90658b3df404a2aef3a80f6a34df66e2e4c248d3d365b347949.png",
-  "sv-3": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/44a56bb172dd95e29702604c2710ebf911f75c4ddcf5df9ed9d9de7685c1afe9.png",
-  "sv-4": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/414b8ab6a208d6d719a811c14d7bee271fa9aae291c63cd9b40abb4ee0b0abf6.png",
-  "sv-5": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/d81cd12fee9a9016b56a6c928763fc1a954b9777f74c0ad159acb432b84dfc2b.png",
-  "sv-6": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/0ed621ba431d9f0db689ad5bb89bcafed58728699cf3e351e649c3b653229451.png",
-  "sv-7": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/e3d092702e6f01ee7e457f399d5a382f092eced01e33de7658b2008ba69ed029.png",
-  "sv-8": "https://static.prod-images.emergentagent.com/jobs/750cf976-26d8-4bfa-9e94-eee06e714e86/images/5c3eb92d7e92c8f3f01034556507faa1ee4fca3d9b58524deaa8f4161f650d22.png",
-};
+const PRODUCT_IMAGES = {};
 
 const CATEGORIES = [
   { id: "chassis", name: "Chassis", icon: "🚛", sub: "Base Vehicle Selection" },
