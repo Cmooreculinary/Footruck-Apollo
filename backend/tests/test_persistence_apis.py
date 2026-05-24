@@ -16,6 +16,11 @@ import os
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://design-studio-614.preview.emergentagent.com')
 
+pytestmark = pytest.mark.skipif(
+    os.environ.get("RUN_REMOTE_API_TESTS") != "1",
+    reason="Remote API integration tests are opt-in; set RUN_REMOTE_API_TESTS=1 to run them.",
+)
+
 
 class TestHealthCheck:
     """Basic API health check"""
