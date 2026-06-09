@@ -35,7 +35,7 @@ describe("AuthProvider", () => {
   };
 
   beforeEach(() => {
-    process.env.REACT_APP_BACKEND_URL = "https://api.example.test";
+    process.env.VITE_BACKEND_URL = "https://api.example.test";
     window.history.pushState({}, "", "/");
     global.fetch = jest.fn();
     latestAuth = null;
@@ -50,7 +50,7 @@ describe("AuthProvider", () => {
     }
     container?.remove();
     consoleError.mockRestore();
-    delete process.env.REACT_APP_BACKEND_URL;
+    delete process.env.VITE_BACKEND_URL;
     root = null;
     container = null;
   });

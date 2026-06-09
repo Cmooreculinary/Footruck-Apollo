@@ -22,8 +22,9 @@ import TargetCustomerProfiling from "@/pages/TargetCustomerProfiling";
 import RecipeBuilder from "@/pages/RecipeBuilder";
 import PaintShop from "@/pages/PaintShop";
 import KitchenBuilder from "@/pages/KitchenBuilder";
-import Showroom from "@/pages/Showroom";
+import KitchenOutfitter from "@/pages/KitchenOutfitter";
 import PricingPage from "@/pages/PricingPage";
+import TruckShowroom from "@/pages/TruckShowroom";
 
 // Hero image for OG tags
 const HERO_IMAGE = "https://images.unsplash.com/photo-1761205059493-77cd6961c875?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDZ8MHwxfHNlYXJjaHwxfHxmb29kJTIwdHJ1Y2slMjBnb2xkZW4lMjBob3VyJTIwcHJlbWl1bSUyMHN1bnNldHxlbnwwfHx8fDE3NzgyNzkwMjR8MA&ixlib=rb-4.1.0&q=85";
@@ -38,7 +39,7 @@ const Dashboard = () => {
       items: [
         { path: "/paint-shop", name: "Paint Shop", icon: Paintbrush, desc: "Real-time truck configurator with colors, wraps, and accessories", badge: "Popular" },
         { path: "/kitchen-builder", name: "Kitchen Builder", icon: ChefHat, desc: "Drag-and-drop equipment layout with compliance validation", badge: null },
-        { path: "/showroom", name: "Equipment Showroom", icon: Store, desc: "Browse 60+ commercial products across 8 categories", badge: null },
+        { path: "/kitchen-outfitter", name: "Equipment Showroom", icon: Store, desc: "Browse 60+ commercial products across 8 categories", badge: null },
         { path: "/truck-design", name: "Legacy Paint Shop", icon: Palette, desc: "Classic composite preview canvas with paint tools", badge: null },
       ],
     },
@@ -197,8 +198,9 @@ const AppContent = () => {
       <Route path="/recipe-builder" element={<RecipeBuilder />} />
       <Route path="/paint-shop" element={<PaintShop />} />
       <Route path="/kitchen-builder" element={<KitchenBuilder />} />
-      <Route path="/showroom" element={<Showroom />} />
+      <Route path="/kitchen-outfitter" element={<KitchenOutfitter />} />
       <Route path="/pricing" element={<PricingPage />} />
+      <Route path="/truck-showroom" element={<TruckShowroom />} />
     </Routes>
   );
 };

@@ -1,5 +1,5 @@
 // API Client for Food Truck Launch Pad
-const API_BASE = process.env.REACT_APP_BACKEND_URL || '';
+const API_BASE = import.meta.env.VITE_BACKEND_URL || '';
 
 class ApiClient {
   constructor() {

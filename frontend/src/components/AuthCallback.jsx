@@ -28,7 +28,7 @@ const AuthCallback = () => {
 
       try {
         // Exchange session_id for session_token
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/session`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/session`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',

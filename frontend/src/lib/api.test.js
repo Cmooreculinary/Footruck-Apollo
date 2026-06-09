@@ -1,7 +1,7 @@
 describe("apiClient", () => {
   const loadClient = (baseUrl = "https://api.example.test") => {
     jest.resetModules();
-    process.env.REACT_APP_BACKEND_URL = baseUrl;
+    process.env.VITE_BACKEND_URL = baseUrl;
     return require("./api").default;
   };
 
@@ -11,7 +11,7 @@ describe("apiClient", () => {
 
   afterEach(() => {
     jest.useRealTimers();
-    delete process.env.REACT_APP_BACKEND_URL;
+    delete process.env.VITE_BACKEND_URL;
     jest.resetModules();
   });
 

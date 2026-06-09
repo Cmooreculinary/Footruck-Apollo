@@ -61,7 +61,7 @@ const LandingPage = () => {
           </Link>
           <div className="hidden md:flex items-center gap-8">
             <Link to="/paint-shop" className="text-sm text-zinc-400 hover:text-white transition-colors font-medium">Paint Shop</Link>
-            <Link to="/showroom" className="text-sm text-zinc-400 hover:text-white transition-colors font-medium">Showroom</Link>
+            <Link to="/kitchen-outfitter" className="text-sm text-zinc-400 hover:text-white transition-colors font-medium">Showroom</Link>
             <Link to="/pricing" className="text-sm text-zinc-400 hover:text-white transition-colors font-medium">Pricing</Link>
           </div>
           <Link to="/dashboard" className="flex items-center gap-2 px-5 py-2.5 bg-[#E8592F] hover:bg-[#d14a24] text-white text-sm font-semibold rounded-full transition-colors" data-testid="nav-get-started">
@@ -248,7 +248,7 @@ const LandingPage = () => {
             <div className="flex items-center gap-8">
               <Link to="/dashboard" className="text-sm text-zinc-500 hover:text-white transition-colors">Dashboard</Link>
               <Link to="/paint-shop" className="text-sm text-zinc-500 hover:text-white transition-colors">Paint Shop</Link>
-              <Link to="/showroom" className="text-sm text-zinc-500 hover:text-white transition-colors">Showroom</Link>
+              <Link to="/kitchen-outfitter" className="text-sm text-zinc-500 hover:text-white transition-colors">Showroom</Link>
               <Link to="/pricing" className="text-sm text-zinc-500 hover:text-white transition-colors">Pricing</Link>
             </div>
             <div className="text-xs text-zinc-600">&copy; {new Date().getFullYear()} Blue Collar Apps Co.</div>
