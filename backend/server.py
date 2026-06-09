@@ -463,79 +463,62 @@ async def root():
 
 # ==================== AUTH ROUTES ====================
 
-@api_router.post("/auth/session")
-async def exchange_session(request: Request, response: Response):
-    """Exchange session_id from OAuth callback for session_token"""
-    body = await request.json()
-    session_id = body.get("session_id")
-    
-    if not session_id:
-        raise HTTPException(status_code=400, detail="session_id required")
-    
-    # Call Emergent Auth to get user data
-    async with httpx.AsyncClient() as client:
-        try:
-            auth_response = await client.get(
-                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
-                headers={"X-Session-ID": session_id},
-                timeout=10.0
-            )
-            if auth_response.status_code != 200:
-                raise HTTPException(status_code=401, detail="Invalid session_id")
-            
-            user_data = auth_response.json()
-        except Exception as e:
-            logging.error(f"Auth error: {e}")
-            raise HTTPException(status_code=500, detail="Authentication service error")
-    
-    # Check if user exists
-    existing_user = await db.users.find_one(
-        {"email": user_data["email"]},
-        {"_id": 0}
-    )
-    
-    if existing_user:
-        user_id = existing_user["user_id"]
-        # Update user info
-        await db.users.update_one(
-            {"user_id": user_id},
-            {"$set": {
-                "name": user_data["name"],
-                "picture": user_data.get("picture"),
-            }}
-        )
-    else:
-        # Create new user
-        user_id = f"user_{uuid.uuid4().hex[:12]}"
-        await db.users.insert_one({
-            "user_id": user_id,
-            "email": user_data["email"],
-            "name": user_data["name"],
-            "picture": user_data.get("picture"),
-            "created_at": datetime.now(timezone.utc).isoformat()
-        })
-    
-    # Create session
-    session_token = user_data.get("session_token") or f"sess_{uuid.uuid4().hex}"
-    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
-    
-    await db.user_sessions.insert_one({
+class RegisterRequest(BaseModel):
+    email: str
+    password: str
+    name: str
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+def create_session_token(user_id: str) -> str:
+    from jose import jwt
+    secret = os.environ.get("JWT_SECRET", "dev-secret-change-in-production")
+    payload = {
         "user_id": user_id,
-        "session_token": session_token,
-        "expires_at": expires_at.isoformat(),
+        "exp": datetime.now(timezone.utc) + timedelta(days=7)
+    }
+    return jwt.encode(payload, secret, algorithm="HS256")
+
+@api_router.post("/auth/register")
+async def register(body: RegisterRequest, response: Response):
+    """Register a new user with email and password"""
+    from passlib.hash import bcrypt
+    existing = await db.users.find_one({"email": body.email})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    user_id = f"user_{uuid.uuid4().hex[:12]}"
+    await db.users.insert_one({
+        "user_id": user_id,
+        "email": body.email,
+        "name": body.name,
+        "password_hash": bcrypt.hash(body.password),
         "created_at": datetime.now(timezone.utc).isoformat()
     })
-    
-    # Set httpOnly cookie
-    response.set_cookie(
-        key="session_token",
-        value=session_token,
-        httponly=True,
-        secure=True,
-        samesite="none",
-        path="/",
-        max_age=7 * 24 * 60 * 60  # 7 days
-    )
+    session_token = create_session_token(user_id)
+    response.set_cookie(key="session_token", value=session_token,
+        httponly=True, secure=True, samesite="none", path="/",
+        max_age=7 * 24 * 60 * 60)
+    return {"user_id": user_id, "email": body.email, "name": body.name}
+
+@api_router.post("/auth/login")
+async def login(body: LoginRequest, response: Response):
+    """Login with email and password"""
+    from passlib.hash import bcrypt
+    user = await db.users.find_one({"email": body.email}, {"_id": 0})
+    if not user or not bcrypt.verify(body.password, user.get("password_hash", "")):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    session_token = create_session_token(user["user_id"])
+    response.set_cookie(key="session_token", value=session_token,
+        httponly=True, secure=True, samesite="none", path="/",
+        max_age=7 * 24 * 60 * 60)
+    return {"user_id": user["user_id"], "email": user["email"], "name": user.get("name")}
+
+@api_router.post("/auth/session")
+async def exchange_session(request: Request, response: Response):
+    """Legacy endpoint — returns 410 Gone"""
+    raise HTTPException(status_code=410, detail="Emergent OAuth removed. Use /auth/login or /auth/register")
     
     # Get full user data
     user_doc = await db.users.find_one({"user_id": user_id}, {"_id": 0})
@@ -739,18 +722,21 @@ async def create_checkout_session(request: Request):
 @api_router.get("/subscription/checkout/status/{session_id}")
 async def get_checkout_status(session_id: str, request: Request):
     """Check payment status and update subscription"""
-    from emergentintegrations.payments.stripe.checkout import StripeCheckout
+    import stripe as stripe_lib
     
     api_key = os.environ.get("STRIPE_API_KEY")
     if not api_key:
         raise HTTPException(status_code=500, detail="Stripe not configured")
     
-    host_url = str(request.base_url).rstrip("/")
-    webhook_url = f"{host_url}/api/webhook/stripe"
-    stripe_checkout = StripeCheckout(api_key=api_key, webhook_url=webhook_url)
+    stripe_lib.api_key = api_key
     
     try:
-        status = await stripe_checkout.get_checkout_status(session_id)
+        session = stripe_lib.checkout.Session.retrieve(session_id)
+        class status:
+            payment_status = session.payment_status
+            status = session.status
+            amount_total = session.amount_total
+            currency = session.currency
         
         # Find the transaction
         transaction = await db.payment_transactions.find_one(
@@ -1262,7 +1248,7 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=os.environ.get('CORS_ORIGINS', 'http://localhost:3000').split(','),
     allow_methods=["*"],
     allow_headers=["*"],
 )
