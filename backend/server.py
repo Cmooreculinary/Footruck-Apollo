@@ -876,7 +876,17 @@ async def stripe_webhook(request: Request):
     
     try:
         body = await request.body()
-        payload = json.loads(body)
+        webhook_secret = os.environ.get("STRIPE_WEBHOOK_SECRET")
+        if webhook_secret:
+            sig_header = request.headers.get("stripe-signature")
+            try:
+                event = stripe.Webhook.construct_event(body, sig_header, webhook_secret)
+            except (ValueError, stripe.error.SignatureVerificationError):
+                raise HTTPException(status_code=400, detail="Invalid webhook signature")
+            payload = event
+        else:
+            logging.warning("STRIPE_WEBHOOK_SECRET not set - skipping signature validation")
+            payload = json.loads(body)
         event_type = payload.get("type", "")
         data = payload.get("data", {}).get("object", {})
         
