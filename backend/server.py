@@ -8,7 +8,7 @@ import logging
 import json
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional, Dict, Any
+from typing import List, Literal, Optional, Dict, Any
 import uuid
 from datetime import datetime, timezone, timedelta
 import httpx
@@ -40,57 +40,35 @@ class User(BaseModel):
     picture: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-class UserSession(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    user_id: str
-    session_token: str
-    expires_at: datetime
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
 
 # ==================== AUTH HELPER ====================
 
 async def get_current_user(request: Request) -> Optional[User]:
-    """Get current user from session token (cookie or header)"""
-    # Try cookie first
+    """Get current user by decoding the JWT session token."""
     session_token = request.cookies.get("session_token")
-    
-    # Fallback to Authorization header
+
     if not session_token:
         auth_header = request.headers.get("Authorization")
         if auth_header and auth_header.startswith("Bearer "):
             session_token = auth_header[7:]
-    
+
     if not session_token:
         return None
-    
-    # Find session
-    session_doc = await db.user_sessions.find_one(
-        {"session_token": session_token},
-        {"_id": 0}
-    )
-    
-    if not session_doc:
+
+    try:
+        from jose import jwt, JWTError
+        secret = os.environ.get("JWT_SECRET", "dev-secret-change-in-production")
+        payload = jwt.decode(session_token, secret, algorithms=["HS256"])
+        user_id: str = payload.get("user_id")
+        if not user_id:
+            return None
+    except Exception:
         return None
-    
-    # Check expiry
-    expires_at = session_doc["expires_at"]
-    if isinstance(expires_at, str):
-        expires_at = datetime.fromisoformat(expires_at)
-    if expires_at.tzinfo is None:
-        expires_at = expires_at.replace(tzinfo=timezone.utc)
-    if expires_at < datetime.now(timezone.utc):
-        return None
-    
-    # Get user
-    user_doc = await db.users.find_one(
-        {"user_id": session_doc["user_id"]},
-        {"_id": 0}
-    )
-    
+
+    user_doc = await db.users.find_one({"user_id": user_id}, {"_id": 0})
     if not user_doc:
         return None
-    
+
     return User(**user_doc)
 
 
@@ -285,7 +263,7 @@ class SignatureDishCreate(BaseModel):
     primary_component: str
     x_factor: str
     flavor_profiles: List[str]
-    status: str = "draft"
+    status: Literal["draft", "published"] = "draft"
 
 
 class Assessment(BaseModel):
@@ -338,8 +316,8 @@ class Permit(BaseModel):
 
 class PermitCreate(BaseModel):
     name: str
-    category: str
-    status: str = "pending"
+    category: Literal["federal", "health", "city", "county"]
+    status: Literal["pending", "in_progress", "complete"] = "pending"
     due_date: Optional[str] = None
     notes: str = ""
 
@@ -516,14 +494,9 @@ async def login(body: LoginRequest, response: Response):
     return {"user_id": user["user_id"], "email": user["email"], "name": user.get("name")}
 
 @api_router.post("/auth/session")
-async def exchange_session(request: Request, response: Response):
+async def exchange_session():
     """Legacy endpoint — returns 410 Gone"""
     raise HTTPException(status_code=410, detail="Emergent OAuth removed. Use /auth/login or /auth/register")
-    
-    # Get full user data
-    user_doc = await db.users.find_one({"user_id": user_id}, {"_id": 0})
-    
-    return {"user": user_doc, "session_token": session_token}
 
 
 @api_router.get("/auth/me")
@@ -536,20 +509,9 @@ async def get_current_user_endpoint(request: Request):
 
 
 @api_router.post("/auth/logout")
-async def logout(request: Request, response: Response):
-    """Logout user and clear session"""
-    session_token = request.cookies.get("session_token")
-    
-    if session_token:
-        await db.user_sessions.delete_one({"session_token": session_token})
-    
-    response.delete_cookie(
-        key="session_token",
-        path="/",
-        secure=True,
-        samesite="none"
-    )
-    
+async def logout(response: Response):
+    """Logout user and clear session cookie."""
+    response.delete_cookie(key="session_token", path="/")
     return {"message": "Logged out successfully"}
 
 
@@ -732,33 +694,24 @@ async def get_checkout_status(session_id: str, request: Request):
     
     try:
         session = stripe_lib.checkout.Session.retrieve(session_id)
-        class status:
-            payment_status = session.payment_status
-            status = session.status
-            amount_total = session.amount_total
-            currency = session.currency
-        
-        # Find the transaction
+
         transaction = await db.payment_transactions.find_one(
             {"session_id": session_id},
             {"_id": 0}
         )
-        
-        if transaction and transaction.get("payment_status") != status.payment_status:
-            # Update transaction
+
+        if transaction and transaction.get("payment_status") != session.payment_status:
             await db.payment_transactions.update_one(
                 {"session_id": session_id},
                 {"$set": {
-                    "payment_status": status.payment_status,
+                    "payment_status": session.payment_status,
                     "updated_at": datetime.now(timezone.utc).isoformat()
                 }}
             )
-            
-            # If payment successful, activate subscription
-            if status.payment_status == "paid" and transaction.get("user_id"):
+
+            if session.payment_status == "paid" and transaction.get("user_id"):
                 now = datetime.now(timezone.utc)
                 period_end = now + timedelta(days=30)
-                
                 await db.subscriptions.update_one(
                     {"user_id": transaction["user_id"]},
                     {"$set": {
@@ -769,12 +722,12 @@ async def get_checkout_status(session_id: str, request: Request):
                     }},
                     upsert=True
                 )
-        
+
         return {
-            "status": status.status,
-            "payment_status": status.payment_status,
-            "amount_total": status.amount_total,
-            "currency": status.currency
+            "status": session.status,
+            "payment_status": session.payment_status,
+            "amount_total": session.amount_total,
+            "currency": session.currency
         }
     except Exception as e:
         logging.error(f"Checkout status error: {e}")
@@ -877,16 +830,14 @@ async def stripe_webhook(request: Request):
     try:
         body = await request.body()
         webhook_secret = os.environ.get("STRIPE_WEBHOOK_SECRET")
-        if webhook_secret:
-            sig_header = request.headers.get("stripe-signature")
-            try:
-                event = stripe.Webhook.construct_event(body, sig_header, webhook_secret)
-            except (ValueError, stripe.error.SignatureVerificationError):
-                raise HTTPException(status_code=400, detail="Invalid webhook signature")
-            payload = event
-        else:
-            logging.warning("STRIPE_WEBHOOK_SECRET not set - skipping signature validation")
-            payload = json.loads(body)
+        if not webhook_secret:
+            logging.error("STRIPE_WEBHOOK_SECRET not configured — rejecting webhook")
+            raise HTTPException(status_code=400, detail="Webhook secret not configured")
+        sig_header = request.headers.get("stripe-signature")
+        try:
+            payload = stripe.Webhook.construct_event(body, sig_header, webhook_secret)
+        except (ValueError, stripe.error.SignatureVerificationError):
+            raise HTTPException(status_code=400, detail="Invalid webhook signature")
         event_type = payload.get("type", "")
         data = payload.get("data", {}).get("object", {})
         
@@ -1113,7 +1064,7 @@ async def get_permits(request: Request):
     return [deserialize_doc(p) for p in permits]
 
 @api_router.patch("/permits/{permit_id}")
-async def update_permit(permit_id: str, status: str, request: Request):
+async def update_permit(permit_id: str, status: Literal["pending", "in_progress", "complete"], request: Request):
     user = await get_current_user(request)
     query = {"id": permit_id}
     if user:

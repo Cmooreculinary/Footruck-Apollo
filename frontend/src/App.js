@@ -111,7 +111,7 @@ const Dashboard = () => {
               </div>
             ) : (
               <button onClick={login} className="flex items-center gap-2 px-5 py-2.5 bg-[#E8592F] text-white rounded-full text-sm font-semibold hover:bg-[#d14a24] transition-colors" data-testid="login-btn">
-                <LogIn className="w-4 h-4" /> Sign In with Google
+                <LogIn className="w-4 h-4" /> Sign In
               </button>
             )}
           </div>

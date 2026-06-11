@@ -90,7 +90,7 @@ const PricingPage = () => {
         return;
       }
       try {
-        const response = await apiClient.request("/api/subscription/status");
+        const response = await apiClient.getSubscriptionStatus();
         setSubscription(response.subscription);
       } catch (error) {
         console.error("Failed to load subscription:", error);
@@ -113,7 +113,7 @@ const PricingPage = () => {
     }
 
     try {
-      const response = await apiClient.request(`/api/subscription/checkout/status/${sessionId}`);
+      const response = await apiClient.getCheckoutStatus(sessionId);
       
       if (response.payment_status === "paid") {
         toast.success("Payment successful!", { 
@@ -153,10 +153,7 @@ const PricingPage = () => {
     }
 
     try {
-      const response = await apiClient.request("/api/subscription/start-trial", {
-        method: "POST",
-        body: JSON.stringify({ plan_id: planId })
-      });
+      const response = await apiClient.startTrial(planId);
       
       const plan = plans.find(p => p.id === planId);
       toast.success(`${plan.name} Trial Started!`, { 
@@ -190,14 +187,7 @@ const PricingPage = () => {
     }
 
     try {
-      const response = await apiClient.request("/api/subscription/checkout", {
-        method: "POST",
-        body: JSON.stringify({ 
-          plan_id: planId,
-          origin_url: window.location.origin,
-          is_first_month: true
-        })
-      });
+      const response = await apiClient.createCheckout(planId, window.location.origin);
       
       // Redirect to Stripe checkout
       if (response.url) {
@@ -213,7 +203,7 @@ const PricingPage = () => {
     if (!confirm("Are you sure you want to cancel your subscription?")) return;
     
     try {
-      await apiClient.request("/api/subscription/cancel", { method: "POST" });
+      await apiClient.cancelSubscription();
       toast.success("Subscription cancelled");
       setSubscription({ ...subscription, status: "cancelled" });
     } catch (error) {

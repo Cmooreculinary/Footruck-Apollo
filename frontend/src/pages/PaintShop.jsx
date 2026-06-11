@@ -807,14 +807,14 @@ const ControlTabs = ({ activeTab, setActiveTab }) => {
   ];
   
   return (
-    <div className="flex border-b border-white/5 mb-6">
+    <div className="flex border-b border-white/5 mb-6 overflow-x-auto scrollbar-none">
       {tabs.map(tab => (
         <button
           key={tab.id}
           onClick={() => setActiveTab(tab.id)}
-          className={`flex-1 py-3 px-2 flex flex-col items-center gap-1 transition-colors text-xs font-medium
-            ${activeTab === tab.id 
-              ? "text-[#E8592F] border-b-2 border-[#E8592F] bg-[#E8592F]/5" 
+          className={`flex-none min-w-[52px] py-3 px-2 flex flex-col items-center gap-1 transition-colors text-xs font-medium
+            ${activeTab === tab.id
+              ? "text-[#E8592F] border-b-2 border-[#E8592F] bg-[#E8592F]/5"
               : "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.02]"}`}
           data-testid={`tab-${tab.id}`}
         >
@@ -920,8 +920,8 @@ const PaintShop = () => {
             logoRotation: savedDesign.logo_rotation ?? prev.logoRotation,
           }));
         }
-      } catch (error) {
-        console.log("No saved design found, using defaults");
+      } catch {
+        // No saved design — use defaults
       } finally {
         setIsLoading(false);
       }
