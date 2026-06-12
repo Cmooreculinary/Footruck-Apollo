@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext(null);
 
@@ -13,10 +14,11 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const checkAuth = useCallback(async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/me`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/me`, {
         credentials: 'include'
       });
       
@@ -36,25 +38,16 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    // CRITICAL: If returning from OAuth callback, skip the /me check.
-    // AuthCallback will exchange the session_id and establish the session first.
-    if (window.location.hash?.includes('session_id=')) {
-      setLoading(false);
-      return;
-    }
     checkAuth();
   }, [checkAuth]);
 
-  // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
   const login = () => {
-    // Redirect to dashboard after login (landing page is now at /)
-    const redirectUrl = window.location.origin + '/dashboard';
-    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+    navigate('/login');
   };
 
   const logout = async () => {
     try {
-      await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/logout`, {
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include'
       });

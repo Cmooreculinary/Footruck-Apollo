@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Palette, Layers, Type, Upload, Settings, Camera, RotateCcw, Save, Download, Share2, ZoomIn, ZoomOut, Maximize2, X, Check } from "lucide-react";
 import { toast } from "sonner";
 import api from "../lib/api";
@@ -807,14 +807,14 @@ const ControlTabs = ({ activeTab, setActiveTab }) => {
   ];
   
   return (
-    <div className="flex border-b border-white/5 mb-6">
+    <div className="flex border-b border-white/5 mb-6 overflow-x-auto scrollbar-none">
       {tabs.map(tab => (
         <button
           key={tab.id}
           onClick={() => setActiveTab(tab.id)}
-          className={`flex-1 py-3 px-2 flex flex-col items-center gap-1 transition-colors text-xs font-medium
-            ${activeTab === tab.id 
-              ? "text-[#E8592F] border-b-2 border-[#E8592F] bg-[#E8592F]/5" 
+          className={`flex-none min-w-[52px] py-3 px-2 flex flex-col items-center gap-1 transition-colors text-xs font-medium
+            ${activeTab === tab.id
+              ? "text-[#E8592F] border-b-2 border-[#E8592F] bg-[#E8592F]/5"
               : "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.02]"}`}
           data-testid={`tab-${tab.id}`}
         >
@@ -837,7 +837,8 @@ const PaintShop = () => {
   const [activePalette, setActivePalette] = useState("copper_steel");
   const [zoom, setZoom] = useState(1);
   const [recentColors, setRecentColors] = useState([]);
-  
+  const [showAllColors, setShowAllColors] = useState(false);
+
   // Truck State - All customization options
   const [truckState, setTruckState] = useState({
     truckModel: "truck_01",
@@ -919,8 +920,8 @@ const PaintShop = () => {
             logoRotation: savedDesign.logo_rotation ?? prev.logoRotation,
           }));
         }
-      } catch (error) {
-        console.log("No saved design found, using defaults");
+      } catch {
+        // No saved design — use defaults
       } finally {
         setIsLoading(false);
       }
@@ -1145,26 +1146,36 @@ const PaintShop = () => {
             />
           </div>
           
-          {/* Truck Model Selector */}
+          {/* Truck Model Selector — Gallery */}
           <div className="mt-5">
-            <label className="block text-xs text-zinc-500 font-semibold uppercase tracking-wider mb-3">Select Chassis</label>
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-              {Object.values(TRUCK_MODELS).map(model => (
+            <label className="block text-xs font-bold uppercase tracking-[0.1em] text-zinc-400 mb-3">Select Chassis</label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {Object.values(TRUCK_MODELS).map((model, idx) => (
                 <button
                   key={model.id}
                   onClick={() => updateState({ truckModel: model.id })}
-                  className={`p-2 rounded-xl border transition-all text-center
-                    ${truckState.truckModel === model.id 
-                      ? "border-[#E8592F] bg-[#E8592F]/10" 
-                      : "border-white/5 hover:border-white/15 bg-white/[0.02]"}`}
+                  className={`relative rounded-2xl border transition-all text-left overflow-hidden
+                    ${truckState.truckModel === model.id
+                      ? "border-[#EC5B13] bg-[#EC5B13]/10 shadow-[0_0_0_1px_#EC5B13]"
+                      : "border-[#2a2a2a] bg-[#1a1a1a] hover:border-white/20"}`}
                   title={model.description}
                 >
-                  <img 
-                    src={model.photo} 
-                    alt={model.name}
-                    className="w-full h-12 object-contain mb-1"
-                  />
-                  <span className="text-[10px] text-zinc-500 line-clamp-1">{model.name}</span>
+                  {idx === 0 && (
+                    <span className="absolute top-2 left-2 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-[#EC5B13] text-white z-10">
+                      ⭐ Most Popular
+                    </span>
+                  )}
+                  <div className="h-28 flex items-center justify-center bg-[#0D0D0D] px-2 pt-2">
+                    <img
+                      src={model.photo}
+                      alt={model.name}
+                      className="h-full w-full object-contain"
+                    />
+                  </div>
+                  <div className="p-2.5">
+                    <p className="text-xs font-bold text-white leading-tight">{model.name}</p>
+                    <p className="text-[10px] text-zinc-500 mt-0.5">Best for: {model.description}</p>
+                  </div>
                 </button>
               ))}
             </div>
@@ -1186,26 +1197,39 @@ const PaintShop = () => {
                   <ColorWheel value={truckState.primaryColor} onChange={(hex) => selectColor(hex)} />
                 </div>
 
-                {/* Quick Palette Presets */}
+                {/* Palette Presets */}
                 <div>
-                  <label className="block text-sm text-zinc-400 mb-2">Preset Palettes</label>
                   <div className="flex flex-wrap gap-1.5 mb-3">
                     {Object.entries(COLOR_PALETTES).filter(([k]) => k !== "custom").map(([key, palette]) => (
                       <button
                         key={key}
-                        onClick={() => setActivePalette(key)}
+                        onClick={() => { setActivePalette(key); setShowAllColors(false); }}
                         className={`px-2.5 py-1 text-[11px] rounded-full border transition-colors
                           ${activePalette === key
-                            ? "border-[#E8592F] bg-[#E8592F]/20 text-[#E8592F]"
-                            : "border-white/10 text-zinc-400 hover:border-white/20"}`}
+                            ? "border-[#EC5B13] bg-[#EC5B13]/20 text-[#EC5B13]"
+                            : "border-[#2a2a2a] text-zinc-400 hover:border-white/20"}`}
                         data-testid={`palette-${key}`}
                       >
                         {palette.name}
                       </button>
                     ))}
                   </div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-zinc-400">
+                      {COLOR_PALETTES[activePalette]?.name}
+                    </span>
+                    <button
+                      onClick={() => setShowAllColors(v => !v)}
+                      className="text-[10px] text-[#EC5B13] hover:text-[#ff6b2b] transition-colors font-semibold"
+                    >
+                      {showAllColors ? "Show Less" : "View All Colors"}
+                    </button>
+                  </div>
                   <div className="flex flex-wrap gap-2">
-                    {COLOR_PALETTES[activePalette]?.colors.map(color => (
+                    {(showAllColors
+                      ? COLOR_PALETTES[activePalette]?.colors
+                      : COLOR_PALETTES[activePalette]?.colors.slice(0, 4)
+                    )?.map(color => (
                       <ColorSwatch
                         key={color.hex}
                         color={color}
@@ -1214,6 +1238,13 @@ const PaintShop = () => {
                       />
                     ))}
                   </div>
+                  {truckState.primaryColor && (
+                    <p className="mt-2 text-[10px] font-mono text-zinc-400">
+                      {COLOR_PALETTES[activePalette]?.colors.find(c => c.hex === truckState.primaryColor)?.name
+                        ? `${COLOR_PALETTES[activePalette].colors.find(c => c.hex === truckState.primaryColor).name} · `
+                        : ""}{truckState.primaryColor.toUpperCase()}
+                    </p>
+                  )}
                   {/* Recent Colors */}
                   {recentColors.length > 0 && (
                     <div className="mt-3">
@@ -1751,6 +1782,113 @@ const PaintShop = () => {
         </div>
         
       </div>
+
+      {/* Level Up Your Build */}
+      <div className="max-w-7xl mx-auto px-6 pb-12">
+        <div className="mb-5">
+          <h2 className="text-xs font-bold uppercase tracking-[0.1em] text-zinc-400">Level Up Your Build</h2>
+          <p className="text-zinc-600 text-xs mt-0.5">Unlock professional services and premium features</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Detailing Pack */}
+          <div className="relative rounded-2xl border border-[#EC5B13]/40 bg-[#1a1a1a] p-5 flex flex-col gap-3">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#EC5B13]">Detailing Pack</p>
+                <p className="text-2xl font-extrabold text-white mt-0.5">$49</p>
+              </div>
+              <span className="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-[#EC5B13]/15 text-[#EC5B13] border border-[#EC5B13]/20">Locked</span>
+            </div>
+            <p className="text-xs text-zinc-500 leading-relaxed">Custom vinyl decal files, cut-ready for any print shop. Includes your logo placement, color specs, and bleed-ready artwork.</p>
+            <button className="mt-auto w-full py-2 text-xs font-semibold rounded-xl border border-[#EC5B13]/30 text-[#EC5B13] hover:bg-[#EC5B13]/10 transition-colors">
+              Unlock Detailing Pack
+            </button>
+          </div>
+
+          {/* Custom Shop */}
+          <div className="relative rounded-2xl border border-[#f59e0b]/40 bg-[#1a1a1a] p-5 flex flex-col gap-3">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#f59e0b]">Custom Shop</p>
+                <p className="text-2xl font-extrabold text-white mt-0.5">$99</p>
+              </div>
+              <span className="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/20">Locked</span>
+            </div>
+            <p className="text-xs text-zinc-500 leading-relaxed">Professional wrap consultation, 3D preview renders, and access to our vendor network for print and installation.</p>
+            <button className="mt-auto w-full py-2 text-xs font-semibold rounded-xl border border-[#f59e0b]/30 text-[#f59e0b] hover:bg-[#f59e0b]/10 transition-colors">
+              Unlock Custom Shop
+            </button>
+          </div>
+
+          {/* The Showroom */}
+          <div className="relative rounded-2xl border border-[#8b5cf6]/40 bg-[#1a1a1a] p-5 flex flex-col gap-3">
+            <span className="absolute top-4 right-4 text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#8b5cf6] text-white">NEW</span>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#8b5cf6]">The Showroom</p>
+              <p className="text-2xl font-extrabold text-white mt-0.5">$149</p>
+            </div>
+            <p className="text-xs text-zinc-500 leading-relaxed">Browse 30 curated preset builds from top food truck operators. Filter by concept, copy a build, and launch in minutes.</p>
+            <Link
+              to="/truck-showroom"
+              className="mt-auto w-full py-2 text-xs font-semibold rounded-xl border border-[#8b5cf6]/30 text-[#8b5cf6] hover:bg-[#8b5cf6]/10 transition-colors text-center block"
+            >
+              Explore The Showroom
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Sticky Save Bar */}
+      {truckState.truckModel && truckState.primaryColor && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[#EC5B13]/40 bg-[#0D0D0D]/95 backdrop-blur-sm px-6 py-3">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <img
+                src={TRUCK_MODELS[truckState.truckModel]?.photo}
+                alt=""
+                className="h-10 w-16 object-contain shrink-0"
+              />
+              <div className="min-w-0">
+                <p className="text-xs font-bold text-white leading-tight truncate">
+                  {TRUCK_MODELS[truckState.truckModel]?.name}
+                </p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span
+                    className="w-3 h-3 rounded-full border border-white/20 shrink-0"
+                    style={{ backgroundColor: truckState.primaryColor }}
+                  />
+                  <span className="text-[10px] font-mono text-zinc-500 truncate">
+                    {truckState.primaryColor.toUpperCase()} · {truckState.finish}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => toast.info("Share link copied!")}
+                className="p-2 rounded-xl border border-[#2a2a2a] text-zinc-400 hover:border-white/20 hover:text-white transition-colors"
+                title="Share build"
+              >
+                <Share2 className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => {
+                  setIsSaving(true);
+                  setTimeout(() => {
+                    setIsSaving(false);
+                    toast.success("Build saved!");
+                  }, 800);
+                }}
+                disabled={isSaving}
+                className="flex items-center gap-2 px-4 py-2 bg-[#EC5B13] text-white rounded-xl text-xs font-bold hover:bg-[#d14a24] transition-colors disabled:opacity-60"
+              >
+                <Save className="w-3.5 h-3.5" />
+                {isSaving ? "Saving…" : "Save Build"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

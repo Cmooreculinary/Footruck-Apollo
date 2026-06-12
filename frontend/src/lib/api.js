@@ -1,5 +1,5 @@
 // API Client for Food Truck Launch Pad
-const API_BASE = process.env.REACT_APP_BACKEND_URL || '';
+const API_BASE = import.meta.env.VITE_BACKEND_URL || '';
 
 class ApiClient {
   constructor() {
@@ -25,7 +25,12 @@ class ApiClient {
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        let message = `HTTP error ${response.status}`;
+        try {
+          const errData = await response.json();
+          if (errData.detail) message = errData.detail;
+        } catch {}
+        throw new Error(message);
       }
 
       return await response.json();
@@ -218,6 +223,33 @@ class ApiClient {
   // Assessments
   async getAssessments() {
     return this.request('/api/assessments');
+  }
+
+  // Subscription endpoints
+  async getSubscriptionStatus() {
+    return this.request('/api/subscription/status');
+  }
+
+  async startTrial(planId) {
+    return this.request('/api/subscription/start-trial', {
+      method: 'POST',
+      body: JSON.stringify({ plan_id: planId }),
+    });
+  }
+
+  async createCheckout(planId, originUrl) {
+    return this.request('/api/subscription/checkout', {
+      method: 'POST',
+      body: JSON.stringify({ plan_id: planId, origin_url: originUrl }),
+    });
+  }
+
+  async getCheckoutStatus(sessionId) {
+    return this.request(`/api/subscription/checkout/status/${sessionId}`);
+  }
+
+  async cancelSubscription() {
+    return this.request('/api/subscription/cancel', { method: 'POST' });
   }
 }
 

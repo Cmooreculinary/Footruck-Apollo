@@ -1,11 +1,10 @@
 import React from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
-import { Truck, BookOpen, Palette, Users, Calculator, FileText, DollarSign, Utensils, Gauge, Timer, School, ClipboardList, Banknote, Compass, BarChart2, UserCircle, BookMarked, Paintbrush, ChefHat, LogIn, LogOut, User, Store, Settings, Camera } from "lucide-react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { Truck, Palette, Calculator, Utensils, Timer, School, ClipboardList, Banknote, Compass, BarChart2, UserCircle, BookMarked, Paintbrush, ChefHat, LogIn, User, Store } from "lucide-react";
 import { Toaster } from "sonner";
 import SEO from "@/components/SEO";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
-import AuthCallback from "@/components/AuthCallback";
 
 // Import pages
 import LandingPage from "@/pages/LandingPage";
@@ -22,8 +21,10 @@ import TargetCustomerProfiling from "@/pages/TargetCustomerProfiling";
 import RecipeBuilder from "@/pages/RecipeBuilder";
 import PaintShop from "@/pages/PaintShop";
 import KitchenBuilder from "@/pages/KitchenBuilder";
-import Showroom from "@/pages/Showroom";
+import KitchenOutfitter from "@/pages/KitchenOutfitter";
 import PricingPage from "@/pages/PricingPage";
+import TruckShowroom from "@/pages/TruckShowroom";
+import LoginPage from "@/pages/LoginPage";
 
 // Hero image for OG tags
 const HERO_IMAGE = "https://images.unsplash.com/photo-1761205059493-77cd6961c875?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDZ8MHwxfHNlYXJjaHwxfHxmb29kJTIwdHJ1Y2slMjBnb2xkZW4lMjBob3VyJTIwcHJlbWl1bSUyMHN1bnNldHxlbnwwfHx8fDE3NzgyNzkwMjR8MA&ixlib=rb-4.1.0&q=85";
@@ -38,7 +39,7 @@ const Dashboard = () => {
       items: [
         { path: "/paint-shop", name: "Paint Shop", icon: Paintbrush, desc: "Real-time truck configurator with colors, wraps, and accessories", badge: "Popular" },
         { path: "/kitchen-builder", name: "Kitchen Builder", icon: ChefHat, desc: "Drag-and-drop equipment layout with compliance validation", badge: null },
-        { path: "/showroom", name: "Equipment Showroom", icon: Store, desc: "Browse 60+ commercial products across 8 categories", badge: null },
+        { path: "/kitchen-outfitter", name: "Equipment Showroom", icon: Store, desc: "Browse 60+ commercial products across 8 categories", badge: null },
         { path: "/truck-design", name: "Legacy Paint Shop", icon: Palette, desc: "Classic composite preview canvas with paint tools", badge: null },
       ],
     },
@@ -110,7 +111,7 @@ const Dashboard = () => {
               </div>
             ) : (
               <button onClick={login} className="flex items-center gap-2 px-5 py-2.5 bg-[#E8592F] text-white rounded-full text-sm font-semibold hover:bg-[#d14a24] transition-colors" data-testid="login-btn">
-                <LogIn className="w-4 h-4" /> Sign In with Google
+                <LogIn className="w-4 h-4" /> Sign In
               </button>
             )}
           </div>
@@ -171,15 +172,7 @@ const Dashboard = () => {
   );
 };
 
-// Handle auth callback in hash
 const AppContent = () => {
-  const location = useLocation();
-  
-  // Check if this is an auth callback
-  if (location.hash?.includes('session_id=')) {
-    return <AuthCallback />;
-  }
-
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
@@ -197,8 +190,10 @@ const AppContent = () => {
       <Route path="/recipe-builder" element={<RecipeBuilder />} />
       <Route path="/paint-shop" element={<PaintShop />} />
       <Route path="/kitchen-builder" element={<KitchenBuilder />} />
-      <Route path="/showroom" element={<Showroom />} />
+      <Route path="/kitchen-outfitter" element={<KitchenOutfitter />} />
       <Route path="/pricing" element={<PricingPage />} />
+      <Route path="/truck-showroom" element={<TruckShowroom />} />
+      <Route path="/login" element={<LoginPage />} />
     </Routes>
   );
 };

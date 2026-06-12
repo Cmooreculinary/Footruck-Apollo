@@ -7,7 +7,7 @@ const HERO_BG = "https://images.unsplash.com/photo-1761205059493-77cd6961c875?cr
 const FEATURE_IMG_1 = "https://images.unsplash.com/photo-1585736764233-fd792a9e0b27?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzV8MHwxfHNlYXJjaHwzfHxmb29kJTIwdHJ1Y2slMjBuaWdodCUyMHVyYmFuJTIwY2luZW1hdGljfGVufDB8fHx8MTc3ODI3OTAxNnww&ixlib=rb-4.1.0&q=85";
 const FEATURE_IMG_2 = "https://images.unsplash.com/photo-1602533438197-c9c47ae4b258?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwzfHxjb21tZXJjaWFsJTIwa2l0Y2hlbiUyMHN0YWlubGVzcyUyMHN0ZWVsJTIwcHJvZmVzc2lvbmFsfGVufDB8fHx8MTc3ODI3OTAyNXww&ixlib=rb-4.1.0&q=85";
 const FEATURE_IMG_3 = "https://images.unsplash.com/photo-1691882723060-49e59f9c5b13?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzN8MHwxfHNlYXJjaHw0fHxnb3VybWV0JTIwc3RyZWV0JTIwZm9vZCUyMHByZXBhcmF0aW9uJTIwY2xvc2UlMjB1cHxlbnwwfHx8fDE3NzgyNzkwMjV8MA&ixlib=rb-4.1.0&q=85";
-const OG_IMAGE = "https://design-studio-614.preview.emergentagent.com/og-image.png";
+const OG_IMAGE = "/og-image.png";
 
 const features = [
   { icon: Paintbrush, title: "Truck Configurator", desc: "Design your dream truck with real-time color, wrap, and accessory previews. See every detail before you commit.", img: FEATURE_IMG_1 },
@@ -61,7 +61,7 @@ const LandingPage = () => {
           </Link>
           <div className="hidden md:flex items-center gap-8">
             <Link to="/paint-shop" className="text-sm text-zinc-400 hover:text-white transition-colors font-medium">Paint Shop</Link>
-            <Link to="/showroom" className="text-sm text-zinc-400 hover:text-white transition-colors font-medium">Showroom</Link>
+            <Link to="/kitchen-outfitter" className="text-sm text-zinc-400 hover:text-white transition-colors font-medium">Showroom</Link>
             <Link to="/pricing" className="text-sm text-zinc-400 hover:text-white transition-colors font-medium">Pricing</Link>
           </div>
           <Link to="/dashboard" className="flex items-center gap-2 px-5 py-2.5 bg-[#E8592F] hover:bg-[#d14a24] text-white text-sm font-semibold rounded-full transition-colors" data-testid="nav-get-started">
@@ -248,7 +248,7 @@ const LandingPage = () => {
             <div className="flex items-center gap-8">
               <Link to="/dashboard" className="text-sm text-zinc-500 hover:text-white transition-colors">Dashboard</Link>
               <Link to="/paint-shop" className="text-sm text-zinc-500 hover:text-white transition-colors">Paint Shop</Link>
-              <Link to="/showroom" className="text-sm text-zinc-500 hover:text-white transition-colors">Showroom</Link>
+              <Link to="/kitchen-outfitter" className="text-sm text-zinc-500 hover:text-white transition-colors">Showroom</Link>
               <Link to="/pricing" className="text-sm text-zinc-500 hover:text-white transition-colors">Pricing</Link>
             </div>
             <div className="text-xs text-zinc-600">&copy; {new Date().getFullYear()} Blue Collar Apps Co.</div>

@@ -1,17 +1,14 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Response
-from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
-import json
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional, Dict, Any
+from typing import List, Literal, Optional, Dict, Any
 import uuid
 from datetime import datetime, timezone, timedelta
-import httpx
 import stripe
 
 
@@ -19,9 +16,14 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
+mongo_url = os.environ.get('MONGO_URL')
+if not mongo_url:
+    raise RuntimeError("MONGO_URL environment variable is required but not set")
+db_name = os.environ.get('DB_NAME')
+if not db_name:
+    raise RuntimeError("DB_NAME environment variable is required but not set")
 client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+db = client[db_name]
 
 # Create the main app without a prefix
 app = FastAPI(title="Food Truck Launch Pad API", version="1.0.0")
@@ -40,57 +42,35 @@ class User(BaseModel):
     picture: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-class UserSession(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    user_id: str
-    session_token: str
-    expires_at: datetime
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
 
 # ==================== AUTH HELPER ====================
 
 async def get_current_user(request: Request) -> Optional[User]:
-    """Get current user from session token (cookie or header)"""
-    # Try cookie first
+    """Get current user by decoding the JWT session token."""
     session_token = request.cookies.get("session_token")
-    
-    # Fallback to Authorization header
+
     if not session_token:
         auth_header = request.headers.get("Authorization")
         if auth_header and auth_header.startswith("Bearer "):
             session_token = auth_header[7:]
-    
+
     if not session_token:
         return None
-    
-    # Find session
-    session_doc = await db.user_sessions.find_one(
-        {"session_token": session_token},
-        {"_id": 0}
-    )
-    
-    if not session_doc:
+
+    try:
+        from jose import jwt, JWTError
+        secret = os.environ.get("JWT_SECRET", "dev-secret-change-in-production")
+        payload = jwt.decode(session_token, secret, algorithms=["HS256"])
+        user_id: str = payload.get("user_id")
+        if not user_id:
+            return None
+    except Exception:
         return None
-    
-    # Check expiry
-    expires_at = session_doc["expires_at"]
-    if isinstance(expires_at, str):
-        expires_at = datetime.fromisoformat(expires_at)
-    if expires_at.tzinfo is None:
-        expires_at = expires_at.replace(tzinfo=timezone.utc)
-    if expires_at < datetime.now(timezone.utc):
-        return None
-    
-    # Get user
-    user_doc = await db.users.find_one(
-        {"user_id": session_doc["user_id"]},
-        {"_id": 0}
-    )
-    
+
+    user_doc = await db.users.find_one({"user_id": user_id}, {"_id": 0})
     if not user_doc:
         return None
-    
+
     return User(**user_doc)
 
 
@@ -285,7 +265,7 @@ class SignatureDishCreate(BaseModel):
     primary_component: str
     x_factor: str
     flavor_profiles: List[str]
-    status: str = "draft"
+    status: Literal["draft", "published"] = "draft"
 
 
 class Assessment(BaseModel):
@@ -338,8 +318,8 @@ class Permit(BaseModel):
 
 class PermitCreate(BaseModel):
     name: str
-    category: str
-    status: str = "pending"
+    category: Literal["federal", "health", "city", "county"]
+    status: Literal["pending", "in_progress", "complete"] = "pending"
     due_date: Optional[str] = None
     notes: str = ""
 
@@ -463,84 +443,62 @@ async def root():
 
 # ==================== AUTH ROUTES ====================
 
-@api_router.post("/auth/session")
-async def exchange_session(request: Request, response: Response):
-    """Exchange session_id from OAuth callback for session_token"""
-    body = await request.json()
-    session_id = body.get("session_id")
-    
-    if not session_id:
-        raise HTTPException(status_code=400, detail="session_id required")
-    
-    # Call Emergent Auth to get user data
-    async with httpx.AsyncClient() as client:
-        try:
-            auth_response = await client.get(
-                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
-                headers={"X-Session-ID": session_id},
-                timeout=10.0
-            )
-            if auth_response.status_code != 200:
-                raise HTTPException(status_code=401, detail="Invalid session_id")
-            
-            user_data = auth_response.json()
-        except Exception as e:
-            logging.error(f"Auth error: {e}")
-            raise HTTPException(status_code=500, detail="Authentication service error")
-    
-    # Check if user exists
-    existing_user = await db.users.find_one(
-        {"email": user_data["email"]},
-        {"_id": 0}
-    )
-    
-    if existing_user:
-        user_id = existing_user["user_id"]
-        # Update user info
-        await db.users.update_one(
-            {"user_id": user_id},
-            {"$set": {
-                "name": user_data["name"],
-                "picture": user_data.get("picture"),
-            }}
-        )
-    else:
-        # Create new user
-        user_id = f"user_{uuid.uuid4().hex[:12]}"
-        await db.users.insert_one({
-            "user_id": user_id,
-            "email": user_data["email"],
-            "name": user_data["name"],
-            "picture": user_data.get("picture"),
-            "created_at": datetime.now(timezone.utc).isoformat()
-        })
-    
-    # Create session
-    session_token = user_data.get("session_token") or f"sess_{uuid.uuid4().hex}"
-    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
-    
-    await db.user_sessions.insert_one({
+class RegisterRequest(BaseModel):
+    email: str
+    password: str
+    name: str
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+def create_session_token(user_id: str) -> str:
+    from jose import jwt
+    secret = os.environ.get("JWT_SECRET", "dev-secret-change-in-production")
+    payload = {
         "user_id": user_id,
-        "session_token": session_token,
-        "expires_at": expires_at.isoformat(),
+        "exp": datetime.now(timezone.utc) + timedelta(days=7)
+    }
+    return jwt.encode(payload, secret, algorithm="HS256")
+
+@api_router.post("/auth/register")
+async def register(body: RegisterRequest, response: Response):
+    """Register a new user with email and password"""
+    from passlib.hash import bcrypt
+    existing = await db.users.find_one({"email": body.email})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    user_id = f"user_{uuid.uuid4().hex[:12]}"
+    await db.users.insert_one({
+        "user_id": user_id,
+        "email": body.email,
+        "name": body.name,
+        "password_hash": bcrypt.hash(body.password),
         "created_at": datetime.now(timezone.utc).isoformat()
     })
-    
-    # Set httpOnly cookie
-    response.set_cookie(
-        key="session_token",
-        value=session_token,
-        httponly=True,
-        secure=True,
-        samesite="none",
-        path="/",
-        max_age=7 * 24 * 60 * 60  # 7 days
-    )
-    
-    # Get full user data
-    user_doc = await db.users.find_one({"user_id": user_id}, {"_id": 0})
-    
-    return {"user": user_doc, "session_token": session_token}
+    session_token = create_session_token(user_id)
+    response.set_cookie(key="session_token", value=session_token,
+        httponly=True, secure=True, samesite="none", path="/",
+        max_age=7 * 24 * 60 * 60)
+    return {"user_id": user_id, "email": body.email, "name": body.name}
+
+@api_router.post("/auth/login")
+async def login(body: LoginRequest, response: Response):
+    """Login with email and password"""
+    from passlib.hash import bcrypt
+    user = await db.users.find_one({"email": body.email}, {"_id": 0})
+    if not user or not bcrypt.verify(body.password, user.get("password_hash", "")):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    session_token = create_session_token(user["user_id"])
+    response.set_cookie(key="session_token", value=session_token,
+        httponly=True, secure=True, samesite="none", path="/",
+        max_age=7 * 24 * 60 * 60)
+    return {"user_id": user["user_id"], "email": user["email"], "name": user.get("name")}
+
+@api_router.post("/auth/session")
+async def exchange_session():
+    """Legacy endpoint — returns 410 Gone"""
+    raise HTTPException(status_code=410, detail="Emergent OAuth removed. Use /auth/login or /auth/register")
 
 
 @api_router.get("/auth/me")
@@ -553,20 +511,9 @@ async def get_current_user_endpoint(request: Request):
 
 
 @api_router.post("/auth/logout")
-async def logout(request: Request, response: Response):
-    """Logout user and clear session"""
-    session_token = request.cookies.get("session_token")
-    
-    if session_token:
-        await db.user_sessions.delete_one({"session_token": session_token})
-    
-    response.delete_cookie(
-        key="session_token",
-        path="/",
-        secure=True,
-        samesite="none"
-    )
-    
+async def logout(response: Response):
+    """Logout user and clear session cookie."""
+    response.delete_cookie(key="session_token", path="/")
     return {"message": "Logged out successfully"}
 
 
@@ -739,40 +686,34 @@ async def create_checkout_session(request: Request):
 @api_router.get("/subscription/checkout/status/{session_id}")
 async def get_checkout_status(session_id: str, request: Request):
     """Check payment status and update subscription"""
-    from emergentintegrations.payments.stripe.checkout import StripeCheckout
+    import stripe as stripe_lib
     
     api_key = os.environ.get("STRIPE_API_KEY")
     if not api_key:
         raise HTTPException(status_code=500, detail="Stripe not configured")
     
-    host_url = str(request.base_url).rstrip("/")
-    webhook_url = f"{host_url}/api/webhook/stripe"
-    stripe_checkout = StripeCheckout(api_key=api_key, webhook_url=webhook_url)
+    stripe_lib.api_key = api_key
     
     try:
-        status = await stripe_checkout.get_checkout_status(session_id)
-        
-        # Find the transaction
+        session = stripe_lib.checkout.Session.retrieve(session_id)
+
         transaction = await db.payment_transactions.find_one(
             {"session_id": session_id},
             {"_id": 0}
         )
-        
-        if transaction and transaction.get("payment_status") != status.payment_status:
-            # Update transaction
+
+        if transaction and transaction.get("payment_status") != session.payment_status:
             await db.payment_transactions.update_one(
                 {"session_id": session_id},
                 {"$set": {
-                    "payment_status": status.payment_status,
+                    "payment_status": session.payment_status,
                     "updated_at": datetime.now(timezone.utc).isoformat()
                 }}
             )
-            
-            # If payment successful, activate subscription
-            if status.payment_status == "paid" and transaction.get("user_id"):
+
+            if session.payment_status == "paid" and transaction.get("user_id"):
                 now = datetime.now(timezone.utc)
                 period_end = now + timedelta(days=30)
-                
                 await db.subscriptions.update_one(
                     {"user_id": transaction["user_id"]},
                     {"$set": {
@@ -783,12 +724,12 @@ async def get_checkout_status(session_id: str, request: Request):
                     }},
                     upsert=True
                 )
-        
+
         return {
-            "status": status.status,
-            "payment_status": status.payment_status,
-            "amount_total": status.amount_total,
-            "currency": status.currency
+            "status": session.status,
+            "payment_status": session.payment_status,
+            "amount_total": session.amount_total,
+            "currency": session.currency
         }
     except Exception as e:
         logging.error(f"Checkout status error: {e}")
@@ -890,7 +831,15 @@ async def stripe_webhook(request: Request):
     
     try:
         body = await request.body()
-        payload = json.loads(body)
+        webhook_secret = os.environ.get("STRIPE_WEBHOOK_SECRET")
+        if not webhook_secret:
+            logging.error("STRIPE_WEBHOOK_SECRET not configured — rejecting webhook")
+            raise HTTPException(status_code=400, detail="Webhook secret not configured")
+        sig_header = request.headers.get("stripe-signature")
+        try:
+            payload = stripe.Webhook.construct_event(body, sig_header, webhook_secret)
+        except (ValueError, stripe.error.SignatureVerificationError):
+            raise HTTPException(status_code=400, detail="Invalid webhook signature")
         event_type = payload.get("type", "")
         data = payload.get("data", {}).get("object", {})
         
@@ -1117,7 +1066,7 @@ async def get_permits(request: Request):
     return [deserialize_doc(p) for p in permits]
 
 @api_router.patch("/permits/{permit_id}")
-async def update_permit(permit_id: str, status: str, request: Request):
+async def update_permit(permit_id: str, status: Literal["pending", "in_progress", "complete"], request: Request):
     user = await get_current_user(request)
     query = {"id": permit_id}
     if user:
@@ -1262,7 +1211,7 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=os.environ.get('CORS_ORIGINS', 'http://localhost:3000').split(','),
     allow_methods=["*"],
     allow_headers=["*"],
 )

@@ -17,6 +17,11 @@ BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://design-studio-614.pr
 TEST_SESSION_TOKEN = os.environ.get("TEST_SESSION_TOKEN", "")
 TEST_USER_ID = os.environ.get("TEST_USER_ID", "")
 
+pytestmark = pytest.mark.skipif(
+    os.environ.get("RUN_REMOTE_API_TESTS") != "1",
+    reason="Remote API integration tests are opt-in; set RUN_REMOTE_API_TESTS=1 to run them.",
+)
+
 
 class TestAuthMe:
     """Tests for /api/auth/me endpoint"""
