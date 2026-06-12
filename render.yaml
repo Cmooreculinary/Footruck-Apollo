@@ -1,4 +1,7 @@
 services:
+  # ----------------------------------------------------------
+  # Backend — FastAPI (Python)
+  # ----------------------------------------------------------
   - type: web
     name: footruck-apollo-backend
     runtime: python
@@ -7,4 +10,33 @@ services:
     startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.9
+        value: "3.11.9"
+      - key: MONGO_URL
+        sync: false   # Set in Render dashboard — MongoDB Atlas connection string
+      - key: DB_NAME
+        value: foodtruck_production
+      - key: JWT_SECRET
+        sync: false   # Set in Render dashboard — any long random string
+      - key: STRIPE_API_KEY
+        sync: false   # Set in Render dashboard — Stripe secret key
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false   # Set in Render dashboard — from Stripe webhook settings
+      - key: CORS_ORIGINS
+        sync: false   # Set to the frontend URL after first deploy, e.g. https://footruck-apollo-frontend.onrender.com
+
+  # ----------------------------------------------------------
+  # Frontend — React / Vite static site
+  # ----------------------------------------------------------
+  - type: web
+    name: footruck-apollo-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: build
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_BACKEND_URL
+        sync: false   # Set to the backend service URL, e.g. https://footruck-apollo-backend.onrender.com

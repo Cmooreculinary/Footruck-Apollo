@@ -1,11 +1,10 @@
 import React from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
-import { Truck, BookOpen, Palette, Users, Calculator, FileText, DollarSign, Utensils, Gauge, Timer, School, ClipboardList, Banknote, Compass, BarChart2, UserCircle, BookMarked, Paintbrush, ChefHat, LogIn, LogOut, User, Store, Settings, Camera } from "lucide-react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { Truck, Palette, Calculator, Utensils, Timer, School, ClipboardList, Banknote, Compass, BarChart2, UserCircle, BookMarked, Paintbrush, ChefHat, LogIn, User, Store } from "lucide-react";
 import { Toaster } from "sonner";
 import SEO from "@/components/SEO";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
-import AuthCallback from "@/components/AuthCallback";
 
 // Import pages
 import LandingPage from "@/pages/LandingPage";
@@ -172,15 +171,7 @@ const Dashboard = () => {
   );
 };
 
-// Handle auth callback in hash
 const AppContent = () => {
-  const location = useLocation();
-  
-  // Check if this is an auth callback
-  if (location.hash?.includes('session_id=')) {
-    return <AuthCallback />;
-  }
-
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
