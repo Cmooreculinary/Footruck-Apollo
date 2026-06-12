@@ -24,6 +24,7 @@ import KitchenBuilder from "@/pages/KitchenBuilder";
 import KitchenOutfitter from "@/pages/KitchenOutfitter";
 import PricingPage from "@/pages/PricingPage";
 import TruckShowroom from "@/pages/TruckShowroom";
+import LoginPage from "@/pages/LoginPage";
 
 // Hero image for OG tags
 const HERO_IMAGE = "https://images.unsplash.com/photo-1761205059493-77cd6961c875?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDZ8MHwxfHNlYXJjaHwxfHxmb29kJTIwdHJ1Y2slMjBnb2xkZW4lMjBob3VyJTIwcHJlbWl1bSUyMHN1bnNldHxlbnwwfHx8fDE3NzgyNzkwMjR8MA&ixlib=rb-4.1.0&q=85";
@@ -192,6 +193,7 @@ const AppContent = () => {
       <Route path="/kitchen-outfitter" element={<KitchenOutfitter />} />
       <Route path="/pricing" element={<PricingPage />} />
       <Route path="/truck-showroom" element={<TruckShowroom />} />
+      <Route path="/login" element={<LoginPage />} />
     </Routes>
   );
 };
