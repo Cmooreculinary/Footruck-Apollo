@@ -3,6 +3,13 @@ import { useNavigate, Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Palette, Layers, Type, Upload, Settings, Camera, RotateCcw, Save, Download, Share2, ZoomIn, ZoomOut, Maximize2, X, Check } from "lucide-react";
 import { toast } from "sonner";
 import api from "../lib/api";
+import {
+  APP_IMAGES,
+  PAINT_CATALOG,
+  getPaintById,
+  getPaintCatalogPanel,
+  getPaintIdByHex,
+} from "../config/paintCatalog";
 
 // ============================================================================
 // TRUCK CHASSIS LIBRARY - 6 Models with Black Background Images (processed)
@@ -16,7 +23,7 @@ const TRUCK_MODELS = {
   },
   truck_02: {
     id: "truck_02", 
-    name: "Modern Sprinter Van",
+    name: "Modern Step Van",
     description: "Coffee, juice, health food, desserts",
     photo: "/trucks/truck_02.png"
   },
@@ -28,13 +35,13 @@ const TRUCK_MODELS = {
   },
   truck_04: {
     id: "truck_04",
-    name: "Compact Transit Van",
+    name: "Compact Truck",
     description: "Urban tight spaces, lunch rush", 
     photo: "/trucks/truck_04.png"
   },
   truck_05: {
     id: "truck_05",
-    name: "Retro Airstream",
+    name: "Retro Trailer",
     description: "Premium, wine, artisan, brunch",
     photo: "/trucks/truck_05.png"
   },
@@ -345,15 +352,13 @@ const DraggableElement = ({ canvasRef, x, y, onDrag, children }) => {
 };
 
 // ============================================================================
-// TRUCK CANVAS COMPONENT - Isolated Truck Preview with All Effects
-// All truck images now have BLACK backgrounds (processed via PIL).
-// Technique: render truck normally, then overlay selected color with
-// mix-blend-mode: multiply. multiply(color, black)=black, multiply(color, white)=color.
+// LEGACY UPGRADE PREVIEW
+// Paint no longer renders here. The standard pack uses the fixed catalog
+// above; this component remains only as scaffolding for future overlay assets.
 // ============================================================================
 const TruckCanvas = ({ state, zoom = 1, onDragText, onDragLogo }) => {
   const truckModel = TRUCK_MODELS[state.truckModel] || TRUCK_MODELS.truck_01;
   const finishType = FINISH_TYPES[state.finish] || FINISH_TYPES.GLOSS;
-  const splitPattern = TWO_TONE_SPLITS[state.twoToneSplit];
   const wrapPattern = WRAP_PATTERNS[state.wrapPattern];
   const [imgLoaded, setImgLoaded] = React.useState(false);
   const [imgError, setImgError] = React.useState(false);
@@ -368,7 +373,6 @@ const TruckCanvas = ({ state, zoom = 1, onDragText, onDragLogo }) => {
   };
 
   const truckImageUrl = state.userPhotoUrl || truckModel.photo;
-  const hasColor = state.primaryColor && state.primaryColor !== "#FFFFFF" && state.primaryColor !== "#fff";
 
   // Reset load state on image change
   React.useEffect(() => { setImgLoaded(false); setImgError(false); }, [truckImageUrl]);
@@ -405,27 +409,7 @@ const TruckCanvas = ({ state, zoom = 1, onDragText, onDragLogo }) => {
           onError={() => setImgError(true)}
         />
 
-        {/* Layer 2: Dual-layer color system — multiply kills background, color adds vivid hue */}
-        {hasColor && (
-          <>
-            {/* Base: multiply ensures dark areas stay black */}
-            <div className="absolute inset-0" style={{ mixBlendMode: "multiply" }}>
-              <div className="absolute inset-0" style={{ backgroundColor: state.primaryColor }} />
-              {state.twoToneEnabled && state.secondaryColor && splitPattern && (
-                <div className="absolute inset-0" style={{ backgroundColor: state.secondaryColor, clipPath: splitPattern.clipPath }} />
-              )}
-            </div>
-            {/* Boost: color blend pushes vivid hue onto the lit truck areas */}
-            <div className="absolute inset-0" style={{ mixBlendMode: "color", opacity: 0.6 }}>
-              <div className="absolute inset-0" style={{ backgroundColor: state.primaryColor }} />
-              {state.twoToneEnabled && state.secondaryColor && splitPattern && (
-                <div className="absolute inset-0" style={{ backgroundColor: state.secondaryColor, clipPath: splitPattern.clipPath }} />
-              )}
-            </div>
-          </>
-        )}
-
-        {/* Layer 3: Wrap pattern — overlay blend shows on colored truck, invisible on black bg */}
+        {/* Layer 2: Wrap pattern — retained for the future pre-rendered upgrade system */}
         {wrapPattern && wrapPattern.css && (
           <div
             className="absolute inset-0 pointer-events-none"
@@ -470,9 +454,9 @@ const TruckCanvas = ({ state, zoom = 1, onDragText, onDragLogo }) => {
         <div
           className="absolute bottom-[14%] left-[14%] right-[14%] h-4 rounded-full"
           style={{
-            backgroundColor: state.lightsColor || state.primaryColor || "#FF6600",
+            backgroundColor: state.lightsColor || "#FF6600",
             opacity: 0.85,
-            boxShadow: `0 0 16px 6px ${state.lightsColor || state.primaryColor || "#FF6600"}80, 0 0 32px 12px ${state.lightsColor || state.primaryColor || "#FF6600"}30`,
+            boxShadow: `0 0 16px 6px ${state.lightsColor || "#FF6600"}80, 0 0 32px 12px ${state.lightsColor || "#FF6600"}30`,
             filter: "blur(3px)",
           }}
         />
@@ -501,17 +485,17 @@ const TruckCanvas = ({ state, zoom = 1, onDragText, onDragLogo }) => {
           className="absolute top-[6%] left-1/2 -translate-x-1/2 px-8 py-3 rounded-lg"
           style={{
             backgroundColor: state.signageIlluminated ? "#1a1a1a" : "#333",
-            border: state.signageIlluminated ? `2px solid ${state.primaryColor || "#FF6600"}` : "2px solid #555",
+            border: state.signageIlluminated ? `2px solid ${state.lightsColor || "#FF6600"}` : "2px solid #555",
             boxShadow: state.signageIlluminated
-              ? `0 0 20px ${state.primaryColor || "#FF6600"}, 0 0 40px ${state.primaryColor || "#FF6600"}60, inset 0 0 10px ${state.primaryColor || "#FF6600"}30`
+              ? `0 0 20px ${state.lightsColor || "#FF6600"}, 0 0 40px ${state.lightsColor || "#FF6600"}60, inset 0 0 10px ${state.lightsColor || "#FF6600"}30`
               : "0 2px 8px rgba(0,0,0,0.5)",
           }}
         >
           <span
             className="text-base font-bold tracking-wider whitespace-nowrap"
             style={{
-              color: state.signageIlluminated ? state.primaryColor || "#FF6600" : "#FFF",
-              textShadow: state.signageIlluminated ? `0 0 10px ${state.primaryColor || "#FF6600"}, 0 0 20px ${state.primaryColor || "#FF6600"}80` : "none",
+              color: state.signageIlluminated ? state.lightsColor || "#FF6600" : "#FFF",
+              textShadow: state.signageIlluminated ? `0 0 10px ${state.lightsColor || "#FF6600"}, 0 0 20px ${state.lightsColor || "#FF6600"}80` : "none",
             }}
           >
             {state.businessName || "OPEN"}
@@ -793,17 +777,73 @@ const ColorSwatch = ({ color, isSelected, onClick, size = "md" }) => {
   );
 };
 
+const PaintCatalogPanel = ({ truckModel, selectedPaintId, onSelectPaint }) => {
+  const image = APP_IMAGES.paintShop.colorCatalog;
+  const panel = getPaintCatalogPanel(truckModel);
+  const imageWidth = (image.width / panel.width) * 100;
+  const imageLeft = (panel.x / panel.width) * 100;
+  const imageTop = (panel.y / panel.height) * 100;
+
+  return (
+    <div
+      className="relative overflow-hidden rounded-xl bg-[#0D0D0D] ring-1 ring-white/10"
+      style={{ aspectRatio: `${panel.width} / ${panel.height}` }}
+      data-testid="paint-catalog-panel"
+    >
+      <img
+        src={image.src}
+        alt={image.alt}
+        data-img={image.dataImg}
+        className="absolute max-w-none select-none pointer-events-none"
+        style={{
+          width: `${imageWidth}%`,
+          left: `-${imageLeft}%`,
+          top: `-${imageTop}%`,
+        }}
+        draggable="false"
+      />
+
+      {PAINT_CATALOG.map((paint) => {
+        const column = (paint.id - 1) % 6;
+        const row = Math.floor((paint.id - 1) / 6);
+        const isSelected = paint.id === selectedPaintId;
+
+        return (
+          <button
+            key={paint.id}
+            type="button"
+            aria-label={`Select paint ${paint.id}, ${paint.name}`}
+            aria-pressed={isSelected}
+            onClick={() => onSelectPaint(paint.id)}
+            className={`absolute rounded-lg transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EC5B13]
+              ${isSelected
+                ? "ring-2 ring-[#EC5B13] bg-[#EC5B13]/10 shadow-[0_0_18px_rgba(236,91,19,0.65)]"
+                : "hover:ring-2 hover:ring-white/60 hover:bg-white/5"}`}
+            style={{
+              left: `${1.7 + column * 16.25}%`,
+              top: `${10.3 + row * 16.65}%`,
+              width: "14.9%",
+              height: "15.4%",
+            }}
+            data-testid={`paint-catalog-option-${paint.id}`}
+          />
+        );
+      })}
+    </div>
+  );
+};
+
 // ============================================================================
 // CONTROL PANEL TABS
 // ============================================================================
 const ControlTabs = ({ activeTab, setActiveTab }) => {
   const tabs = [
     { id: "paint", icon: Palette, label: "Paint" },
-    { id: "wraps", icon: Layers, label: "Wraps" },
-    { id: "lettering", icon: Type, label: "Text" },
-    { id: "logo", icon: Upload, label: "Logo" },
-    { id: "extras", icon: Settings, label: "Extras" },
-    { id: "photo", icon: Camera, label: "Photo" }
+    { id: "wraps", icon: Layers, label: "Wraps", locked: true },
+    { id: "lettering", icon: Type, label: "Text", locked: true },
+    { id: "logo", icon: Upload, label: "Logo", locked: true },
+    { id: "extras", icon: Settings, label: "Extras", locked: true },
+    { id: "photo", icon: Camera, label: "Photo", locked: true }
   ];
   
   return (
@@ -811,15 +851,23 @@ const ControlTabs = ({ activeTab, setActiveTab }) => {
       {tabs.map(tab => (
         <button
           key={tab.id}
-          onClick={() => setActiveTab(tab.id)}
+          onClick={() => {
+            if (tab.locked) {
+              toast.info(`${tab.label} will be added as a pre-rendered upgrade layer.`);
+              return;
+            }
+            setActiveTab(tab.id);
+          }}
           className={`flex-none min-w-[52px] py-3 px-2 flex flex-col items-center gap-1 transition-colors text-xs font-medium
             ${activeTab === tab.id
               ? "text-[#E8592F] border-b-2 border-[#E8592F] bg-[#E8592F]/5"
+              : tab.locked
+              ? "text-zinc-700 cursor-not-allowed"
               : "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.02]"}`}
           data-testid={`tab-${tab.id}`}
         >
           <tab.icon className="w-4 h-4" />
-          <span>{tab.label}</span>
+          <span>{tab.label}{tab.locked ? " +" : ""}</span>
         </button>
       ))}
     </div>
@@ -834,15 +882,12 @@ const PaintShop = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState("paint");
-  const [activePalette, setActivePalette] = useState("copper_steel");
-  const [zoom, setZoom] = useState(1);
-  const [recentColors, setRecentColors] = useState([]);
-  const [showAllColors, setShowAllColors] = useState(false);
 
   // Truck State - All customization options
   const [truckState, setTruckState] = useState({
     truckModel: "truck_01",
-    primaryColor: "#E8592F",
+    paintId: 2,
+    primaryColor: getPaintById(2).hex,
     secondaryColor: "#2C2C2C",
     twoToneEnabled: false,
     twoToneSplit: "horizontal",
@@ -886,9 +931,12 @@ const PaintShop = () => {
       try {
         const savedDesign = await api.getLatestTruckDesign();
         if (savedDesign) {
+          const savedPaintId = savedDesign.paint_id || getPaintIdByHex(savedDesign.primary_color);
+          const savedPaint = getPaintById(savedPaintId);
           setTruckState(prev => ({
             ...prev,
-            primaryColor: savedDesign.primary_color || prev.primaryColor,
+            paintId: savedPaint.id,
+            primaryColor: savedPaint.hex,
             secondaryColor: savedDesign.accent_color || prev.secondaryColor,
             finish: savedDesign.finish_type || prev.finish,
             businessName: savedDesign.business_name || prev.businessName,
@@ -927,31 +975,13 @@ const PaintShop = () => {
       }
     };
     
-    // Load recent colors from localStorage
-    const saved = localStorage.getItem("ftlp_recent_colors");
-    if (saved) {
-      setRecentColors(JSON.parse(saved));
-    }
-    
     loadDesign();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
-  // Add color to recent colors
-  const addToRecentColors = (hex) => {
-    const updated = [hex, ...recentColors.filter(c => c !== hex)].slice(0, 8);
-    setRecentColors(updated);
-    localStorage.setItem("ftlp_recent_colors", JSON.stringify(updated));
-  };
-  
-  // Handle color selection
-  const selectColor = (hex, isSecondary = false) => {
-    if (isSecondary) {
-      updateState({ secondaryColor: hex });
-    } else {
-      updateState({ primaryColor: hex });
-      addToRecentColors(hex);
-    }
+
+  const selectPaint = (paintId) => {
+    const paint = getPaintById(paintId);
+    updateState({ paintId: paint.id, primaryColor: paint.hex });
   };
   
   // Save design — full state persistence
@@ -959,36 +989,12 @@ const PaintShop = () => {
     setIsSaving(true);
     try {
       const designPayload = {
+        paint_id: truckState.paintId,
         primary_color: truckState.primaryColor || "#FFFFFF",
-        accent_color: truckState.secondaryColor || "#2C2C2C",
-        finish_type: truckState.finish || "GLOSS",
+        accent_color: "#2C2C2C",
+        finish_type: "CATALOG",
         business_name: truckState.businessName || "",
         base_model: truckState.truckModel || "truck_01",
-        split_pattern: truckState.twoToneEnabled ? truckState.twoToneSplit : null,
-        wrap_id: truckState.wrapPattern !== "none" ? truckState.wrapPattern : null,
-        wrap_opacity: truckState.wrapOpacity,
-        lettering_font: truckState.letteringFont,
-        lettering_color: truckState.letteringColor,
-        lettering_size: truckState.letteringSize,
-        lettering_x: truckState.letteringX,
-        lettering_y: truckState.letteringY,
-        lettering_outline: truckState.letteringOutline,
-        letter_spacing: truckState.letterSpacing,
-        awning: truckState.awningEnabled ? truckState.awningStyle : null,
-        awning_color: truckState.awningColor,
-        lights_color: truckState.lightsColor,
-        signage_illuminated: truckState.signageIlluminated,
-        racing_stripe_color: truckState.racingStripeColor,
-        racing_stripe_width: truckState.racingStripeWidth,
-        accessories: [
-          truckState.lightsEnabled ? "led_underglow" : null,
-          truckState.signageEnabled ? "roof_signage" : null,
-          truckState.racingStripeEnabled ? "racing_stripe" : null,
-        ].filter(Boolean),
-        logo_x: truckState.logoX,
-        logo_y: truckState.logoY,
-        logo_scale: truckState.logoScale,
-        logo_rotation: truckState.logoRotation,
       };
       await api.saveTruckDesign(designPayload);
       toast.success("Design saved successfully!");
@@ -1004,7 +1010,8 @@ const PaintShop = () => {
   const resetDesign = () => {
     setTruckState({
       truckModel: "truck_01",
-      primaryColor: "#FFFFFF",
+      paintId: 30,
+      primaryColor: getPaintById(30).hex,
       secondaryColor: "#2C2C2C",
       twoToneEnabled: false,
       twoToneSplit: "horizontal",
@@ -1114,37 +1121,25 @@ const PaintShop = () => {
         
         {/* Left: Truck Preview */}
         <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5">
-          {/* Preview Controls */}
-          <div className="flex items-center justify-between mb-4">
-            <span className="font-heading text-sm font-semibold text-white">
-              {TRUCK_MODELS[truckState.truckModel]?.name || "Classic Step Van"}
-            </span>
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => setZoom(Math.max(0.5, zoom - 0.1))}
-                className="p-2 text-zinc-500 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
-              >
-                <ZoomOut className="w-4 h-4" />
-              </button>
-              <span className="text-xs text-zinc-600 w-10 text-center font-mono">{Math.round(zoom * 100)}%</span>
-              <button
-                onClick={() => setZoom(Math.min(2, zoom + 0.1))}
-                className="p-2 text-zinc-500 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
-              >
-                <ZoomIn className="w-4 h-4" />
-              </button>
+          <div className="flex items-start justify-between gap-4 mb-4">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#EC5B13]">Standard Paint Catalog</p>
+              <h2 className="font-heading text-lg font-semibold text-white mt-1">
+                {TRUCK_MODELS[truckState.truckModel]?.name || "Classic Step Van"}
+              </h2>
+              <p className="text-xs text-zinc-500 mt-1">Compare all 30 finished renders. Select the exact truck you want.</p>
+            </div>
+            <div className="shrink-0 rounded-xl border border-[#EC5B13]/30 bg-[#EC5B13]/10 px-3 py-2 text-right">
+              <p className="text-[9px] font-bold uppercase tracking-wider text-[#EC5B13]">Selected</p>
+              <p className="text-sm font-bold text-white">#{truckState.paintId} {getPaintById(truckState.paintId).name}</p>
             </div>
           </div>
-          
-          {/* Truck Canvas */}
-          <div className="aspect-[3/2] bg-black rounded-xl overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-white/5">
-            <TruckCanvas
-              state={truckState}
-              zoom={zoom}
-              onDragText={(x, y) => updateState({ letteringX: x, letteringY: y })}
-              onDragLogo={(x, y) => updateState({ logoX: x, logoY: y })}
-            />
-          </div>
+
+          <PaintCatalogPanel
+            truckModel={truckState.truckModel}
+            selectedPaintId={truckState.paintId}
+            onSelectPaint={selectPaint}
+          />
           
           {/* Truck Model Selector — Gallery */}
           <div className="mt-5">
@@ -1190,158 +1185,59 @@ const PaintShop = () => {
             
             {/* PAINT TAB */}
             {activeTab === "paint" && (
-              <>
-                {/* Color Wheel — main color selector */}
-                <div data-testid="paint-color-section">
-                  <label className="block text-sm text-zinc-400 mb-3">Paint Color</label>
-                  <ColorWheel value={truckState.primaryColor} onChange={(hex) => selectColor(hex)} />
+              <div className="space-y-5" data-testid="paint-color-section">
+                <div className="rounded-xl border border-[#EC5B13]/25 bg-[#EC5B13]/[0.07] p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#EC5B13]">Exact Render Selection</p>
+                  <div className="mt-2 flex items-end justify-between gap-4">
+                    <div>
+                      <p className="text-2xl font-bold text-white">#{truckState.paintId}</p>
+                      <p className="text-sm text-zinc-300">{getPaintById(truckState.paintId).name}</p>
+                    </div>
+                    <div
+                      className="h-12 w-12 rounded-xl border border-white/20 shadow-inner"
+                      style={{ backgroundColor: getPaintById(truckState.paintId).hex }}
+                      aria-hidden="true"
+                    />
+                  </div>
+                  <p className="mt-3 text-xs leading-relaxed text-zinc-500">
+                    The catalog image is the product truth. Paint is selected by number, not generated by a browser tint.
+                  </p>
                 </div>
 
-                {/* Palette Presets */}
                 <div>
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    {Object.entries(COLOR_PALETTES).filter(([k]) => k !== "custom").map(([key, palette]) => (
-                      <button
-                        key={key}
-                        onClick={() => { setActivePalette(key); setShowAllColors(false); }}
-                        className={`px-2.5 py-1 text-[11px] rounded-full border transition-colors
-                          ${activePalette === key
-                            ? "border-[#EC5B13] bg-[#EC5B13]/20 text-[#EC5B13]"
-                            : "border-[#2a2a2a] text-zinc-400 hover:border-white/20"}`}
-                        data-testid={`palette-${key}`}
-                      >
-                        {palette.name}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-bold uppercase tracking-[0.1em] text-zinc-400">
-                      {COLOR_PALETTES[activePalette]?.name}
+                  <div className="mb-3 flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-semibold text-white">30-Color Standard Pack</p>
+                      <p className="text-[11px] text-zinc-500">Numbers remain consistent across every chassis.</p>
+                    </div>
+                    <span className="rounded-full border border-white/10 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-zinc-500">
+                      Included
                     </span>
-                    <button
-                      onClick={() => setShowAllColors(v => !v)}
-                      className="text-[10px] text-[#EC5B13] hover:text-[#ff6b2b] transition-colors font-semibold"
-                    >
-                      {showAllColors ? "Show Less" : "View All Colors"}
-                    </button>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {(showAllColors
-                      ? COLOR_PALETTES[activePalette]?.colors
-                      : COLOR_PALETTES[activePalette]?.colors.slice(0, 4)
-                    )?.map(color => (
-                      <ColorSwatch
-                        key={color.hex}
-                        color={color}
-                        isSelected={truckState.primaryColor === color.hex}
-                        onClick={() => selectColor(color.hex)}
-                      />
-                    ))}
-                  </div>
-                  {truckState.primaryColor && (
-                    <p className="mt-2 text-[10px] font-mono text-zinc-400">
-                      {COLOR_PALETTES[activePalette]?.colors.find(c => c.hex === truckState.primaryColor)?.name
-                        ? `${COLOR_PALETTES[activePalette].colors.find(c => c.hex === truckState.primaryColor).name} · `
-                        : ""}{truckState.primaryColor.toUpperCase()}
-                    </p>
-                  )}
-                  {/* Recent Colors */}
-                  {recentColors.length > 0 && (
-                    <div className="mt-3">
-                      <label className="block text-xs text-zinc-500 mb-1.5">Recent</label>
-                      <div className="flex gap-1.5">
-                        {recentColors.map(hex => (
-                          <button
-                            key={hex}
-                            onClick={() => selectColor(hex)}
-                            className={`w-7 h-7 rounded-full border transition-all
-                              ${truckState.primaryColor === hex ? "border-[#E8592F] scale-110" : "border-white/10 hover:border-white/20"}`}
-                            style={{ backgroundColor: hex }}
-                            data-testid={`recent-color-${hex}`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                
-                {/* Finish Type */}
-                <div>
-                  <label className="block text-sm text-zinc-400 mb-2">Finish Type</label>
-                  <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
-                    {Object.entries(FINISH_TYPES).map(([key, finish]) => (
+                  <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
+                    {PAINT_CATALOG.map((paint) => (
                       <button
-                        key={key}
-                        onClick={() => updateState({ finish: key })}
-                        className={`p-2 rounded-lg border text-center transition-all
-                          ${truckState.finish === key 
-                            ? "border-[#E8592F] bg-[#E8592F]/10" 
-                            : "border-white/10 hover:border-white/15"}`}
-                        title={finish.description}
+                        key={paint.id}
+                        type="button"
+                        onClick={() => selectPaint(paint.id)}
+                        className={`rounded-xl border p-2 text-left transition-all
+                          ${truckState.paintId === paint.id
+                            ? "border-[#EC5B13] bg-[#EC5B13]/10 shadow-[0_0_0_1px_#EC5B13]"
+                            : "border-white/10 bg-white/[0.02] hover:border-white/25"}`}
+                        title={`${paint.id}. ${paint.name}`}
+                        data-testid={`paint-list-option-${paint.id}`}
                       >
-                        <span className="text-xs text-zinc-300">{finish.name}</span>
+                        <span
+                          className="block h-6 w-full rounded-md border border-black/20"
+                          style={{ backgroundColor: paint.hex }}
+                        />
+                        <span className="mt-1.5 block text-[10px] font-bold text-white">#{paint.id}</span>
+                        <span className="block truncate text-[9px] text-zinc-500">{paint.name}</span>
                       </button>
                     ))}
                   </div>
                 </div>
-                
-                {/* Two-Tone Toggle */}
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="text-sm text-zinc-400">Two-Tone Paint</label>
-                    <button
-                      onClick={() => updateState({ twoToneEnabled: !truckState.twoToneEnabled })}
-                      className={`relative w-12 h-6 rounded-full transition-colors
-                        ${truckState.twoToneEnabled ? "bg-[#E8592F]" : "bg-zinc-700"}`}
-                    >
-                      <span 
-                        className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
-                          ${truckState.twoToneEnabled ? "left-7" : "left-1"}`}
-                      />
-                    </button>
-                  </div>
-                  
-                  {truckState.twoToneEnabled && (
-                    <div className="space-y-3 pl-4 border-l-2 border-[#E8592F]/30">
-                      {/* Secondary Color */}
-                      <div>
-                        <label className="block text-xs text-zinc-500 mb-2">Secondary Color</label>
-                        <div className="flex flex-wrap gap-2">
-                          {COLOR_PALETTES[activePalette]?.colors.map(color => (
-                            <ColorSwatch
-                              key={color.hex}
-                              color={color}
-                              size="sm"
-                              isSelected={truckState.secondaryColor === color.hex}
-                              onClick={() => selectColor(color.hex, true)}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                      
-                      {/* Split Pattern */}
-                      <div>
-                        <label className="block text-xs text-zinc-500 mb-2">Split Pattern</label>
-                        <div className="grid grid-cols-4 gap-2">
-                          {Object.entries(TWO_TONE_SPLITS).map(([key, split]) => (
-                            <button
-                              key={key}
-                              onClick={() => updateState({ twoToneSplit: key })}
-                              className={`p-2 rounded-lg border text-center
-                                ${truckState.twoToneSplit === key 
-                                  ? "border-[#E8592F] bg-[#E8592F]/10" 
-                                  : "border-white/10 hover:border-white/15"}`}
-                              title={split.description}
-                            >
-                              <span className="text-[10px] text-zinc-400">{split.name}</span>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </>
+              </div>
             )}
             
             {/* WRAPS TAB */}
@@ -1858,7 +1754,7 @@ const PaintShop = () => {
                     style={{ backgroundColor: truckState.primaryColor }}
                   />
                   <span className="text-[10px] font-mono text-zinc-500 truncate">
-                    {truckState.primaryColor.toUpperCase()} · {truckState.finish}
+                    #{truckState.paintId} · {getPaintById(truckState.paintId).name}
                   </span>
                 </div>
               </div>

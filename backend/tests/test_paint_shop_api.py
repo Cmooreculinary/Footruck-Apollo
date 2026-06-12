@@ -37,6 +37,7 @@ class TestPaintShopAPI:
             "finish_type": "GLOSS",
             "business_name": f"TEST_TACO_FIESTA_{uuid.uuid4().hex[:6]}",
             "base_model": "truck_01",
+            "paint_id": 2,
             "split_pattern": "horizontal",
             "wrap_id": "stripes_h",
             "wrap_opacity": 0.5,
@@ -88,6 +89,7 @@ class TestPaintShopAPI:
         assert data["finish_type"] == self.test_design["finish_type"]
         assert data["business_name"] == self.test_design["business_name"]
         assert data["base_model"] == self.test_design["base_model"]
+        assert data["paint_id"] == self.test_design["paint_id"]
         
         # Verify NEW lettering fields
         assert data["lettering_font"] == self.test_design["lettering_font"]

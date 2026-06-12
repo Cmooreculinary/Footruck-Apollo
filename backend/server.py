@@ -148,6 +148,7 @@ class TruckDesign(BaseModel):
     business_name: str
     # Truck model & paint
     base_model: Optional[str] = None
+    paint_id: Optional[int] = Field(default=None, ge=1, le=30)
     split_pattern: Optional[str] = None
     wrap_id: Optional[str] = None
     wrap_opacity: Optional[float] = None
@@ -186,6 +187,7 @@ class TruckDesignCreate(BaseModel):
     texture_type: Optional[str] = None
     business_name: str
     base_model: Optional[str] = None
+    paint_id: Optional[int] = Field(default=None, ge=1, le=30)
     split_pattern: Optional[str] = None
     wrap_id: Optional[str] = None
     wrap_opacity: Optional[float] = None
