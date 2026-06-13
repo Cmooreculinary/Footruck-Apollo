@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 from copy import deepcopy
@@ -132,14 +133,9 @@ def client(fake_db):
 
 
 def seed_user(fake_db, token="session_token", user_id="user_123", expires_at=None):
+    from jose import jwt
+
     expires_at = expires_at or datetime.now(timezone.utc) + timedelta(hours=1)
-    fake_db.user_sessions.docs.append(
-        {
-            "user_id": user_id,
-            "session_token": token,
-            "expires_at": expires_at.isoformat(),
-        }
-    )
     fake_db.users.docs.append(
         {
             "user_id": user_id,
@@ -149,7 +145,16 @@ def seed_user(fake_db, token="session_token", user_id="user_123", expires_at=Non
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
     )
-    return {"Authorization": f"Bearer {token}"}
+    session_token = jwt.encode(
+        {
+            "user_id": user_id,
+            "exp": expires_at,
+            "jti": token,
+        },
+        os.environ.get("JWT_SECRET", "dev-secret-change-in-production"),
+        algorithm="HS256",
+    )
+    return {"Authorization": f"Bearer {session_token}"}
 
 
 def test_auth_me_accepts_bearer_tokens_and_rejects_expired_sessions(client, fake_db):
@@ -311,6 +316,12 @@ def test_training_documents_enforce_size_limit_and_user_ownership(client, fake_d
 
 def test_stripe_checkout_webhook_activates_subscription(client, fake_db, monkeypatch):
     monkeypatch.setenv("STRIPE_API_KEY", "sk_test_local")
+    monkeypatch.setenv("STRIPE_WEBHOOK_SECRET", "whsec_test_local")
+    monkeypatch.setattr(
+        server.stripe.Webhook,
+        "construct_event",
+        lambda body, signature, secret: json.loads(body),
+    )
     fake_db.payment_transactions.docs.append(
         {
             "session_id": "cs_test_123",
@@ -335,6 +346,7 @@ def test_stripe_checkout_webhook_activates_subscription(client, fake_db, monkeyp
                 }
             },
         },
+        headers={"stripe-signature": "test-signature"},
     )
 
     assert response.status_code == 200

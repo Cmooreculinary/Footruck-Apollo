@@ -7,15 +7,7 @@ export default defineConfig({
   resolve: {
     alias: { '@': path.resolve(__dirname, 'src') }
   },
-  build: { outDir: 'build' },
-  esbuild: {
-    loader: 'jsx',
-    include: /src\/.*\.[jt]sx?$/,
-    exclude: []
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      loader: { '.js': 'jsx' }
-    }
+  build: {
+    outDir: 'build'
   }
 })
