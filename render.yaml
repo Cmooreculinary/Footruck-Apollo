@@ -20,6 +20,8 @@ services:
     sync: false
   - key: CORS_ORIGINS
     sync: false
+  - key: COOKIE_SECURE
+    value: "true"
 - type: web
   name: footruck-apollo-frontend
   runtime: static

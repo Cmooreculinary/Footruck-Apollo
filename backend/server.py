@@ -2,6 +2,7 @@ from fastapi import FastAPI, APIRouter, HTTPException, Request, Response
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
+from contextlib import asynccontextmanager
 import os
 import logging
 from pathlib import Path
@@ -25,8 +26,19 @@ if not db_name:
 client = AsyncIOMotorClient(mongo_url)
 db = client[db_name]
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    client.close()
+
+
 # Create the main app without a prefix
-app = FastAPI(title="Food Truck Launch Pad API", version="1.0.0")
+app = FastAPI(
+    title="Food Truck Launch Pad API",
+    version="1.0.0",
+    lifespan=lifespan,
+)
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -463,6 +475,24 @@ def create_session_token(user_id: str) -> str:
     }
     return jwt.encode(payload, secret, algorithm="HS256")
 
+
+def set_session_cookie(response: Response, session_token: str) -> None:
+    secure = os.environ.get("COOKIE_SECURE", "true").lower() not in {
+        "0",
+        "false",
+        "no",
+    }
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        httponly=True,
+        secure=secure,
+        samesite="none" if secure else "lax",
+        path="/",
+        max_age=7 * 24 * 60 * 60,
+    )
+
+
 @api_router.post("/auth/register")
 async def register(body: RegisterRequest, response: Response):
     """Register a new user with email and password"""
@@ -479,9 +509,7 @@ async def register(body: RegisterRequest, response: Response):
         "created_at": datetime.now(timezone.utc).isoformat()
     })
     session_token = create_session_token(user_id)
-    response.set_cookie(key="session_token", value=session_token,
-        httponly=True, secure=True, samesite="none", path="/",
-        max_age=7 * 24 * 60 * 60)
+    set_session_cookie(response, session_token)
     return {"user_id": user_id, "email": body.email, "name": body.name}
 
 @api_router.post("/auth/login")
@@ -492,16 +520,8 @@ async def login(body: LoginRequest, response: Response):
     if not user or not bcrypt.verify(body.password, user.get("password_hash", "")):
         raise HTTPException(status_code=401, detail="Invalid email or password")
     session_token = create_session_token(user["user_id"])
-    response.set_cookie(key="session_token", value=session_token,
-        httponly=True, secure=True, samesite="none", path="/",
-        max_age=7 * 24 * 60 * 60)
+    set_session_cookie(response, session_token)
     return {"user_id": user["user_id"], "email": user["email"], "name": user.get("name")}
-
-@api_router.post("/auth/session")
-async def exchange_session():
-    """Legacy endpoint — returns 410 Gone"""
-    raise HTTPException(status_code=410, detail="Emergent OAuth removed. Use /auth/login or /auth/register")
-
 
 @api_router.get("/auth/me")
 async def get_current_user_endpoint(request: Request):
@@ -515,7 +535,17 @@ async def get_current_user_endpoint(request: Request):
 @api_router.post("/auth/logout")
 async def logout(response: Response):
     """Logout user and clear session cookie."""
-    response.delete_cookie(key="session_token", path="/")
+    secure = os.environ.get("COOKIE_SECURE", "true").lower() not in {
+        "0",
+        "false",
+        "no",
+    }
+    response.delete_cookie(
+        key="session_token",
+        path="/",
+        secure=secure,
+        samesite="none" if secure else "lax",
+    )
     return {"message": "Logged out successfully"}
 
 
@@ -1210,10 +1240,16 @@ async def delete_training_document(doc_id: str, request: Request):
 # Include the router in the main app
 app.include_router(api_router)
 
+cors_origins = [
+    origin.strip()
+    for origin in os.environ.get("CORS_ORIGINS", "http://localhost:5173").split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', 'http://localhost:3000').split(','),
+    allow_origins=cors_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -1224,7 +1260,3 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
