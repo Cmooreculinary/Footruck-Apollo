@@ -1240,11 +1240,25 @@ async def delete_training_document(doc_id: str, request: Request):
 # Include the router in the main app
 app.include_router(api_router)
 
-cors_origins = [
-    origin.strip()
-    for origin in os.environ.get("CORS_ORIGINS", "http://localhost:5173").split(",")
-    if origin.strip()
-]
+DEFAULT_CORS_ORIGINS = (
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://footruck-apollo-frontend.onrender.com",
+    "https://foodtrucklaunchpad.com",
+    "https://www.foodtrucklaunchpad.com",
+)
+
+
+def parse_cors_origins(raw_origins: str | None = None) -> list[str]:
+    configured = raw_origins
+    if configured is None:
+        configured = os.environ.get("CORS_ORIGINS", "")
+
+    origins = [origin.strip() for origin in configured.split(",") if origin.strip()]
+    return list(dict.fromkeys([*origins, *DEFAULT_CORS_ORIGINS]))
+
+
+cors_origins = parse_cors_origins()
 
 app.add_middleware(
     CORSMiddleware,

@@ -175,6 +175,24 @@ def test_auth_me_accepts_bearer_tokens_and_rejects_expired_sessions(client, fake
     assert expired_response.json()["detail"] == "Not authenticated"
 
 
+def test_cors_allows_deployed_frontend_origin(client):
+    response = client.options(
+        "/api/auth/login",
+        headers={
+            "Origin": "https://footruck-apollo-frontend.onrender.com",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+
+    assert response.status_code == 200
+    assert (
+        response.headers["access-control-allow-origin"]
+        == "https://footruck-apollo-frontend.onrender.com"
+    )
+    assert response.headers["access-control-allow-credentials"] == "true"
+
+
 def test_authenticated_truck_designs_are_upserted_and_filtered_by_user(client, fake_db):
     user_one_headers = seed_user(fake_db, token="token_one", user_id="user_one")
     user_two_headers = seed_user(fake_db, token="token_two", user_id="user_two")
