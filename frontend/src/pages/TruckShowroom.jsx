@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Lock } from "lucide-react";
+import { ArrowLeft, Bookmark, BookmarkCheck } from "lucide-react";
+import { toast } from "sonner";
+import { apiClient } from "@/lib/api";
 
 const SHOWROOM_TRUCKS = [
   // FREE (first 10)
@@ -43,6 +45,28 @@ const FILTERS = ["All", "Classic", "Modern", "Premium", "Festival", "Urban"];
 const TruckShowroom = () => {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState("All");
+  const [savedTrucks, setSavedTrucks] = useState(new Set());
+  const [savingId, setSavingId] = useState(null);
+
+  const handleSaveToGarage = async (truck) => {
+    setSavingId(truck.id);
+    try {
+      await apiClient.saveTruckDesign({
+        name: truck.name,
+        chassis: truck.chassis,
+        category: truck.category,
+        style: truck.style,
+        price: truck.price,
+        source: "showroom",
+      });
+      setSavedTrucks(prev => new Set([...prev, truck.id]));
+      toast.success(`${truck.name} saved to your garage!`);
+    } catch {
+      toast.error("Couldn't save — please try again.");
+    } finally {
+      setSavingId(null);
+    }
+  };
 
   const filtered = SHOWROOM_TRUCKS.filter(
     t => activeFilter === "All" || t.category === activeFilter
@@ -177,12 +201,14 @@ const TruckShowroom = () => {
                         Customize This
                       </button>
                       <button
-                        disabled
-                        className="flex-1 py-2 text-xs font-semibold rounded-xl border border-[#2a2a2a] text-zinc-600 flex items-center justify-center gap-1.5 cursor-not-allowed"
-                        title="Coming soon"
+                        onClick={() => handleSaveToGarage(truck)}
+                        disabled={savingId === truck.id || savedTrucks.has(truck.id)}
+                        className="flex-1 py-2 text-xs font-semibold rounded-xl border border-[#2a2a2a] text-zinc-400 hover:border-[#EC5B13] hover:text-[#EC5B13] flex items-center justify-center gap-1.5 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
                       >
-                        <Lock className="w-3 h-3" />
-                        Save to Garage
+                        {savedTrucks.has(truck.id)
+                          ? <><BookmarkCheck className="w-3 h-3" /> Saved</>
+                          : <><Bookmark className="w-3 h-3" /> Save to Garage</>
+                        }
                       </button>
                     </>
                   )}

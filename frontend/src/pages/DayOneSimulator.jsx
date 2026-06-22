@@ -29,6 +29,102 @@ const scenarios = [
       { id: "D", title: "Offer a discount", desc: "Give them 20% off their next visit as compensation.", correct: false },
     ],
     feedback: "Remaking the order immediately shows commitment to quality. A fresh hot replacement usually wins back customer trust better than refunds."
+  },
+  {
+    id: 3,
+    title: "Your fryer just went down mid-service. What's your first move?",
+    stressLevel: 5,
+    options: [
+      { id: "A", title: "Close the truck", desc: "Shut down service, apologize to customers, and call a technician.", correct: false },
+      { id: "B", title: "86 the fryer items", desc: "Immediately update the menu board, inform customers in line, and pivot to non-fried items.", correct: true },
+      { id: "C", title: "Borrow a fryer", desc: "Ask the vendor next to you if you can use their equipment.", correct: false },
+      { id: "D", title: "Keep taking orders", desc: "Continue taking orders and hope the fryer resets on its own.", correct: false },
+    ],
+    feedback: "\"86\" means out — pros adapt fast. Cutting fryer items immediately protects ticket time on everything else and keeps the line moving. Customers respect honesty over waiting."
+  },
+  {
+    id: 4,
+    title: "You're running out of your signature protein with 2 hours left in service. What do you do?",
+    stressLevel: 4,
+    options: [
+      { id: "A", title: "Rush to the store", desc: "Close the window briefly and send a crew member to buy more supplies.", correct: false },
+      { id: "B", title: "Raise the price", desc: "Increase the price of remaining items to slow demand and maximize revenue.", correct: false },
+      { id: "C", title: "Limit portions & notify", desc: "Post a 'limited quantities remaining' notice and offer a substitute when it runs out.", correct: true },
+      { id: "D", title: "Keep quiet", desc: "Continue selling normally until you run out, then deal with it.", correct: false },
+    ],
+    feedback: "Transparent scarcity builds anticipation and protects customer experience. Customers who know supply is limited often feel lucky to get one — and return tomorrow."
+  },
+  {
+    id: 5,
+    title: "Your POS system crashes and customers can't pay by card. What now?",
+    stressLevel: 4,
+    options: [
+      { id: "A", title: "Cash only, no change", desc: "Accept cash only but you don't have a float for making change.", correct: false },
+      { id: "B", title: "Switch to Venmo/CashApp", desc: "Post your payment handles and accept digital transfers until POS is back.", correct: true },
+      { id: "C", title: "Close for 30 minutes", desc: "Shut the window and wait for the system to reboot.", correct: false },
+      { id: "D", title: "Give food for free", desc: "Serve the current line for free to maintain goodwill.", correct: false },
+    ],
+    feedback: "Pivoting to app-based payments keeps revenue flowing and shows customers you're resourceful. Always have a backup payment method ready before service starts."
+  },
+  {
+    id: 6,
+    title: "A customer gets verbally aggressive about their wait time. How do you handle it?",
+    stressLevel: 3,
+    options: [
+      { id: "A", title: "Argue back", desc: "Defend your service and explain why their attitude is unacceptable.", correct: false },
+      { id: "B", title: "Ignore them", desc: "Keep your head down and focus on cooking until they leave.", correct: false },
+      { id: "C", title: "De-escalate & comp", desc: "Step to the window, speak calmly, apologize for the wait, and offer a free drink or side.", correct: true },
+      { id: "D", title: "Refund and dismiss", desc: "Immediately refund their order and tell them you're too busy to help them today.", correct: false },
+    ],
+    feedback: "A calm, public de-escalation shows every customer in line that you care. A small comp costs $1–2 and turns an angry customer into a storyteller who praises your response."
+  },
+  {
+    id: 7,
+    title: "A health inspector arrives unannounced during peak service. Your move?",
+    stressLevel: 5,
+    options: [
+      { id: "A", title: "Ask them to come back", desc: "Politely request they return when it's less busy.", correct: false },
+      { id: "B", title: "Panic and stall", desc: "Ask your crew to quickly clean everything while you chat with the inspector.", correct: false },
+      { id: "C", title: "Welcome them professionally", desc: "Greet them warmly, show your permits, and keep service running normally.", correct: true },
+      { id: "D", title: "Close service immediately", desc: "Stop cooking until the inspection is complete.", correct: false },
+    ],
+    feedback: "Inspectors know you're busy — that's often the point. A calm welcome and clean, organized workspace speaks louder than any explanation. Never stall or ask them to leave."
+  },
+  {
+    id: 8,
+    title: "It starts raining hard 90 minutes into your busiest lunch service. What do you do?",
+    stressLevel: 3,
+    options: [
+      { id: "A", title: "Close up early", desc: "Pack down the truck and head home — weather kills foot traffic anyway.", correct: false },
+      { id: "B", title: "Deploy your awning & announce it", desc: "Open your retractable awning, post a social story about the 'rainy day special,' and keep going.", correct: true },
+      { id: "C", title: "Drop prices", desc: "Slash prices by 30% to attract rain-brave customers.", correct: false },
+      { id: "D", title: "Wait it out inside", desc: "Pause service until the rain stops, then resume.", correct: false },
+    ],
+    feedback: "Bad weather separates committed operators from quitters. An awning + a fun social post can turn a rainy day into a brand moment. The customers who brave rain are your most loyal."
+  },
+  {
+    id: 9,
+    title: "Your crew member doesn't show up 20 minutes before opening. You're short-handed. What's your plan?",
+    stressLevel: 4,
+    options: [
+      { id: "A", title: "Open late", desc: "Push opening back 45 minutes and text your regulars that you'll be late.", correct: false },
+      { id: "B", title: "Simplify the menu & open on time", desc: "Cut the menu to your 5 fastest items, handle all stations yourself, and open on schedule.", correct: true },
+      { id: "C", title: "Cancel the day", desc: "Post on social that you're closed and reschedule.", correct: false },
+      { id: "D", title: "Hire a stranger", desc: "Ask a bystander near the truck if they want to earn cash for a few hours.", correct: false },
+    ],
+    feedback: "Every experienced operator has a 'solo survival menu' — 5 items you can run alone without sacrifice in quality. Opening on time, even with a slimmed menu, protects your reputation."
+  },
+  {
+    id: 10,
+    title: "A viral social post puts you on the map — 3x normal crowd shows up tomorrow. How do you prepare tonight?",
+    stressLevel: 3,
+    options: [
+      { id: "A", title: "Wing it", desc: "You've handled rushes before — just see how the day goes.", correct: false },
+      { id: "B", title: "Triple all your inventory", desc: "Order 3x ingredients, extend hours, and hire extra help for the day.", correct: false },
+      { id: "C", title: "Cap orders & set expectations", desc: "Post a 'limited daily quantity' announcement, prep 2x normal inventory, and plan a clean sell-out.", correct: true },
+      { id: "D", title: "Raise prices significantly", desc: "Double your prices to manage demand and capitalize on the moment.", correct: false },
+    ],
+    feedback: "Selling out on a viral day is GOOD — it fuels the mystique. Capping quantities protects quality, prevents burnout, and creates scarcity buzz. Oversupplying too far risks waste and fatigue."
   }
 ];
 
