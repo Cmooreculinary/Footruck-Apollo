@@ -19,14 +19,94 @@ const TIERS = {
 // ═══════════════════════════════════════════════════════════════
 // PRODUCT IMAGES — Photorealistic images for key products
 // ═══════════════════════════════════════════════════════════════
+const PX = (id) =>
+  `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=1`;
+
 const PRODUCT_IMAGES = {
-  // Chassis (6 products - all covered)
+  // Chassis — local assets
   "ch-1": "/trucks/truck_01.png",
   "ch-2": "/trucks/truck_02.png",
   "ch-3": "/trucks/truck_03.png",
   "ch-4": "/trucks/truck_04.png",
   "ch-5": "/trucks/truck_05.png",
   "ch-6": "/trucks/truck_06.png",
+  // Cooking
+  "ck-1":  PX(36169156),  // Grill master cooking steaks on flat surface
+  "ck-2":  PX(8805801),   // Old man frying beef on flat pan
+  "ck-3":  PX(2876748),   // Fries & vegetable dish (fryer output)
+  "ck-4":  PX(3298687),   // Man holding frying pan
+  "ck-5":  PX(6605187),   // Man looking into oven
+  "ck-6":  PX(7669757),   // Woman cooking food in the oven
+  "ck-7":  PX(11701162),  // Kitchen with stove top / gas burners
+  "ck-8":  PX(1857726),   // Coal inside grille — intense heat
+  "ck-9":  PX(4275995),   // Blazing fire (wood-fired pizza oven)
+  "ck-10": PX(35505452),  // Cozy kitchen with modern stove/oven
+  "ck-11": PX(7678046),   // Chef cooking in kitchen (broiler context)
+  "ck-12": PX(2827263),   // Cooked food on display (roller grill output)
+  // Refrigeration
+  "rf-1":  PX(15062155),  // Interior design of kitchen with prep surfaces
+  "rf-2":  PX(2343467),   // Stainless steel refrigerator
+  "rf-3":  PX(5998041),   // Stylish kitchen interior (double fridge)
+  "rf-4":  PX(6835116),   // Furniture in kitchen (chef base context)
+  "rf-5":  PX(6752293),   // Rustic kitchen area (freezer context)
+  "rf-6":  PX(5490965),   // Stylish bar interior with beverage display
+  "rf-7":  PX(16985134),  // Products on shelves in restaurant (ice/storage)
+  "rf-8":  PX(5824488),   // Kitchen full of appliances (blast chiller)
+  "rf-9":  PX(1271940),   // Photograph of kitchen counter (prep table)
+  "rf-10": PX(4173168),   // Café setting with compact cooler
+  // HVAC
+  "hv-1":  PX(15062155),  // Kitchen interior showing range hood above stove
+  "hv-2":  PX(36169156),  // Grill master — hood visible overhead
+  "hv-3":  PX(4275995),   // Blazing fire — fire suppression context
+  "hv-4":  PX(24245791),  // Spacious bright interior with a fan
+  "hv-5":  PX(5863513),   // Interior design of bar & restaurant
+  "hv-6":  PX(34686219),  // Cozy modern restaurant (AC comfort)
+  "hv-7":  PX(3465604),   // Interior of a restaurant
+  "hv-8":  PX(4450334),   // Interior of stylish restaurant with big windows
+  // Plumbing
+  "pl-1":  PX(11701162),  // Kitchen with sink and stove top
+  "pl-2":  PX(615326),    // Macro of stainless steel faucet
+  "pl-3":  PX(615326),    // Stainless faucet — pre-rinse assembly
+  "pl-4":  PX(10900759),  // Green drum water tank on wooden stand
+  "pl-5":  PX(15524063),  // Stack of water bottles (fresh water storage)
+  "pl-6":  PX(12404788),  // Water tank on top of building
+  "pl-7":  PX(6060192),   // Industrial containers (water heater context)
+  "pl-8":  PX(8782714),   // Aerial view of industrial area (pump/utility)
+  "pl-9":  PX(6835116),   // Furniture in kitchen (under-counter filtration)
+  "pl-10": PX(6752293),   // Rustic kitchen area (floor-level mop sink)
+  // Electrical
+  "el-1":  PX(13974251),  // Factory production line (generator power)
+  "el-2":  PX(6060192),   // Industrial containers (diesel generator)
+  "el-3":  PX(8782714),   // Industrial area (electrical panel)
+  "el-4":  PX(29309717),  // Elegant interior lighting in stylish restaurant
+  "el-5":  PX(34686219),  // Cozy modern restaurant ambient lighting
+  "el-6":  PX(776538),    // Restaurant interior with warm lighting
+  "el-7":  PX(5490965),   // Stylish bar interior (power connections)
+  "el-8":  PX(9371714),   // Interior of a restaurant (battery bank)
+  "el-9":  PX(4450334),   // Stylish restaurant with windows (flood lights)
+  "el-10": PX(16985134),  // Products on shelves (outlet strip context)
+  // Smallwares
+  "sw-1":  PX(5824488),   // Kitchen full of appliances and utensils
+  "sw-2":  PX(1448721),   // Variety of baked foods on plates (pan set)
+  "sw-3":  PX(3758053),   // Photo of tray with foods (sheet pans)
+  "sw-4":  PX(4730661),   // Cooked food on ceramic plate (portioning/scale)
+  "sw-5":  PX(8523513),   // Person holding sliced steak — knife visible
+  "sw-6":  PX(7994064),   // Woman cooking in the kitchen
+  "sw-7":  PX(8805801),   // Old man frying beef — cast iron pan
+  "sw-8":  PX(3298687),   // Man holding frying pan (thermometer/tools)
+  "sw-9":  PX(2827263),   // Cooked food (mixing bowl context)
+  "sw-10": PX(5038255),   // Foods in a picnic (cutting board visible)
+  // Serving & POS
+  "sv-1":  PX(1271940),   // Photograph of kitchen counter / serving surface
+  "sv-2":  PX(13897068),  // Interior of fancy restaurant (digital menu board)
+  "sv-3":  PX(776538),    // Restaurant interior with warm pendant lamps
+  "sv-4":  PX(30548311),  // Modern POS system in coffee shop setting
+  "sv-5":  PX(4173168),   // Businessman with tablet in café (cash drawer)
+  "sv-6":  PX(5863513),   // Interior of bar & restaurant (ticket rail)
+  "sv-7":  PX(1543931),   // Man standing in front of food stall (condiments)
+  "sv-8":  PX(3465604),   // Interior of a restaurant (customer display)
+  "sv-9":  PX(5920744),   // Friends eating from food truck (serving window)
+  "sv-10": PX(17940004),  // Food truck on street in Kyoto (awning)
 };
 
 const CATEGORIES = [

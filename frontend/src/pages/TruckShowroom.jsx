@@ -141,7 +141,7 @@ const TruckShowroom = () => {
                 <img
                   src={`/trucks/${truck.chassis}.png`}
                   alt={truck.name}
-                  className={`w-full h-full object-cover transition-all ${truck.locked ? "blur-sm scale-105" : ""}`}
+                  className={`w-full h-full object-contain p-2 transition-all ${truck.locked ? "blur-sm scale-105" : ""}`}
                 />
                 {truck.locked && (
                   <>
