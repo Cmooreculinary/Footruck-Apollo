@@ -18,7 +18,7 @@ outside this application repository.
 
 - Node.js 20.19
 - Python 3.11
-- MongoDB
+- SQLite (bundled with Python)
 
 ## First-Time Setup
 
@@ -69,5 +69,11 @@ Render deploys both services from `render.yaml`.
 - Backend API: https://footruck-apollo-backend.onrender.com
 - API documentation: https://footruck-apollo-backend.onrender.com/docs
 
+The backend stores SQLite data on the persistent disk mounted at `/var/data`.
+Do not change `SQLITE_PATH` to a non-disk path in production or user data will
+be lost across deploys.
+
 Secrets and environment-specific URLs belong in Render environment variables,
-not in Git.
+not in Git. Required production values include `JWT_SECRET`, `STRIPE_API_KEY`,
+`STRIPE_WEBHOOK_SECRET`, `CORS_ORIGINS`, `VITE_BACKEND_URL`, and the Stripe
+price IDs if they differ from the checked-in defaults.

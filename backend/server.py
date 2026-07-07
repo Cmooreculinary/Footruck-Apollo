@@ -1,7 +1,7 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Response
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
+from sqlite_motor import AsyncSQLiteClient
 from contextlib import asynccontextmanager
 import os
 import logging
@@ -16,14 +16,10 @@ import stripe
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ.get('MONGO_URL')
-if not mongo_url:
-    raise RuntimeError("MONGO_URL environment variable is required but not set")
-db_name = os.environ.get('DB_NAME')
-if not db_name:
-    raise RuntimeError("DB_NAME environment variable is required but not set")
-client = AsyncIOMotorClient(mongo_url)
+# SQLite connection
+db_name = os.environ.get('DB_NAME', 'footruck_apollo')
+sqlite_path = os.environ.get('SQLITE_PATH', str(ROOT_DIR / 'data' / f'{db_name}.sqlite3'))
+client = AsyncSQLiteClient(sqlite_path)
 db = client[db_name]
 
 
@@ -431,7 +427,7 @@ class TrainingDocumentCreate(BaseModel):
 # ==================== HELPER FUNCTIONS ====================
 
 def serialize_doc(doc):
-    """Convert datetime to ISO string for MongoDB storage"""
+    """Convert datetime to ISO string for SQLite JSON storage"""
     if isinstance(doc.get('created_at'), datetime):
         doc['created_at'] = doc['created_at'].isoformat()
     if isinstance(doc.get('updated_at'), datetime):
@@ -886,9 +882,11 @@ async def stripe_webhook(request: Request):
             await _handle_subscription_status_change(data, "past_due")
         
         return {"status": "success", "event": event_type}
+    except HTTPException:
+        raise
     except Exception as e:
         logging.error(f"Webhook error: {e}")
-        return {"status": "error", "message": str(e)}
+        raise HTTPException(status_code=500, detail="Webhook processing failed")
 
 
 @api_router.post("/subscription/cancel")

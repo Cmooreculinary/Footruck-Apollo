@@ -33,6 +33,7 @@ __pycache__/
 .ruff_cache/
 .venv/
 venv/
+backend/data/
 
 # Deployment and caches
 .cache/

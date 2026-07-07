@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
 
-os.environ.setdefault("MONGO_URL", "mongodb://localhost:27017")
+os.environ.setdefault("SQLITE_PATH", ":memory:")
 os.environ.setdefault("DB_NAME", "footruck_test")
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
@@ -380,3 +380,17 @@ def test_stripe_checkout_webhook_activates_subscription(client, fake_db, monkeyp
     assert fake_db.subscriptions.docs[0]["user_id"] == "paid_user"
     assert fake_db.subscriptions.docs[0]["plan_id"] == "pro"
     assert fake_db.subscriptions.docs[0]["status"] == "active"
+
+
+def test_stripe_webhook_rejects_missing_secret(client, monkeypatch):
+    monkeypatch.setenv("STRIPE_API_KEY", "sk_test_local")
+    monkeypatch.delenv("STRIPE_WEBHOOK_SECRET", raising=False)
+
+    response = client.post(
+        "/api/webhook/stripe",
+        json={"type": "checkout.session.completed", "data": {"object": {}}},
+        headers={"stripe-signature": "test-signature"},
+    )
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Webhook secret not configured"
