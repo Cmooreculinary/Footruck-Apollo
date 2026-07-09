@@ -9,7 +9,8 @@ endpoints.
 
 - `frontend/`: React 19 and Vite application
 - `backend/`: FastAPI application and pytest suite
-- `render.yaml`: Render frontend and backend deployment blueprint
+- `vercel.json`: Vercel frontend deployment config
+- `render.yaml`: Render backend deployment blueprint
 
 Historical mockups, generated reports, and retired design assets are kept
 outside this application repository.
@@ -63,9 +64,10 @@ RUN_API_TESTS=1 BACKEND_URL=http://localhost:8000 make test
 
 ## Deployment
 
-Render deploys both services from `render.yaml`.
+The frontend deploys on Vercel from `vercel.json`. The backend deploys on
+Render from `render.yaml`.
 
-- Frontend: https://footruck-apollo-frontend.onrender.com
+- Frontend: Vercel project connected to this repository
 - Backend API: https://footruck-apollo-backend.onrender.com
 - API documentation: https://footruck-apollo-backend.onrender.com/docs
 
@@ -73,7 +75,8 @@ The backend stores SQLite data on the persistent disk mounted at `/var/data`.
 Do not change `SQLITE_PATH` to a non-disk path in production or user data will
 be lost across deploys.
 
-Secrets and environment-specific URLs belong in Render environment variables,
-not in Git. Required production values include `JWT_SECRET`, `STRIPE_API_KEY`,
-`STRIPE_WEBHOOK_SECRET`, `CORS_ORIGINS`, `VITE_BACKEND_URL`, and the Stripe
-price IDs if they differ from the checked-in defaults.
+Secrets and environment-specific URLs belong in the appropriate Render or Vercel
+environment variables, not in Git. Required production values include
+`JWT_SECRET`, `STRIPE_API_KEY`, `STRIPE_WEBHOOK_SECRET`, `CORS_ORIGINS`,
+`VITE_BACKEND_URL`, and the Stripe price IDs if they differ from the checked-in
+defaults.
