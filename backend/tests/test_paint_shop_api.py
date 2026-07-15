@@ -9,6 +9,7 @@ import os
 import uuid
 
 BASE_URL = os.environ.get("BACKEND_URL", "http://localhost:8000").rstrip("/")
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "").rstrip("/")
 
 pytestmark = pytest.mark.skipif(
     os.environ.get("RUN_API_TESTS") != "1",
@@ -263,45 +264,20 @@ class TestPaintShopAPI:
         print("✓ Create design with all accessories passed")
 
 
+@pytest.mark.skipif(
+    not FRONTEND_URL,
+    reason="Truck images are frontend static assets; set FRONTEND_URL to test them.",
+)
 class TestTruckImages:
-    """Test truck image availability"""
-    
-    def test_truck_01_image(self):
-        """Test truck_01.png is accessible"""
-        response = requests.get(f"{BASE_URL}/trucks/truck_01.png")
+    """Test truck image availability (served by the frontend deployment)"""
+
+    @pytest.mark.parametrize("truck", [f"truck_{n:02d}" for n in range(1, 7)])
+    def test_truck_image(self, truck):
+        """Each truck PNG should be accessible from the frontend host"""
+        response = requests.get(f"{FRONTEND_URL}/trucks/{truck}.png")
         assert response.status_code == 200
         assert "image" in response.headers.get("content-type", "")
-        print("✓ truck_01.png accessible")
-    
-    def test_truck_02_image(self):
-        """Test truck_02.png is accessible"""
-        response = requests.get(f"{BASE_URL}/trucks/truck_02.png")
-        assert response.status_code == 200
-        print("✓ truck_02.png accessible")
-    
-    def test_truck_03_image(self):
-        """Test truck_03.png is accessible"""
-        response = requests.get(f"{BASE_URL}/trucks/truck_03.png")
-        assert response.status_code == 200
-        print("✓ truck_03.png accessible")
-    
-    def test_truck_04_image(self):
-        """Test truck_04.png is accessible"""
-        response = requests.get(f"{BASE_URL}/trucks/truck_04.png")
-        assert response.status_code == 200
-        print("✓ truck_04.png accessible")
-    
-    def test_truck_05_image(self):
-        """Test truck_05.png is accessible"""
-        response = requests.get(f"{BASE_URL}/trucks/truck_05.png")
-        assert response.status_code == 200
-        print("✓ truck_05.png accessible")
-    
-    def test_truck_06_image(self):
-        """Test truck_06.png is accessible"""
-        response = requests.get(f"{BASE_URL}/trucks/truck_06.png")
-        assert response.status_code == 200
-        print("✓ truck_06.png accessible")
+        print(f"✓ {truck}.png accessible")
 
 
 if __name__ == "__main__":
