@@ -62,6 +62,13 @@ To run integration tests against a configured API:
 RUN_API_TESTS=1 BACKEND_URL=http://localhost:8000 make test
 ```
 
+Optional integration test variables:
+
+- `TEST_SESSION_TOKEN` and `TEST_USER_ID`: session credentials for an existing
+  user; the `/api/auth/me` tests are skipped without them.
+- `FRONTEND_URL`: frontend deployment URL; the truck image tests are skipped
+  without it because those PNGs are frontend static assets.
+
 ## Deployment
 
 The frontend deploys on Vercel from `vercel.json`. The backend deploys on

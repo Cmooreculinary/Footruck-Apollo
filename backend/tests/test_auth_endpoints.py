@@ -22,6 +22,11 @@ pytestmark = pytest.mark.skipif(
     reason="API integration tests are opt-in; set RUN_API_TESTS=1 to run them.",
 )
 
+requires_session_token = pytest.mark.skipif(
+    not TEST_SESSION_TOKEN,
+    reason="Requires TEST_SESSION_TOKEN (and TEST_USER_ID) for an existing user session.",
+)
+
 
 class TestAuthMe:
     """Tests for /api/auth/me endpoint"""
@@ -36,6 +41,7 @@ class TestAuthMe:
         assert data["detail"] == "Not authenticated"
         print("✓ /api/auth/me returns 401 for unauthenticated requests")
     
+    @requires_session_token
     def test_auth_me_with_bearer_token(self):
         """Authenticated request with Bearer token should return user data"""
         headers = {"Authorization": f"Bearer {TEST_SESSION_TOKEN}"}
@@ -49,6 +55,7 @@ class TestAuthMe:
         assert data["user_id"] == TEST_USER_ID
         print(f"✓ /api/auth/me returns user data for authenticated user: {data['name']}")
     
+    @requires_session_token
     def test_auth_me_with_cookie(self):
         """Authenticated request with session_token cookie should return user data"""
         cookies = {"session_token": TEST_SESSION_TOKEN}
