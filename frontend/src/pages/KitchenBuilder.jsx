@@ -8,8 +8,15 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
+import EquipmentPlanDiagram from "@/components/EquipmentPlanDiagram";
 import { apiClient } from "@/lib/api";
 import { exportKitchenLayoutToPDF } from "@/lib/pdfExport";
+import {
+  clampPlacement,
+  findFirstAvailablePosition,
+  getEquipmentDimensions,
+  placementCollides,
+} from "@/lib/kitchenGeometry.mjs";
 
 // ============================================================================
 // EQUIPMENT CATALOG
@@ -82,6 +89,9 @@ const equipmentCatalog = {
   ],
 };
 
+const allEquipment = Object.values(equipmentCatalog).flat();
+const equipmentById = Object.fromEntries(allEquipment.map((equipment) => [equipment.id, equipment]));
+
 // Floor plan dimensions based on truck model (in inches)
 const truckInteriors = {
   step_van_classic: { width: 168, depth: 84, name: "Step Van Classic" },
@@ -108,20 +118,35 @@ const KitchenBuilder = () => {
   const [showValidation, setShowValidation] = useState(false);
   
   const floorPlanRef = useRef(null);
-  const canvasRef = useRef(null);
+  const placementCounterRef = useRef(0);
+  const placedEquipmentRef = useRef([]);
+  const suppressClickRef = useRef(false);
   const interior = truckInteriors[truckModel];
   const GRID_SIZE = 6; // 6-inch grid
 
+  const createPlacementId = (equipmentId) => {
+    placementCounterRef.current += 1;
+    return `${equipmentId}_${Date.now()}_${placementCounterRef.current}`;
+  };
+
+  const commitPlacedEquipment = (nextValue) => {
+    const next = typeof nextValue === "function"
+      ? nextValue(placedEquipmentRef.current)
+      : nextValue;
+    placedEquipmentRef.current = next;
+    setPlacedEquipment(next);
+  };
+
   // Calculate total cost
   const totalCost = placedEquipment.reduce((sum, item) => {
-    const catalogItem = Object.values(equipmentCatalog).flat().find(e => e.id === item.equipmentId);
+    const catalogItem = equipmentById[item.equipmentId];
     return sum + (catalogItem?.cost || 0);
   }, 0);
 
   // Calculate space utilization
   const totalArea = interior.width * interior.depth;
   const usedArea = placedEquipment.reduce((sum, item) => {
-    const catalogItem = Object.values(equipmentCatalog).flat().find(e => e.id === item.equipmentId);
+    const catalogItem = equipmentById[item.equipmentId];
     return sum + ((catalogItem?.w || 0) * (catalogItem?.d || 0));
   }, 0);
   const utilization = Math.round((usedArea / totalArea) * 100);
@@ -129,8 +154,6 @@ const KitchenBuilder = () => {
   // Validate layout
   const validateLayout = () => {
     const issues = [];
-    const allEquipment = Object.values(equipmentCatalog).flat();
-    
     // Check required items
     const requiredItems = allEquipment.filter(e => e.required);
     requiredItems.forEach(req => {
@@ -157,7 +180,46 @@ const KitchenBuilder = () => {
 
   // Handle drag start from catalog
   const handleDragStart = (equipment) => {
+    suppressClickRef.current = true;
     setDraggedItem(equipment);
+  };
+
+  const handleDragEnd = () => {
+    window.setTimeout(() => {
+      suppressClickRef.current = false;
+    }, 0);
+  };
+
+  const addPlacement = (equipment, position) => {
+    const newItem = {
+      id: createPlacementId(equipment.id),
+      equipmentId: equipment.id,
+      x: position.x,
+      y: position.y,
+      rotation: position.rotation || 0,
+    };
+    commitPlacedEquipment((current) => [...current, newItem]);
+    setSelectedItem(newItem.id);
+    toast.success(`${equipment.name} placed!`);
+  };
+
+  const handleQuickAdd = (equipment) => {
+    const position = findFirstAvailablePosition({
+      equipment,
+      placedEquipment: placedEquipmentRef.current,
+      equipmentById,
+      interior,
+      gridSize: GRID_SIZE,
+    });
+
+    if (!position) {
+      toast.error("No open space", {
+        description: `${equipment.name} does not fit in the remaining floor plan.`,
+      });
+      return;
+    }
+
+    addPlacement(equipment, position);
   };
 
   // Handle drop on floor plan
@@ -165,21 +227,28 @@ const KitchenBuilder = () => {
     if (!draggedItem || !floorPlanRef.current) return;
     
     const rect = floorPlanRef.current.getBoundingClientRect();
-    const scale = interior.width / rect.width;
-    
-    let x = Math.round(((e.clientX - rect.left) * scale) / GRID_SIZE) * GRID_SIZE;
-    let y = Math.round(((e.clientY - rect.top) * scale) / GRID_SIZE) * GRID_SIZE;
-    
-    // Keep within bounds
-    x = Math.max(0, Math.min(x, interior.width - draggedItem.w));
-    y = Math.max(0, Math.min(y, interior.depth - draggedItem.d));
-    
-    // Check for collisions
-    const hasCollision = placedEquipment.some(item => {
-      const itemData = Object.values(equipmentCatalog).flat().find(e => e.id === item.equipmentId);
-      if (!itemData) return false;
-      return !(x + draggedItem.w <= item.x || x >= item.x + itemData.w ||
-               y + draggedItem.d <= item.y || y >= item.y + itemData.d);
+    const scaleX = interior.width / rect.width;
+    const scaleY = interior.depth / rect.height;
+    const position = clampPlacement({
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY,
+      equipment: draggedItem,
+      interior,
+      gridSize: GRID_SIZE,
+    });
+
+    if (!position) {
+      toast.error("Equipment does not fit", {
+        description: `${draggedItem.name} is larger than this truck interior.`,
+      });
+      setDraggedItem(null);
+      return;
+    }
+
+    const hasCollision = placementCollides({
+      candidate: position,
+      placedEquipment: placedEquipmentRef.current,
+      equipmentById,
     });
     
     if (hasCollision) {
@@ -188,23 +257,14 @@ const KitchenBuilder = () => {
       return;
     }
     
-    const newItem = {
-      id: `${draggedItem.id}_${Date.now()}`,
-      equipmentId: draggedItem.id,
-      x,
-      y,
-      rotation: 0,
-    };
-    
-    setPlacedEquipment([...placedEquipment, newItem]);
-    toast.success(`${draggedItem.name} placed!`);
+    addPlacement(draggedItem, position);
     setDraggedItem(null);
   };
 
   // Delete selected item
   const handleDelete = () => {
     if (!selectedItem) return;
-    setPlacedEquipment(placedEquipment.filter(item => item.id !== selectedItem));
+    commitPlacedEquipment((items) => items.filter(item => item.id !== selectedItem));
     setSelectedItem(null);
     toast.info("Equipment removed");
   };
@@ -214,7 +274,7 @@ const KitchenBuilder = () => {
     setIsExporting(true);
     try {
       const equipmentList = placedEquipment.map(item => {
-        const catalogItem = Object.values(equipmentCatalog).flat().find(e => e.id === item.equipmentId);
+        const catalogItem = equipmentById[item.equipmentId];
         return {
           name: catalogItem?.name || 'Unknown',
           price: catalogItem?.cost || 0
@@ -236,12 +296,39 @@ const KitchenBuilder = () => {
   // Rotate selected item
   const handleRotate = () => {
     if (!selectedItem) return;
-    setPlacedEquipment(placedEquipment.map(item => {
-      if (item.id === selectedItem) {
-        return { ...item, rotation: (item.rotation + 90) % 360 };
-      }
-      return item;
-    }));
+    const current = placedEquipmentRef.current.find((item) => item.id === selectedItem);
+    if (!current) return;
+
+    const equipment = equipmentById[current.equipmentId];
+    if (!equipment) return;
+
+    const nextRotation = (current.rotation + 90) % 360;
+    const nextPosition = clampPlacement({
+      x: current.x,
+      y: current.y,
+      equipment,
+      rotation: nextRotation,
+      interior,
+      gridSize: GRID_SIZE,
+    });
+
+    if (!nextPosition || placementCollides({
+      candidate: nextPosition,
+      placedEquipment: placedEquipmentRef.current,
+      equipmentById,
+      ignorePlacementId: current.id,
+    })) {
+      toast.error("Cannot rotate here", {
+        description: "Move or remove nearby equipment, then try again.",
+      });
+      return;
+    }
+
+    commitPlacedEquipment((items) => items.map((item) => (
+      item.id === selectedItem
+        ? { ...item, x: nextPosition.x, y: nextPosition.y, rotation: nextRotation }
+        : item
+    )));
   };
 
   // Save layout
@@ -296,7 +383,7 @@ const KitchenBuilder = () => {
     <div className="min-h-screen bg-[#0a0d14] text-white font-sans">
       <SEO 
         title="Kitchen Builder - Equipment Layout"
-        description="Design your food truck kitchen layout. Drag and drop commercial equipment, check compliance, and optimize your workspace."
+        description="Design your food truck kitchen layout. Click or drag commercial equipment, verify fit, and run practical planning checks."
         url="/kitchen-builder"
       />
       
@@ -305,7 +392,7 @@ const KitchenBuilder = () => {
         <div className="max-w-[1800px] mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to="/dashboard" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#E8592F] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-[#EC5B13] flex items-center justify-center">
                 <Truck className="w-4 h-4 text-white" />
               </div>
             </Link>
@@ -318,7 +405,7 @@ const KitchenBuilder = () => {
             <Link to="/paint-shop" className="text-zinc-500 hover:text-white text-sm font-medium transition-colors flex items-center gap-1">
               <ArrowLeft className="w-4 h-4" /> Paint Shop
             </Link>
-            <span className="text-[#E8592F] text-sm font-bold border-b-2 border-[#E8592F] pb-1">Kitchen Builder</span>
+            <span className="text-[#EC5B13] text-sm font-bold border-b-2 border-[#EC5B13] pb-1">Kitchen Builder</span>
             <Link to="/dashboard" className="text-white/60 hover:text-white text-sm font-medium transition-colors">Dashboard</Link>
           </div>
           
@@ -337,7 +424,7 @@ const KitchenBuilder = () => {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="px-5 py-2.5 bg-[#E8592F] rounded-lg text-sm font-bold uppercase tracking-wide hover:bg-[#E8592F]/90 transition-all flex items-center gap-2 disabled:opacity-50"
+              className="px-5 py-2.5 bg-[#EC5B13] rounded-lg text-sm font-bold uppercase tracking-wide hover:bg-[#EC5B13]/90 transition-all flex items-center gap-2 disabled:opacity-50"
               data-testid="save-layout-btn"
             >
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
@@ -359,7 +446,7 @@ const KitchenBuilder = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search equipment..."
-                className="w-full bg-white/5 border border-white/20 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#E8592F]"
+                className="w-full bg-white/5 border border-white/20 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#EC5B13]"
               />
             </div>
           </div>
@@ -374,7 +461,7 @@ const KitchenBuilder = () => {
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
                     className={`px-2 py-1.5 text-[10px] font-bold uppercase rounded flex items-center gap-1 transition-all ${
-                      activeCategory === cat ? "bg-[#E8592F] text-white" : "bg-white/10 text-white/60 hover:bg-white/20"
+                      activeCategory === cat ? "bg-[#EC5B13] text-white" : "bg-white/10 text-white/60 hover:bg-white/20"
                     }`}
                   >
                     <Icon className="w-3 h-3" />
@@ -392,17 +479,30 @@ const KitchenBuilder = () => {
                 key={item.id}
                 draggable
                 onDragStart={() => handleDragStart(item)}
-                className="p-3 bg-white/5 border border-white/10 rounded-lg cursor-grab hover:border-[#E8592F]/50 hover:bg-white/10 transition-all group"
+                onDragEnd={handleDragEnd}
+                onClick={() => {
+                  if (!suppressClickRef.current) handleQuickAdd(item);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    handleQuickAdd(item);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                className="p-3 bg-white/5 border border-white/10 rounded-lg cursor-grab hover:border-[#EC5B13]/50 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-[#EC5B13] transition-all group"
                 data-testid={`equipment-${item.id}`}
               >
                 <div className="flex items-start gap-3">
-                  <span className="text-2xl">{item.icon}</span>
+                  <EquipmentPlanDiagram equipment={item} className="w-12 h-12 shrink-0 rounded-md" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-white truncate">{item.name}</p>
                     <p className="text-[10px] text-white/50">{item.w}" × {item.d}"</p>
+                    <p className="text-[9px] uppercase tracking-wide text-[#EC5B13] mt-1">Click to place · drag to position</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-[#E8592F]">${item.cost.toLocaleString()}</p>
+                    <p className="text-sm font-bold text-[#EC5B13]">${item.cost.toLocaleString()}</p>
                     {item.required && (
                       <span className="text-[8px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded uppercase font-bold">Required</span>
                     )}
@@ -423,9 +523,11 @@ const KitchenBuilder = () => {
                 value={truckModel}
                 onChange={(e) => {
                   setTruckModel(e.target.value);
-                  setPlacedEquipment([]);
+                  commitPlacedEquipment([]);
+                  setSelectedItem(null);
+                  setDraggedItem(null);
                 }}
-                className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#E8592F]"
+                className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#EC5B13]"
               >
                 {Object.entries(truckInteriors).map(([id, info]) => (
                   <option key={id} value={id}>{info.name} ({info.width/12}' × {info.depth/12}')</option>
@@ -508,33 +610,33 @@ const KitchenBuilder = () => {
 
               {/* Placed Equipment */}
               {placedEquipment.map(item => {
-                const equipData = Object.values(equipmentCatalog).flat().find(e => e.id === item.equipmentId);
+                const equipData = equipmentById[item.equipmentId];
                 if (!equipData) return null;
                 
                 const isSelected = selectedItem === item.id;
-                const isRotated = item.rotation === 90 || item.rotation === 270;
-                const displayW = isRotated ? equipData.d : equipData.w;
-                const displayD = isRotated ? equipData.w : equipData.d;
+                const { width: displayW, depth: displayD } = getEquipmentDimensions(equipData, item.rotation);
                 
                 return (
                   <div
                     key={item.id}
                     onClick={() => setSelectedItem(isSelected ? null : item.id)}
                     className={`absolute cursor-pointer transition-all ${
-                      isSelected ? "ring-2 ring-[#E8592F] z-10" : "hover:ring-2 hover:ring-white/50"
+                      isSelected ? "ring-2 ring-[#EC5B13] z-10" : "hover:ring-2 hover:ring-white/50"
                     }`}
                     style={{
                       left: `${item.x * 2.5 * zoom}px`,
                       top: `${item.y * 2.5 * zoom}px`,
                       width: `${displayW * 2.5 * zoom}px`,
                       height: `${displayD * 2.5 * zoom}px`,
-                      transform: `rotate(${item.rotation}deg)`,
-                      transformOrigin: 'top left',
                     }}
+                    title={`${equipData.name} · ${displayW}" × ${displayD}" · ${item.rotation}°`}
+                    data-testid={`placed-equipment-${item.id}`}
                   >
-                    <div className="w-full h-full bg-[#2a2a3e] border border-white/30 rounded flex flex-col items-center justify-center p-1">
-                      <span className="text-lg">{equipData.icon}</span>
-                      <span className="text-[8px] text-white/70 text-center leading-tight truncate w-full">{equipData.name.split(" ")[0]}</span>
+                    <div className="relative w-full h-full bg-[#1E1E1E] border border-white/30 rounded overflow-hidden">
+                      <EquipmentPlanDiagram equipment={equipData} className="w-full h-full" />
+                      <span className="absolute left-0.5 right-0.5 bottom-0.5 bg-black/75 px-1 py-0.5 text-[7px] font-bold text-white text-center leading-none truncate">
+                        {equipData.name}
+                      </span>
                     </div>
                   </div>
                 );
@@ -547,8 +649,11 @@ const KitchenBuilder = () => {
             <div className="absolute bottom-4 left-4 right-4 bg-black/80 backdrop-blur-sm border border-white/20 rounded-lg p-4">
               <h3 className="text-sm font-bold mb-2 flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-amber-400" />
-                Layout Issues
+                Planning Checks
               </h3>
+              <p className="text-[10px] text-white/50 mb-2">
+                Fit guidance only. Confirm final equipment, ventilation, fire, and health requirements with local authorities and licensed installers.
+              </p>
               <div className="space-y-1">
                 {validationIssues.map((issue, i) => (
                   <div key={i} className={`text-xs flex items-center gap-2 ${
@@ -569,12 +674,12 @@ const KitchenBuilder = () => {
             <h3 className="text-xs text-white/50 uppercase tracking-widest font-bold mb-3">Space Utilization</h3>
             <div className="bg-white/5 rounded-lg p-4">
               <div className="flex justify-between items-end mb-2">
-                <span className="text-4xl font-black text-[#E8592F]">{utilization}%</span>
+                <span className="text-4xl font-black text-[#EC5B13]">{utilization}%</span>
                 <span className="text-xs text-white/50">of {Math.round(totalArea / 144)} sq ft</span>
               </div>
               <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-[#E8592F] transition-all"
+                  className="h-full bg-[#EC5B13] transition-all"
                   style={{ width: `${Math.min(utilization, 100)}%` }}
                 />
               </div>
@@ -588,19 +693,19 @@ const KitchenBuilder = () => {
             </h3>
             <div className="space-y-2 max-h-60 overflow-y-auto">
               {placedEquipment.map(item => {
-                const equipData = Object.values(equipmentCatalog).flat().find(e => e.id === item.equipmentId);
+                const equipData = equipmentById[item.equipmentId];
                 if (!equipData) return null;
                 return (
                   <div 
                     key={item.id}
                     onClick={() => setSelectedItem(item.id)}
                     className={`p-2 rounded-lg cursor-pointer transition-all ${
-                      selectedItem === item.id ? "bg-[#E8592F]/20 border border-[#E8592F]/50" : "bg-white/5 hover:bg-white/10"
+                      selectedItem === item.id ? "bg-[#EC5B13]/20 border border-[#EC5B13]/50" : "bg-white/5 hover:bg-white/10"
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-sm">{equipData.icon} {equipData.name}</span>
-                      <span className="text-xs text-[#E8592F]">${equipData.cost}</span>
+                      <span className="text-xs text-[#EC5B13]">${equipData.cost}</span>
                     </div>
                   </div>
                 );
@@ -616,8 +721,8 @@ const KitchenBuilder = () => {
           {/* Total Cost */}
           <div className="mb-6">
             <h3 className="text-xs text-white/50 uppercase tracking-widest font-bold mb-3">Estimated Cost</h3>
-            <div className="bg-[#E8592F]/10 border border-[#E8592F]/30 rounded-lg p-4">
-              <p className="text-3xl font-black text-[#E8592F]">${totalCost.toLocaleString()}</p>
+            <div className="bg-[#EC5B13]/10 border border-[#EC5B13]/30 rounded-lg p-4">
+              <p className="text-3xl font-black text-[#EC5B13]">${totalCost.toLocaleString()}</p>
               <p className="text-xs text-white/50 mt-1">Equipment only, excludes installation</p>
             </div>
           </div>
@@ -634,7 +739,7 @@ const KitchenBuilder = () => {
             </button>
             <button
               onClick={() => toast.info("Quote request coming soon")}
-              className="w-full py-3 bg-[#E8592F] rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#E8592F]/90 transition-all"
+              className="w-full py-3 bg-[#EC5B13] rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#EC5B13]/90 transition-all"
             >
               <FileText className="w-4 h-4" /> Get Quote
             </button>

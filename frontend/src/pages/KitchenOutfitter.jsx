@@ -13,80 +13,21 @@ import { apiClient } from "@/lib/api";
 const TIERS = {
   standard: { label: "Standard", color: "#94A3B8", bg: "#94A3B815", desc: "Reliable workhorse. Gets the job done." },
   premium: { label: "Premium", color: "#F4A623", bg: "#F4A62315", desc: "Commercial grade. Built to last." },
-  elite: { label: "Elite", color: "#E8592F", bg: "#E8592F15", desc: "Top of the line. Chef's choice." },
+  elite: { label: "Elite", color: "#EC5B13", bg: "#EC5B1315", desc: "Top of the line. Chef's choice." },
 };
 
 // ═══════════════════════════════════════════════════════════════
-// PRODUCT IMAGES — Photorealistic images for key products
+// CHASSIS IMAGES — local, title-matched assets only.
+// Equipment uses the deterministic SVG diagrams below so every catalog item
+// has a complete visual without remote placeholders or broken image URLs.
 // ═══════════════════════════════════════════════════════════════
 const PRODUCT_IMAGES = {
-  // Chassis (6 products - all covered)
   "ch-1": "/trucks/truck_01.png",
-  "ch-2": "/trucks/truck_02.png",
-  "ch-3": "/trucks/truck_03.png",
-  "ch-4": "/trucks/truck_04.png",
+  "ch-2": "/trucks/truck_03.png",
+  "ch-3": "/trucks/truck_04.png",
+  "ch-4": "/trucks/chassis_isuzu_cab_forward.png",
   "ch-5": "/trucks/truck_05.png",
-  "ch-6": "/trucks/truck_06.png",
-  // Cooking (9 products covered)
-  "ck-1": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "ck-2": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "ck-3": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "ck-4": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "ck-5": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "ck-6": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "ck-7": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "ck-8": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "ck-9": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "ck-10": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "ck-11": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  // Refrigeration (7 products covered)
-  "rf-1": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "rf-2": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "rf-3": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "rf-4": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "rf-5": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "rf-6": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "rf-7": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  // HVAC (6 products covered)
-  "hv-1": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "hv-2": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "hv-3": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "hv-4": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "hv-5": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "hv-6": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  // Plumbing (7 products covered)
-  "pl-1": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "pl-2": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "pl-3": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "pl-4": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "pl-5": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "pl-6": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "pl-7": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  // Electrical (5 products covered)
-  "el-1": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "el-2": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "el-3": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "el-4": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "el-5": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  // Smallwares (9 products covered)
-  "sw-1": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "sw-2": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "sw-3": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "sw-4": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "sw-5": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "sw-6": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "sw-7": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "sw-8": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "sw-9": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  // Serving & POS (8 products covered)
-  "sv-1": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "sv-2": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "sv-3": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "sv-4": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "sv-5": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "sv-6": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "sv-7": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
-  "sv-8": "https://placehold.co/400x300/1a1a2e/ffffff?text=Coming+Soon",
+  "ch-6": "/trucks/chassis_vintage_vw.png",
 };
 
 const CATEGORIES = [
@@ -204,7 +145,8 @@ const PRODUCTS = {
 // ═══════════════════════════════════════════════════════════════
 
 function ProductSVG({ item, size = 160 }) {
-  // Check if we have a photorealistic image for this product
+  // Chassis use title-matched local photography. Wide vehicles must be
+  // contained, never cropped, so the complete chassis remains visible.
   const imageUrl = PRODUCT_IMAGES[item.id];
   
   if (imageUrl) {
@@ -213,20 +155,22 @@ function ProductSVG({ item, size = 160 }) {
         width: size, 
         height: size, 
         borderRadius: 12, 
-        overflow: "hidden", 
+        overflow: "hidden",
         background: "#0B0F17",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        padding: 8
       }}>
         <img 
           src={imageUrl} 
           alt={item.name}
           style={{ 
-            width: "100%", 
-            height: "100%", 
-            objectFit: "cover",
-            borderRadius: 12
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            objectPosition: "center",
+            borderRadius: 8
           }}
           loading="lazy"
         />
@@ -237,6 +181,12 @@ function ProductSVG({ item, size = 160 }) {
   // Fallback to SVG illustration
   const tc = TIERS[item.tier]?.color || "#999";
   const t = item.type || "";
+  const name = item.name || "";
+  const lowerName = name.toLowerCase();
+  const countFromName = (fallback) => {
+    const match = name.match(/(\d+)[-\s]?(?:burner|door|well|stage|bulb|port|pc)/i);
+    return match ? Number(match[1]) : fallback;
+  };
 
   const bg = (
     <>
@@ -287,16 +237,22 @@ function ProductSVG({ item, size = 160 }) {
         <rect x="40" y="80" width="120" height="40" rx="3" fill="#2A3A4E"/>
         {[50,80,110,140].map((x)=><rect key={x} x={x} y="85" width="15" height="30" rx="2" fill="#0B0F17" opacity="0.5"/>)}
         <rect x="35" y="125" width="130" height="15" rx="4" fill="#0B0F17"/>
+        <text x="100" y="136" fill={tc} fontSize="8" textAnchor="middle" fontWeight="bold">{name.match(/\d+"/)?.[0] || "FLAT TOP"}</text>
       </g>
     );
   } else if (t === "fryer") {
+    const wells = lowerName.includes("double") ? 2 : 1;
+    const wellWidth = wells === 2 ? 40 : 78;
     content = (
       <g>
         <rect x="45" y="65" width="110" height="80" rx="6" fill="#1E293B"/>
-        <rect x="55" y="75" width="40" height="50" rx="4" fill="#0B0F17" stroke="#2A3A4E"/>
-        <rect x="105" y="75" width="40" height="50" rx="4" fill="#0B0F17" stroke="#2A3A4E"/>
-        <circle cx="75" cy="135" r="5" fill={tc}/>
-        <circle cx="125" cy="135" r="5" fill={tc}/>
+        {Array.from({ length: wells }, (_, index) => {
+          const x = wells === 2 ? 55 + index * 50 : 61;
+          return <rect key={x} x={x} y="75" width={wellWidth} height="50" rx="4" fill="#0B0F17" stroke="#2A3A4E"/>;
+        })}
+        {Array.from({ length: wells }, (_, index) => (
+          <circle key={index} cx={wells === 2 ? 75 + index * 50 : 100} cy="135" r="5" fill={tc}/>
+        ))}
       </g>
     );
   } else if (t === "oven") {
@@ -304,35 +260,55 @@ function ProductSVG({ item, size = 160 }) {
       <g>
         <rect x="45" y="55" width="110" height="95" rx="8" fill="#1E293B"/>
         <rect x="50" y="60" width="100" height="70" rx="4" fill="#0B0F17"/>
-        {[55,72,89].map((y)=><rect key={y} x="55" y={y} width="90" height="2" fill="#2A3A4E"/>)}
+        {lowerName.includes("pizza") ? (
+          <circle cx="100" cy="93" r="25" fill="none" stroke={tc} strokeWidth="2" opacity="0.6"/>
+        ) : (
+          [72,89,106].map((y)=><rect key={y} x="55" y={y} width="90" height="2" fill="#2A3A4E"/>)
+        )}
         <rect x="55" y="135" width="90" height="10" rx="3" fill="#2A3A4E"/>
         {[65,95,125].map((x)=><circle key={x} cx={x} cy="140" r="3" fill={tc} opacity="0.6"/>)}
       </g>
     );
   } else if (t === "range") {
+    const burnerCount = lowerName.includes("wok") ? 1 : countFromName(4);
+    const burnerPositions = burnerCount === 1
+      ? [[100, 102]]
+      : Array.from({ length: burnerCount }, (_, index) => {
+          const columns = burnerCount > 4 ? 3 : 2;
+          const col = index % columns;
+          const row = Math.floor(index / columns);
+          return [70 + col * (columns === 3 ? 30 : 60), 92 + row * 25];
+        });
     content = (
       <g>
         <rect x="45" y="75" width="110" height="70" rx="6" fill="#1E293B"/>
         <rect x="50" y="80" width="100" height="45" rx="3" fill="#0B0F17"/>
-        {[65,105].map((x)=><circle key={x} cx={x} cy="102" r="18" fill="none" stroke={tc} strokeWidth="2"/>)}
+        {burnerPositions.map(([x, y], index)=><circle key={index} cx={x} cy={y} r={burnerCount === 1 ? 22 : 10} fill="none" stroke={tc} strokeWidth="2"/>)}
         {[55,80,105,130].map((x)=><circle key={x} cx={x} cy="135" r="4" fill="#2A3A4E"/>)}
       </g>
     );
   } else if (t === "grill") {
+    const isRoller = lowerName.includes("roller");
     content = (
       <g>
         <rect x="50" y="60" width="100" height="80" rx="6" fill="#1E293B"/>
         <rect x="55" y="65" width="90" height="55" rx="3" fill="#0B0F17"/>
-        {[72,82,92,102].map((y)=><rect key={y} x="60" y={y} width="80" height="3" rx="1" fill="#2A3A4E"/>)}
+        {isRoller
+          ? Array.from({ length: 8 }, (_, index) => <rect key={index} x="60" y={70 + index * 6} width="80" height="3" rx="1" fill={index % 2 ? tc : "#2A3A4E"}/>)
+          : [72,82,92,102].map((y)=><rect key={y} x="60" y={y} width="80" height="3" rx="1" fill="#2A3A4E"/>)}
         <rect x="55" y="125" width="90" height="10" rx="3" fill="#2A3A4E"/>
       </g>
     );
   } else if (t === "fridge" || t === "freezer") {
+    const doors = lowerName.includes("double") ? 2 : 1;
     content = (
       <g>
         <rect x="55" y="55" width="90" height="95" rx="6" fill="#1E293B"/>
         <rect x="60" y="60" width="80" height="85" rx="4" fill="#0B0F17"/>
-        <rect x="138" y="85" width="4" height="30" rx="2" fill="#2A3A4E"/>
+        {doors === 2 && <rect x="99" y="60" width="2" height="85" fill="#2A3A4E"/>}
+        {Array.from({ length: doors }, (_, index) => (
+          <rect key={index} x={doors === 2 ? 92 + index * 16 : 133} y="85" width="4" height="30" rx="2" fill="#2A3A4E"/>
+        ))}
         {t==="freezer" && <><rect x="70" y="75" width="60" height="2" fill={tc} opacity="0.5"/>
         <rect x="70" y="95" width="60" height="2" fill={tc} opacity="0.5"/></>}
       </g>
@@ -389,46 +365,110 @@ function ProductSVG({ item, size = 160 }) {
       </g>
     );
   } else if (t === "ac") {
+    const isMakeUpAir = lowerName.includes("make-up air");
+    const isEvaporative = lowerName.includes("evaporative");
     content = (
       <g>
-        <rect x="40" y="70" width="120" height="30" rx="6" fill="#1E293B"/>
-        <rect x="50" y="110" width="80" height="45" rx="4" fill="#1E293B"/>
-        <rect x="55" y="115" width="70" height="35" rx="3" fill="#0B0F17"/>
-        {[0,45,90,135,180,225,270,315].map((a,i)=>{
-          const r=10;const x=90+r*Math.cos(a*Math.PI/180);const y=140+r*Math.sin(a*Math.PI/180);
-          return <circle key={i} cx={x} cy={y} r="3" fill={tc} opacity="0.5"/>
-        })}
+        {isMakeUpAir ? (
+          <>
+            <rect x="35" y="65" width="130" height="75" rx="7" fill="#1E293B"/>
+            <rect x="45" y="75" width="48" height="55" rx="4" fill="#0B0F17"/>
+            {[82,94,106,118].map(y => <path key={y} d={`M50 ${y} H88`} stroke="#2A3A4E" strokeWidth="4"/>)}
+            <circle cx="127" cy="102" r="24" fill="#0B0F17" stroke={tc} strokeWidth="3"/>
+            <path d="M127 83 V121 M108 102 H146" stroke={tc} strokeWidth="4"/>
+          </>
+        ) : isEvaporative ? (
+          <>
+            <rect x="62" y="45" width="76" height="100" rx="8" fill="#1E293B"/>
+            {[60,72,84,96,108,120].map(y => <path key={y} d={`M72 ${y} H128`} stroke="#2A3A4E" strokeWidth="4"/>)}
+            <circle cx="76" cy="148" r="7" fill="#0B0F17" stroke={tc}/>
+            <circle cx="124" cy="148" r="7" fill="#0B0F17" stroke={tc}/>
+          </>
+        ) : (
+          <>
+            <rect x="40" y="70" width="120" height="30" rx="6" fill="#1E293B"/>
+            <rect x="50" y="110" width="80" height="45" rx="4" fill="#1E293B"/>
+            <rect x="55" y="115" width="70" height="35" rx="3" fill="#0B0F17"/>
+            {[0,45,90,135,180,225,270,315].map((a,i)=>{
+              const r=10;const x=90+r*Math.cos(a*Math.PI/180);const y=140+r*Math.sin(a*Math.PI/180);
+              return <circle key={i} cx={x} cy={y} r="3" fill={tc} opacity="0.5"/>;
+            })}
+          </>
+        )}
       </g>
     );
   } else if (t === "sink") {
+    const basinCount = lowerName.includes("3-compartment") ? 3 : 1;
+    const basinWidth = basinCount === 3 ? 40 : 78;
     content = (
       <g>
         <rect x="20" y="80" width="160" height="60" rx="6" fill="#1E293B"/>
         <rect x="25" y="85" width="150" height="40" rx="4" fill="#0B0F17"/>
-        {[25,72,119].map((x)=><rect key={x} x={x} y="90" width="40" height="30" rx="3" fill="#2A3A4E"/>)}
+        {Array.from({ length: basinCount }, (_, index) => {
+          const x = basinCount === 3 ? 25 + index * 47 : 61;
+          return <rect key={x} x={x} y="90" width={basinWidth} height="30" rx="3" fill="#2A3A4E"/>;
+        })}
         <rect x="90" y="55" width="6" height="30" rx="2" fill="#2A3A4E"/>
         <circle cx="93" cy="55" r="8" fill="#2A3A4E"/>
         {[20,162].map((x)=><rect key={x} x={x} y="85" width="5" height="50" rx="2" fill="#0B0F17"/>)}
       </g>
     );
-  } else if (t === "tank" || t === "heater" || t === "pump" || t === "filter" || t === "faucet") {
+  } else if (t === "faucet") {
     content = (
       <g>
-        <rect x="60" y="60" width="80" height="90" rx="12" fill="#1E293B"/>
-        <rect x="65" y="65" width="70" height="80" rx="10" fill="#0B0F17"/>
-        {t==="tank" && <rect x="70" y="70" width="60" height="40" rx="4" fill={tc} opacity="0.1"/>}
-        {t==="heater" && <><circle cx="100" cy="100" r="20" fill={tc} opacity="0.2"/>
-        <circle cx="100" cy="100" r="10" fill={tc} opacity="0.4"/></>}
-        {t==="pump" && <><rect x="75" y="90" width="50" height="30" rx="4" fill="#2A3A4E"/>
-        <circle cx="125" cy="105" r="8" fill={tc} opacity="0.4"/></>}
+        <path d="M70 135 V82 Q70 55 96 55 H120" fill="none" stroke="#94A3B8" strokeWidth="9" strokeLinecap="round"/>
+        <path d="M120 55 V105" fill="none" stroke={tc} strokeWidth="6" strokeLinecap="round"/>
+        <path d="M112 103 Q120 118 128 103" fill="none" stroke="#94A3B8" strokeWidth="4"/>
+        <rect x="45" y="135" width="110" height="12" rx="4" fill="#1E293B"/>
+      </g>
+    );
+  } else if (t === "tank") {
+    content = (
+      <g>
+        <rect x="45" y="70" width="110" height="70" rx="12" fill="#1E293B"/>
+        {[55,75,95,115,135].map(x => <path key={x} d={`M${x} 76 V134`} stroke="#2A3A4E" strokeWidth="2"/>)}
+        <circle cx="100" cy="70" r="8" fill="#0B0F17" stroke={tc} strokeWidth="2"/>
+        <text x="100" y="110" fill={tc} fontSize="12" textAnchor="middle" fontWeight="bold">{name.match(/\d+\s*Gal/i)?.[0] || "TANK"}</text>
+      </g>
+    );
+  } else if (t === "heater") {
+    content = (
+      <g>
+        <rect x="68" y="55" width="64" height="95" rx="22" fill="#1E293B"/>
+        <circle cx="100" cy="100" r="22" fill={tc} opacity="0.18"/>
+        <path d="M94 118 C82 102 108 98 99 78 C116 91 120 107 106 120" fill={tc} opacity="0.7"/>
+        <rect x="80" y="145" width="8" height="8" rx="2" fill="#2A3A4E"/>
+        <rect x="112" y="145" width="8" height="8" rx="2" fill="#2A3A4E"/>
+      </g>
+    );
+  } else if (t === "pump") {
+    content = (
+      <g>
+        <rect x="55" y="80" width="70" height="50" rx="12" fill="#1E293B"/>
+        <circle cx="125" cy="105" r="24" fill="#2A3A4E"/>
+        <circle cx="125" cy="105" r="11" fill={tc} opacity="0.65"/>
+        <path d="M35 105 H55 M149 105 H169" stroke={tc} strokeWidth="8" strokeLinecap="round"/>
+      </g>
+    );
+  } else if (t === "filter") {
+    content = (
+      <g>
+        <rect x="55" y="58" width="90" height="18" rx="5" fill="#1E293B"/>
+        {[72,112].map(x => (
+          <g key={x}>
+            <rect x={x} y="72" width="32" height="72" rx="12" fill="#1E293B"/>
+            <rect x={x + 5} y="80" width="22" height="54" rx="8" fill={tc} opacity="0.18"/>
+          </g>
+        ))}
       </g>
     );
   } else if (t === "generator") {
+    const watts = name.match(/\d+\s*W/i)?.[0]?.replace(/\s/g, "") || "POWER";
     content = (
       <g>
         <rect x="40" y="70" width="120" height="75" rx="8" fill="#1E293B"/>
         <rect x="45" y="75" width="110" height="50" rx="4" fill="#0B0F17"/>
-        <text x="100" y="105" fill={tc} fontSize="12" textAnchor="middle" fontWeight="bold">7500W</text>
+        <text x="100" y="105" fill={tc} fontSize="12" textAnchor="middle" fontWeight="bold">{watts}</text>
         <rect x="45" y="130" width="110" height="10" rx="3" fill="#2A3A4E"/>
         {[90,110,130,150].map((x)=><rect key={x} x={x-30} y="132" width="8" height="6" rx="1" fill="#0B0F17"/>)}
       </g>
@@ -446,47 +486,163 @@ function ProductSVG({ item, size = 160 }) {
       </g>
     );
   } else if (t === "lighting") {
+    const isFlood = lowerName.includes("flood");
     content = (
       <g>
-        <rect x="30" y="90" width="140" height="25" rx="4" fill="#1E293B"/>
-        <rect x="35" y="95" width="130" height="15" rx="2" fill={tc} opacity="0.2"/>
-        <rect x="40" y="98" width="120" height="9" rx="2" fill={tc} opacity="0.4"/>
+        {isFlood ? (
+          [65,135].map(x => (
+            <g key={x}>
+              <rect x={x - 25} y="75" width="50" height="45" rx="5" fill="#1E293B"/>
+              <rect x={x - 20} y="80" width="40" height="35" rx="3" fill={tc} opacity="0.35"/>
+              <path d={`M${x} 120 V145`} stroke="#2A3A4E" strokeWidth="6"/>
+            </g>
+          ))
+        ) : (
+          <>
+            <rect x="30" y="90" width="140" height="25" rx="4" fill="#1E293B"/>
+            <rect x="35" y="95" width="130" height="15" rx="2" fill={tc} opacity="0.2"/>
+            <rect x="40" y="98" width="120" height="9" rx="2" fill={tc} opacity="0.4"/>
+          </>
+        )}
       </g>
     );
   } else if (t === "power") {
+    const isBattery = lowerName.includes("battery");
+    const isInlet = lowerName.includes("inlet");
+    const isOutletStrip = lowerName.includes("outlet strip");
     content = (
       <g>
-        <rect x="50" y="70" width="100" height="70" rx="8" fill="#1E293B"/>
-        <rect x="55" y="75" width="90" height="60" rx="4" fill="#0B0F17"/>
-        <text x="100" y="100" fill={tc} fontSize="10" textAnchor="middle" fontWeight="bold">120V</text>
-        {[100,120,140].map((x)=><circle key={x} cx={x-20} cy="120" r="6" fill="#2A3A4E"/>)}
+        {isOutletStrip ? (
+          <>
+            <rect x="25" y="80" width="150" height="42" rx="8" fill="#1E293B"/>
+            {[42,65,88,111,134,157].map(x => <circle key={x} cx={x} cy="101" r="8" fill="#0B0F17" stroke={tc} strokeWidth="2"/>)}
+          </>
+        ) : (
+          <>
+            <rect x="50" y="70" width="100" height="70" rx="8" fill="#1E293B"/>
+            <rect x="55" y="75" width="90" height="60" rx="4" fill="#0B0F17"/>
+            <text x="100" y="100" fill={tc} fontSize="10" textAnchor="middle" fontWeight="bold">{isBattery ? "LiFePO₄" : isInlet ? "50A" : "3000W"}</text>
+            {isInlet ? (
+              <circle cx="100" cy="119" r="12" fill="#2A3A4E" stroke={tc} strokeWidth="2"/>
+            ) : (
+              [80,100,120].map((x)=><circle key={x} cx={x} cy="120" r="6" fill="#2A3A4E"/>)
+            )}
+          </>
+        )}
+      </g>
+    );
+  } else if (t === "kit" || t === "pans" || t === "tool" || t === "knives") {
+    const isScale = lowerName.includes("scale");
+    const isBoards = lowerName.includes("cutting board");
+    const isThermometers = lowerName.includes("thermometer");
+    const isKnives = t === "knives";
+    const isSheetRack = lowerName.includes("sheet pan");
+    content = (
+      <g>
+        {isKnives ? (
+          [68,88,108,128].map((y, index) => (
+            <g key={y} transform={`rotate(${-18 + index * 7} 100 100)`}>
+              <path d={`M48 ${y} H126 L148 ${y + 5} L126 ${y + 10} H48 Z`} fill="#CBD5E1"/>
+              <rect x="35" y={y + 1} width="18" height="8" rx="3" fill={tc}/>
+            </g>
+          ))
+        ) : isScale ? (
+          <>
+            <rect x="55" y="72" width="90" height="70" rx="10" fill="#1E293B"/>
+            <rect x="68" y="82" width="64" height="25" rx="5" fill="#CBD5E1"/>
+            <rect x="76" y="115" width="48" height="16" rx="4" fill="#0B0F17"/>
+            <text x="100" y="127" fill={tc} fontSize="10" textAnchor="middle">0.0 oz</text>
+          </>
+        ) : isBoards ? (
+          ["#EF4444", "#3B82F6", "#22C55E", "#EAB308", "#F8FAFC", "#92400E"].map((color, index) => (
+            <rect key={color} x={47 + index * 9} y={62 + index * 11} width="82" height="42" rx="5" fill={color} stroke="#0B0F17" strokeWidth="3"/>
+          ))
+        ) : isThermometers ? (
+          <>
+            <rect x="62" y="60" width="18" height="82" rx="8" fill="#1E293B"/>
+            <circle cx="71" cy="132" r="13" fill={tc} opacity="0.5"/>
+            <path d="M105 65 L142 130" stroke="#CBD5E1" strokeWidth="7" strokeLinecap="round"/>
+            <rect x="91" y="55" width="35" height="28" rx="6" fill="#1E293B"/>
+          </>
+        ) : isSheetRack ? (
+          <>
+            <rect x="55" y="45" width="90" height="105" rx="5" fill="none" stroke="#94A3B8" strokeWidth="5"/>
+            {Array.from({ length: 8 }, (_, index) => <path key={index} d={`M60 ${58 + index * 11} H140`} stroke="#64748B" strokeWidth="3"/>)}
+            <circle cx="68" cy="153" r="7" fill="#1E293B" stroke={tc}/>
+            <circle cx="132" cy="153" r="7" fill="#1E293B" stroke={tc}/>
+          </>
+        ) : t === "pans" ? (
+          [30,24,18].map((radius, index) => <circle key={radius} cx={70 + index * 30} cy={108 - index * 10} r={radius} fill="none" stroke={index === 0 ? "#94A3B8" : tc} strokeWidth="5"/>)
+        ) : (
+          <>
+            <rect x="48" y="62" width="104" height="78" rx="12" fill="#1E293B"/>
+            {[62,82,102,122].map((x, index) => <path key={x} d={`M${x} 76 V126`} stroke={index % 2 ? tc : "#CBD5E1"} strokeWidth="6" strokeLinecap="round"/>)}
+            <rect x="42" y="135" width="116" height="10" rx="4" fill="#2A3A4E"/>
+          </>
+        )}
       </g>
     );
   } else if (t === "counter" || t === "window" || t === "exterior") {
+    const isAwning = lowerName.includes("awning");
+    const isWindow = t === "window";
     content = (
       <g>
-        <rect x="30" y="75" width="140" height="70" rx="6" fill="#1E293B"/>
-        <rect x="35" y="80" width="130" height="40" rx="4" fill="#0B0F17"/>
-        <rect x="35" y="125" width="130" height="15" rx="3" fill={tc} opacity="0.2"/>
+        {isAwning ? (
+          <>
+            <path d="M25 85 H175 L150 118 H50 Z" fill={tc} opacity="0.65"/>
+            {[50,75,100,125,150].map(x => <path key={x} d={`M${x} 85 L${x - 8} 118`} stroke="#F8FAFC" strokeWidth="7" opacity="0.55"/>)}
+            <path d="M50 118 V148 M150 118 V148" stroke="#94A3B8" strokeWidth="5"/>
+          </>
+        ) : (
+          <>
+            <rect x="30" y="75" width="140" height="70" rx="6" fill="#1E293B"/>
+            <rect x="35" y="80" width="130" height="40" rx="4" fill="#0B0F17" stroke={isWindow ? "#CBD5E1" : "#2A3A4E"}/>
+            <rect x="35" y="125" width="130" height="15" rx="3" fill={tc} opacity="0.35"/>
+          </>
+        )}
       </g>
     );
   } else if (t === "display" || t === "pos") {
+    const isCashDrawer = lowerName.includes("cash drawer");
     content = (
       <g>
-        <rect x="55" y="60" width="90" height="70" rx="6" fill="#1E293B"/>
-        <rect x="60" y="65" width="80" height="55" rx="3" fill="#0B0F17"/>
-        <rect x="65" y="70" width="70" height="45" rx="2" fill={tc} opacity="0.1"/>
-        <rect x="85" y="135" width="30" height="15" rx="3" fill="#2A3A4E"/>
+        {isCashDrawer ? (
+          <>
+            <rect x="42" y="80" width="116" height="68" rx="7" fill="#1E293B"/>
+            <rect x="48" y="88" width="104" height="44" rx="4" fill="#0B0F17"/>
+            {[54,75,96,117,138].map(x => <rect key={x} x={x} y="94" width="15" height="31" rx="2" fill="#2A3A4E"/>)}
+            <circle cx="100" cy="140" r="4" fill={tc}/>
+          </>
+        ) : (
+          <>
+            <rect x="55" y="60" width="90" height="70" rx="6" fill="#1E293B"/>
+            <rect x="60" y="65" width="80" height="55" rx="3" fill="#0B0F17"/>
+            <rect x="65" y="70" width="70" height="45" rx="2" fill={tc} opacity="0.18"/>
+            <rect x="85" y="135" width="30" height="15" rx="3" fill="#2A3A4E"/>
+          </>
+        )}
       </g>
     );
   } else if (t === "warming" || t === "kitchen") {
+    const isTicketRail = lowerName.includes("ticket rail");
     content = (
       <g>
         <rect x="50" y="70" width="100" height="20" rx="4" fill="#1E293B"/>
-        {[60,85,110,135].map((x,i)=><>
-          <rect key={`b${i}`} x={x} y="65" width="10" height="5" rx="1" fill="#F4A623" opacity="0.6"/>
-          <rect key={`r${i}`} x={x+2} y="90" width="6" height="35" rx="1" fill="#2A3A4E"/>
-        </>)}
+        {isTicketRail ? (
+          [58,76,94,112,130].map((x) => (
+            <g key={x}>
+              <circle cx={x + 5} cy="80" r="3" fill={tc}/>
+              <rect x={x} y="90" width="12" height="42" rx="2" fill="#F8FAFC"/>
+            </g>
+          ))
+        ) : (
+          [60,85,110,135].map((x,i)=>(
+            <g key={x}>
+              <rect x={x} y="65" width="10" height="5" rx="1" fill="#F4A623" opacity="0.6"/>
+              <rect x={x+2} y="90" width="6" height="35" rx="1" fill="#2A3A4E"/>
+            </g>
+          ))
+        )}
       </g>
     );
   } else {
@@ -537,7 +693,7 @@ function Card({ item, selected, onSelect, onDetail }) {
       }}
     >
       {item.popular && (
-        <div style={{ position:"absolute", top:12, right:12, zIndex:2, background:"#E8592F", color:"#FFF", fontSize:8, fontWeight:800, padding:"3px 8px", borderRadius:20, textTransform:"uppercase", letterSpacing:"0.08em" }}>
+        <div style={{ position:"absolute", top:12, right:12, zIndex:2, background:"#EC5B13", color:"#FFF", fontSize:8, fontWeight:800, padding:"3px 8px", borderRadius:20, textTransform:"uppercase", letterSpacing:"0.08em" }}>
           POPULAR
         </div>
       )}
@@ -728,7 +884,7 @@ const KitchenOutfitter = () => {
       <aside style={{ width:240, background:"#0d1018", borderRight:"1px solid rgba(255,255,255,0.05)", display:"flex", flexDirection:"column", position:"sticky", top:0, height:"100vh", overflow:"auto" }}>
         <div style={{ padding:"16px 16px", borderBottom:"1px solid rgba(255,255,255,0.05)" }}>
           <Link to="/dashboard" style={{ display:"flex", alignItems:"center", gap:10, textDecoration:"none", marginBottom:12 }}>
-            <div style={{ width:32, height:32, borderRadius:8, background:"#E8592F", display:"flex", alignItems:"center", justifyContent:"center" }}>
+            <div style={{ width:32, height:32, borderRadius:8, background:"#EC5B13", display:"flex", alignItems:"center", justifyContent:"center" }}>
               <Truck className="w-4 h-4" style={{ color:"white" }} />
             </div>
             <div>
@@ -756,8 +912,8 @@ const KitchenOutfitter = () => {
                   borderRadius:10, 
                   cursor:"pointer", 
                   marginBottom:1, 
-                  background: active ? "#E8592F15" : "transparent", 
-                  borderLeft: active ? "3px solid #E8592F" : "3px solid transparent", 
+                  background: active ? "#EC5B1315" : "transparent",
+                  borderLeft: active ? "3px solid #EC5B13" : "3px solid transparent",
                   transition:"all 0.2s" 
                 }}
               >
@@ -766,7 +922,7 @@ const KitchenOutfitter = () => {
                   <div style={{ color: active ? "#E8ECF2" : "#8896A8", fontSize:12, fontWeight:600 }}>{c.name}</div>
                   <div style={{ color:"#64748B", fontSize:9 }}>{count} items</div>
                 </div>
-                {selCount>0 && <span style={{ background:"#E8592F", color:"#FFF", fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:10 }}>{selCount}</span>}
+                {selCount>0 && <span style={{ background:"#EC5B13", color:"#FFF", fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:10 }}>{selCount}</span>}
               </div>
             );
           })}
@@ -785,7 +941,7 @@ const KitchenOutfitter = () => {
         >
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:4 }}>
             <span style={{ color:"#E8ECF2", fontSize:12, fontWeight:700 }}>Your Build</span>
-            <span style={{ color:"#E8592F", fontSize:11, fontWeight:700 }}>{selList.length} items</span>
+            <span style={{ color:"#EC5B13", fontSize:11, fontWeight:700 }}>{selList.length} items</span>
           </div>
           <div style={{ color:"#F4A623", fontSize:18, fontWeight:800 }}>${total.toLocaleString()}</div>
           <div style={{ color:"#64748B", fontSize:9, marginTop:4 }}>Click to expand</div>
@@ -836,9 +992,9 @@ const KitchenOutfitter = () => {
                   borderRadius:20, 
                   fontSize:9, 
                   fontWeight:600, 
-                  border:`1px solid ${active?(t?.color||"#E8592F"):"#1E293B"}`, 
-                  background: active ? (t?.bg||"#E8592F15") : "transparent", 
-                  color: active ? (t?.color||"#E8592F") : "#8896A8", 
+                  border:`1px solid ${active?(t?.color||"#EC5B13"):"#1E293B"}`,
+                  background: active ? (t?.bg||"#EC5B1315") : "transparent",
+                  color: active ? (t?.color||"#EC5B13") : "#8896A8",
                   cursor:"pointer", 
                   fontFamily:"'Outfit',sans-serif", 
                   letterSpacing:"0.06em", 
@@ -911,7 +1067,7 @@ const KitchenOutfitter = () => {
                       padding:12, 
                       borderRadius:10, 
                       border:"none", 
-                      background:"linear-gradient(135deg,#E8592F,#F4A623)", 
+                      background:"#EC5B13",
                       color:"#0B0F17", 
                       fontWeight:700, 
                       fontSize:11, 
