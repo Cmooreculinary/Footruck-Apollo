@@ -1,7 +1,7 @@
 import React from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import { Truck, Palette, Calculator, Utensils, Timer, School, ClipboardList, Banknote, Compass, BarChart2, UserCircle, BookMarked, Paintbrush, ChefHat, LogIn, User, Store } from "lucide-react";
+import { Truck, Calculator, Utensils, Timer, School, ClipboardList, Banknote, Compass, BarChart2, UserCircle, BookMarked, Paintbrush, ChefHat, LogIn, User, Store } from "lucide-react";
 import { Toaster } from "sonner";
 import SEO from "@/components/SEO";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
@@ -12,7 +12,6 @@ import DayOneSimulator from "@/pages/DayOneSimulator";
 import SignatureDishDeveloper from "@/pages/SignatureDishDeveloper";
 import CrewQuartersTraining from "@/pages/CrewQuartersTraining";
 import DreamKitchen from "@/pages/DreamKitchen";
-import TruckDesignStudio from "@/pages/TruckDesignStudio";
 import PayrollPlanning from "@/pages/PayrollPlanning";
 import ScalingPrepCalculator from "@/pages/ScalingPrepCalculator";
 import PaperTrailPermits from "@/pages/PaperTrailPermits";
@@ -38,9 +37,8 @@ const Dashboard = () => {
       desc: "Bring your truck to life",
       items: [
         { path: "/paint-shop", name: "Paint Shop", icon: Paintbrush, desc: "Real-time truck configurator with colors, wraps, and accessories", badge: "Popular" },
-        { path: "/kitchen-builder", name: "Kitchen Builder", icon: ChefHat, desc: "Drag-and-drop equipment layout with compliance validation", badge: null },
-        { path: "/kitchen-outfitter", name: "Equipment Showroom", icon: Store, desc: "Browse 60+ commercial products across 8 categories", badge: null },
-        { path: "/truck-design", name: "Legacy Paint Shop", icon: Palette, desc: "Classic composite preview canvas with paint tools", badge: null },
+        { path: "/kitchen-builder", name: "Kitchen Builder", icon: ChefHat, desc: "Click-or-drag equipment layouts with fit and planning checks", badge: null },
+        { path: "/kitchen-outfitter", name: "Equipment Showroom", icon: Store, desc: "Browse 70+ illustrated commercial products across 8 categories", badge: null },
       ],
     },
     {
@@ -181,7 +179,6 @@ const AppContent = () => {
       <Route path="/day-one" element={<DayOneSimulator />} />
       <Route path="/signature-dish" element={<SignatureDishDeveloper />} />
       <Route path="/crew-quarters" element={<CrewQuartersTraining />} />
-      <Route path="/truck-design" element={<TruckDesignStudio />} />
       <Route path="/payroll" element={<PayrollPlanning />} />
       <Route path="/scaling-prep" element={<ScalingPrepCalculator />} />
       <Route path="/paper-trail" element={<PaperTrailPermits />} />

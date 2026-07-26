@@ -113,7 +113,7 @@ const DayOneSimulator = () => {
           <nav className="hidden lg:flex items-center gap-9">
             <Link to="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">Dashboard</Link>
             <Link to="/crew-quarters" className="text-sm font-medium hover:text-primary transition-colors">Training</Link>
-            <Link to="/truck-design" className="text-sm font-medium hover:text-primary transition-colors">Equipment</Link>
+            <Link to="/kitchen-builder" className="text-sm font-medium hover:text-primary transition-colors">Equipment</Link>
             <span className="text-primary text-sm font-bold border-b-2 border-primary pb-1">Launchpad</span>
           </nav>
           <button className="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-background-dark text-sm font-bold hover:bg-primary/90 transition-all uppercase tracking-wider font-header">

@@ -1683,7 +1683,7 @@ const PaintShop = () => {
       <div className="max-w-7xl mx-auto px-6 pb-12">
         <div className="mb-5">
           <h2 className="text-xs font-bold uppercase tracking-[0.1em] text-zinc-400">Level Up Your Build</h2>
-          <p className="text-zinc-600 text-xs mt-0.5">Unlock professional services and premium features</p>
+          <p className="text-zinc-600 text-xs mt-0.5">Preview professional services and upcoming build features</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Detailing Pack */}
@@ -1691,13 +1691,17 @@ const PaintShop = () => {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#EC5B13]">Detailing Pack</p>
-                <p className="text-2xl font-extrabold text-white mt-0.5">$49</p>
+                <p className="text-2xl font-extrabold text-white mt-0.5">BETA</p>
               </div>
-              <span className="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-[#EC5B13]/15 text-[#EC5B13] border border-[#EC5B13]/20">Locked</span>
+              <span className="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-[#EC5B13]/15 text-[#EC5B13] border border-[#EC5B13]/20">BETA</span>
             </div>
             <p className="text-xs text-zinc-500 leading-relaxed">Custom vinyl decal files, cut-ready for any print shop. Includes your logo placement, color specs, and bleed-ready artwork.</p>
-            <button className="mt-auto w-full py-2 text-xs font-semibold rounded-xl border border-[#EC5B13]/30 text-[#EC5B13] hover:bg-[#EC5B13]/10 transition-colors">
-              Unlock Detailing Pack
+            <button
+              type="button"
+              disabled
+              className="mt-auto w-full py-2 text-xs font-semibold rounded-xl border border-[#EC5B13]/30 text-[#EC5B13] opacity-70 cursor-not-allowed"
+            >
+              Beta Access Coming Soon
             </button>
           </div>
 
@@ -1706,22 +1710,26 @@ const PaintShop = () => {
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#f59e0b]">Custom Shop</p>
-                <p className="text-2xl font-extrabold text-white mt-0.5">$99</p>
+                <p className="text-2xl font-extrabold text-white mt-0.5">BETA</p>
               </div>
-              <span className="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/20">Locked</span>
+              <span className="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-[#f59e0b]/15 text-[#f59e0b] border border-[#f59e0b]/20">BETA</span>
             </div>
             <p className="text-xs text-zinc-500 leading-relaxed">Professional wrap consultation, 3D preview renders, and access to our vendor network for print and installation.</p>
-            <button className="mt-auto w-full py-2 text-xs font-semibold rounded-xl border border-[#f59e0b]/30 text-[#f59e0b] hover:bg-[#f59e0b]/10 transition-colors">
-              Unlock Custom Shop
+            <button
+              type="button"
+              disabled
+              className="mt-auto w-full py-2 text-xs font-semibold rounded-xl border border-[#f59e0b]/30 text-[#f59e0b] opacity-70 cursor-not-allowed"
+            >
+              Beta Access Coming Soon
             </button>
           </div>
 
           {/* The Showroom */}
           <div className="relative rounded-2xl border border-[#8b5cf6]/40 bg-[#1a1a1a] p-5 flex flex-col gap-3">
-            <span className="absolute top-4 right-4 text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#8b5cf6] text-white">NEW</span>
+            <span className="absolute top-4 right-4 text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#8b5cf6] text-white">BETA</span>
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#8b5cf6]">The Showroom</p>
-              <p className="text-2xl font-extrabold text-white mt-0.5">$149</p>
+              <p className="text-2xl font-extrabold text-white mt-0.5">BETA</p>
             </div>
             <p className="text-xs text-zinc-500 leading-relaxed">Browse 30 curated preset builds from top food truck operators. Filter by concept, copy a build, and launch in minutes.</p>
             <Link

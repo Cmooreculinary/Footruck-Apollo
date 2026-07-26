@@ -419,7 +419,7 @@ const PricingPage = () => {
           <h2 className="text-2xl font-bold text-center mb-12">All Plans Include</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: Store, title: "Equipment Showroom", desc: "Browse 60+ products with photorealistic images" },
+              { icon: Store, title: "Equipment Showroom", desc: "Browse 70+ products with accurate equipment diagrams" },
               { icon: ChefHat, title: "Recipe Builder", desc: "Build and cost recipes with PDF export" },
               { icon: Truck, title: "Truck Design Tools", desc: "Paint Shop & Kitchen Builder access" },
             ].map((item, i) => (
