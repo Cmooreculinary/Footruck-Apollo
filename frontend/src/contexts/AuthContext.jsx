@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiClient } from '@/lib/api';
 
 const AuthContext = createContext(null);
-const API_BASE = import.meta.env.VITE_BACKEND_URL || '';
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -15,27 +15,29 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const authRequestVersion = useRef(0);
   const navigate = useNavigate();
 
   const checkAuth = useCallback(async () => {
+    const requestVersion = ++authRequestVersion.current;
+    setLoading(true);
     try {
-      const response = await fetch(`${API_BASE}/api/auth/me`, {
-        credentials: 'include'
-      });
-      
-      if (response.ok) {
-        const userData = await response.json();
+      const userData = await apiClient.getCurrentUser();
+      if (requestVersion === authRequestVersion.current) {
         setUser(userData);
-      } else {
-        setUser(null);
       }
     } catch (error) {
-      console.error('Auth check failed:', error);
-      setUser(null);
+      if (error.status !== 401) {
+        console.warn('Auth check unavailable:', error.message);
+      }
+      if (requestVersion === authRequestVersion.current) {
+        setUser(null);
+      }
     } finally {
-      setLoading(false);
+      if (requestVersion === authRequestVersion.current) {
+        setLoading(false);
+      }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -46,16 +48,21 @@ export const AuthProvider = ({ children }) => {
     navigate('/login');
   };
 
+  const completeSignIn = useCallback((authenticatedUser) => {
+    authRequestVersion.current += 1;
+    setUser(authenticatedUser);
+    setLoading(false);
+  }, []);
+
   const logout = async () => {
+    authRequestVersion.current += 1;
     try {
-      await fetch(`${API_BASE}/api/auth/logout`, {
-        method: 'POST',
-        credentials: 'include'
-      });
+      await apiClient.logout();
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.warn('Logout request failed:', error.message);
+    } finally {
+      setUser(null);
     }
-    setUser(null);
   };
 
   const value = {
@@ -64,6 +71,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     checkAuth,
+    completeSignIn,
     isAuthenticated: !!user
   };
 

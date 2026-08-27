@@ -979,6 +979,17 @@ async def get_recipes(request: Request):
     recipes = await db.recipes.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(r) for r in recipes]
 
+@api_router.get("/recipes/latest", response_model=Optional[Recipe])
+async def get_latest_recipe(request: Request):
+    user = await get_current_user(request)
+    query = {"user_id": user.user_id} if user else {}
+    recipe = await db.recipes.find_one(
+        query,
+        {"_id": 0},
+        sort=[("created_at", -1)],
+    )
+    return deserialize_doc(recipe) if recipe else None
+
 
 # Customer Profile endpoints
 @api_router.post("/customer-profiles", response_model=CustomerProfile)

@@ -115,7 +115,7 @@ const TruckShowroom = () => {
               {/* Image area */}
               <div className="relative h-48 bg-[#0D0D0D] overflow-hidden">
                 <img
-                  src={`/trucks/${truck.chassis}.png`}
+                  src={`/trucks/${truck.chassis}.webp`}
                   alt={truck.name}
                   className={`w-full h-full object-cover transition-all ${truck.locked ? "blur-sm scale-105" : ""}`}
                 />
