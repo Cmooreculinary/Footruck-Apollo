@@ -4,7 +4,7 @@ const API_BASE = import.meta.env.VITE_BACKEND_URL || '';
 class ApiClient {
   constructor() {
     this.baseUrl = API_BASE;
-    this.timeout = 10000; // 10 second timeout
+    this.timeout = 15000;
   }
 
   async request(endpoint, options = {}) {
@@ -30,14 +30,16 @@ class ApiClient {
           const errData = await response.json();
           if (errData.detail) message = errData.detail;
         } catch {}
-        throw new Error(message);
+        const requestError = new Error(message);
+        requestError.status = response.status;
+        throw requestError;
       }
 
       return await response.json();
     } catch (error) {
       clearTimeout(timeoutId);
       if (error.name === 'AbortError') {
-        throw new Error('Request timeout');
+        throw new Error('The server took too long to respond. Please try again.');
       }
       throw error;
     }
@@ -81,6 +83,10 @@ class ApiClient {
 
   async getRecipes() {
     return this.request('/api/recipes');
+  }
+
+  async getLatestRecipe() {
+    return this.request('/api/recipes/latest');
   }
 
   // Customer Profile endpoints
@@ -171,6 +177,33 @@ class ApiClient {
 
   async getPayrollPlans() {
     return this.request('/api/payroll-plans');
+  }
+
+  async getLatestPayrollPlan() {
+    return this.request('/api/payroll-plans/latest');
+  }
+
+  // Authentication endpoints
+  async getCurrentUser() {
+    return this.request('/api/auth/me');
+  }
+
+  async login(credentials) {
+    return this.request('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials),
+    });
+  }
+
+  async register(account) {
+    return this.request('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(account),
+    });
+  }
+
+  async logout() {
+    return this.request('/api/auth/logout', { method: 'POST' });
   }
 
   // Training Progress endpoints

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -45,6 +45,21 @@ test("Equipment Showroom has 76 unique, illustrated products and local chassis i
   const chassisPaths = [...imageBlock.matchAll(/\"ch-\d+\":\s*\"([^\"]+)\"/g)].map((match) => match[1]);
   assert.equal(chassisPaths.length, 6);
   assert.equal(chassisPaths.every((path) => existsSync(join(frontendRoot, "public", path))), true);
+});
+
+test("every local truck WebP has a complete image stream", () => {
+  const trucksDirectory = join(frontendRoot, "public", "trucks");
+  const webpPaths = readdirSync(trucksDirectory, { recursive: true })
+    .filter((path) => path.endsWith(".webp"));
+
+  assert.ok(webpPaths.length >= 8, "Expected the checked-in truck image set.");
+
+  for (const relativePath of webpPaths) {
+    const image = readFileSync(join(trucksDirectory, relativePath));
+    assert.equal(image.subarray(0, 4).toString("ascii"), "RIFF", `${relativePath} must be a RIFF file.`);
+    assert.equal(image.subarray(8, 12).toString("ascii"), "WEBP", `${relativePath} must be a WebP image.`);
+    assert.equal(image.readUInt32LE(4) + 8, image.length, `${relativePath} contains a truncated WebP stream.`);
+  }
 });
 
 test("Kitchen Builder renders diagrams and supports click-to-place selection", () => {

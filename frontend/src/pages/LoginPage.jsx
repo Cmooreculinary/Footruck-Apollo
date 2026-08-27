@@ -3,8 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Truck, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import SEO from "@/components/SEO";
-
-const API_BASE = import.meta.env.VITE_BACKEND_URL || "";
+import { apiClient } from "@/lib/api";
 
 const LoginPage = () => {
   const [mode, setMode] = useState("login");
@@ -16,7 +15,7 @@ const LoginPage = () => {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-  const { checkAuth } = useAuth();
+  const { completeSignIn } = useAuth();
 
   const switchMode = (next) => {
     setMode(next);
@@ -29,27 +28,14 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const endpoint =
-        mode === "login" ? "/api/auth/login" : "/api/auth/register";
-      const body =
-        mode === "login" ? { email, password } : { email, password, name };
+      const userData = mode === "login"
+        ? await apiClient.login({ email, password })
+        : await apiClient.register({ email, password, name });
 
-      const res = await fetch(`${API_BASE}${endpoint}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(body),
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.detail || "Something went wrong");
-      }
-
-      await checkAuth();
+      completeSignIn(userData);
       navigate("/dashboard", { replace: true });
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Unable to sign in. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -66,6 +52,10 @@ const LoginPage = () => {
         description="Sign in or create your Food Truck Launch Pad account."
         url="/login"
       />
+
+      <h1 className="sr-only">
+        {mode === "login" ? "Sign in" : "Create your account"}
+      </h1>
 
       {/* Logo */}
       <Link to="/" className="flex items-center gap-2.5 mb-10 hover:opacity-80 transition-opacity">
@@ -85,6 +75,8 @@ const LoginPage = () => {
           <button
             type="button"
             onClick={() => switchMode("login")}
+            aria-pressed={mode === "login"}
+            disabled={loading}
             className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
               mode === "login"
                 ? "bg-[#E8592F] text-white"
@@ -96,6 +88,8 @@ const LoginPage = () => {
           <button
             type="button"
             onClick={() => switchMode("register")}
+            aria-pressed={mode === "register"}
+            disabled={loading}
             className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
               mode === "register"
                 ? "bg-[#E8592F] text-white"
@@ -106,15 +100,16 @@ const LoginPage = () => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" aria-busy={loading}>
 
           {/* Name — register only */}
           {mode === "register" && (
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+              <label htmlFor="auth-name" className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
                 Full Name
               </label>
               <input
+                id="auth-name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -128,27 +123,31 @@ const LoginPage = () => {
 
           {/* Email */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+            <label htmlFor="auth-email" className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
               Email
             </label>
             <input
+              id="auth-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               required
               autoComplete="email"
+              aria-invalid={Boolean(error)}
+              aria-describedby={error ? "auth-error" : undefined}
               className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#E8592F]/60 focus:bg-white/[0.06] transition-all"
             />
           </div>
 
           {/* Password */}
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+            <label htmlFor="auth-password" className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
               Password
             </label>
             <div className="relative">
               <input
+                id="auth-password"
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -156,13 +155,16 @@ const LoginPage = () => {
                 required
                 minLength={8}
                 autoComplete={mode === "login" ? "current-password" : "new-password"}
+                aria-invalid={Boolean(error)}
+                aria-describedby={error ? "auth-error" : undefined}
                 className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 pr-11 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#E8592F]/60 focus:bg-white/[0.06] transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
-                tabIndex={-1}
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-10 h-10 inline-flex items-center justify-center text-zinc-500 hover:text-zinc-300 transition-colors"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -171,7 +173,7 @@ const LoginPage = () => {
 
           {/* Error */}
           {error && (
-            <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
+            <div id="auth-error" role="alert" aria-live="assertive" className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
               {error}
             </div>
           )}
