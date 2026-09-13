@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import EquipmentPlanDiagram from "@/components/EquipmentPlanDiagram";
 import { apiClient } from "@/lib/api";
-import { exportKitchenLayoutToPDF } from "@/lib/pdfExport";
 import {
   clampPlacement,
   findFirstAvailablePosition,
@@ -273,6 +272,7 @@ const KitchenBuilder = () => {
   const handleExportPDF = async () => {
     setIsExporting(true);
     try {
+      const { exportKitchenLayoutToPDF } = await import("@/lib/pdfExport");
       const equipmentList = placedEquipment.map(item => {
         const catalogItem = equipmentById[item.equipmentId];
         return {

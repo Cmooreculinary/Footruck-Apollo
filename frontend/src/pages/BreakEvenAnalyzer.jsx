@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { apiClient } from "@/lib/api";
 import { SkeletonForm, Skeleton } from "@/components/ui/skeleton-loader";
-import { exportToPDF } from "@/lib/pdfExport";
 
 const BreakEvenAnalyzer = () => {
   const [fixedExpenses, setFixedExpenses] = useState(4500);
@@ -131,6 +130,7 @@ const BreakEvenAnalyzer = () => {
   const handleExportPDF = async () => {
     setIsExporting(true);
     try {
+      const { exportToPDF } = await import("@/lib/pdfExport");
       await exportToPDF(
         "break-even-report",
         `break-even-${scenarioName.toLowerCase().replace(/\s+/g, "-")}`,

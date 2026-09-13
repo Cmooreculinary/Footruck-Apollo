@@ -4,7 +4,6 @@ import { Truck, Box, Thermometer, Users, AlertTriangle, Shield, Award, Upload, L
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { apiClient } from "@/lib/api";
-import { fileToDataUrl } from "@/lib/pdfExport";
 
 const trainingModules = [
   {
@@ -84,6 +83,7 @@ const CrewQuartersTraining = () => {
     if (!file) return;
     setIsUploading(true);
     try {
+      const { fileToDataUrl } = await import("@/lib/pdfExport");
       const dataUrl = await fileToDataUrl(file);
       const created = await apiClient.uploadTrainingDocument({
         name: file.name,

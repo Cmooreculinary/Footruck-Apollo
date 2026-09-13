@@ -244,6 +244,58 @@ def test_authenticated_truck_designs_are_upserted_and_filtered_by_user(client, f
     assert user_two_latest.json()["business_name"] == "Other Truck"
 
 
+def test_latest_recipe_and_payroll_are_filtered_by_user(client, fake_db):
+    user_one_headers = seed_user(
+        fake_db,
+        token="latest_one",
+        user_id="latest_user_one",
+    )
+    user_two_headers = seed_user(
+        fake_db,
+        token="latest_two",
+        user_id="latest_user_two",
+    )
+
+    recipe = {
+        "name": "Owner One Tacos",
+        "prep_time": 20,
+        "cook_time": 45,
+        "batch_yield": 12,
+        "cost_per_serving": 3.25,
+        "ingredients": [],
+        "steps": [],
+    }
+    payroll = {
+        "location": "California (San Francisco)",
+        "projected_labor_cost": 4250.0,
+        "total_weekly_labor": 5825.5,
+        "crew_schedule": [],
+    }
+
+    assert (
+        client.post("/api/recipes", json=recipe, headers=user_one_headers).status_code
+        == 200
+    )
+    assert (
+        client.post(
+            "/api/payroll-plans",
+            json=payroll,
+            headers=user_one_headers,
+        ).status_code
+        == 200
+    )
+
+    recipe_response = client.get("/api/recipes/latest", headers=user_one_headers)
+    payroll_response = client.get("/api/payroll-plans/latest", headers=user_one_headers)
+    assert recipe_response.status_code == 200
+    assert recipe_response.json()["name"] == "Owner One Tacos"
+    assert payroll_response.status_code == 200
+    assert payroll_response.json()["location"] == "California (San Francisco)"
+
+    assert client.get("/api/recipes/latest", headers=user_two_headers).json() is None
+    assert client.get("/api/payroll-plans/latest", headers=user_two_headers).json() is None
+
+
 def test_subscription_trial_flow_validates_auth_plan_and_expiration(client, fake_db):
     headers = seed_user(fake_db, token="trial_token", user_id="trial_user")
 

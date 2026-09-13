@@ -73,7 +73,7 @@ const LandingPage = () => {
       {/* === HERO === */}
       <section className="relative min-h-[100vh] flex items-end pb-20 pt-32" data-testid="hero-section">
         <div className="absolute inset-0">
-          <img src={HERO_BG} alt="" className="w-full h-full object-cover" loading="eager" fetchpriority="high" />
+          <img src={HERO_BG} alt="" className="w-full h-full object-cover" loading="eager" fetchPriority="high" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d14] via-[#0a0d14]/70 to-[#0a0d14]/30" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0a0d14]/80 to-transparent" />
         </div>

@@ -22,12 +22,12 @@ const TIERS = {
 // has a complete visual without remote placeholders or broken image URLs.
 // ═══════════════════════════════════════════════════════════════
 const PRODUCT_IMAGES = {
-  "ch-1": "/trucks/truck_01.png",
-  "ch-2": "/trucks/truck_03.png",
-  "ch-3": "/trucks/truck_04.png",
-  "ch-4": "/trucks/chassis_isuzu_cab_forward.png",
-  "ch-5": "/trucks/truck_05.png",
-  "ch-6": "/trucks/chassis_vintage_vw.png",
+  "ch-1": "/trucks/truck_01.webp",
+  "ch-2": "/trucks/truck_03.webp",
+  "ch-3": "/trucks/truck_04.webp",
+  "ch-4": "/trucks/chassis_isuzu_cab_forward.webp",
+  "ch-5": "/trucks/truck_05.webp",
+  "ch-6": "/trucks/chassis_vintage_vw.webp",
 };
 
 const CATEGORIES = [

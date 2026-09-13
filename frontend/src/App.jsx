@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Truck, Calculator, Utensils, Timer, School, ClipboardList, Banknote, Compass, BarChart2, UserCircle, BookMarked, Paintbrush, ChefHat, LogIn, User, Store } from "lucide-react";
@@ -6,27 +6,45 @@ import { Toaster } from "sonner";
 import SEO from "@/components/SEO";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 
-// Import pages
+// Keep the landing page eager for the first paint; load tools on demand.
 import LandingPage from "@/pages/LandingPage";
-import DayOneSimulator from "@/pages/DayOneSimulator";
-import SignatureDishDeveloper from "@/pages/SignatureDishDeveloper";
-import CrewQuartersTraining from "@/pages/CrewQuartersTraining";
-import DreamKitchen from "@/pages/DreamKitchen";
-import PayrollPlanning from "@/pages/PayrollPlanning";
-import ScalingPrepCalculator from "@/pages/ScalingPrepCalculator";
-import PaperTrailPermits from "@/pages/PaperTrailPermits";
-import BreakEvenAnalyzer from "@/pages/BreakEvenAnalyzer";
-import TargetCustomerProfiling from "@/pages/TargetCustomerProfiling";
-import RecipeBuilder from "@/pages/RecipeBuilder";
-import PaintShop from "@/pages/PaintShop";
-import KitchenBuilder from "@/pages/KitchenBuilder";
-import KitchenOutfitter from "@/pages/KitchenOutfitter";
-import PricingPage from "@/pages/PricingPage";
-import TruckShowroom from "@/pages/TruckShowroom";
-import LoginPage from "@/pages/LoginPage";
+const DayOneSimulator = lazy(() => import("@/pages/DayOneSimulator"));
+const SignatureDishDeveloper = lazy(() => import("@/pages/SignatureDishDeveloper"));
+const CrewQuartersTraining = lazy(() => import("@/pages/CrewQuartersTraining"));
+const DreamKitchen = lazy(() => import("@/pages/DreamKitchen"));
+const PayrollPlanning = lazy(() => import("@/pages/PayrollPlanning"));
+const ScalingPrepCalculator = lazy(() => import("@/pages/ScalingPrepCalculator"));
+const PaperTrailPermits = lazy(() => import("@/pages/PaperTrailPermits"));
+const BreakEvenAnalyzer = lazy(() => import("@/pages/BreakEvenAnalyzer"));
+const TargetCustomerProfiling = lazy(() => import("@/pages/TargetCustomerProfiling"));
+const RecipeBuilder = lazy(() => import("@/pages/RecipeBuilder"));
+const PaintShop = lazy(() => import("@/pages/PaintShop"));
+const KitchenBuilder = lazy(() => import("@/pages/KitchenBuilder"));
+const KitchenOutfitter = lazy(() => import("@/pages/KitchenOutfitter"));
+const PricingPage = lazy(() => import("@/pages/PricingPage"));
+const TruckShowroom = lazy(() => import("@/pages/TruckShowroom"));
+const LoginPage = lazy(() => import("@/pages/LoginPage"));
 
 // Hero image for OG tags
 const HERO_IMAGE = "https://images.unsplash.com/photo-1761205059493-77cd6961c875?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDZ8MHwxfHNlYXJjaHwxfHxmb29kJTIwdHJ1Y2slMjBnb2xkZW4lMjBob3VyJTIwcHJlbWl1bSUyMHN1bnNldHxlbnwwfHx8fDE3NzgyNzkwMjR8MA&ixlib=rb-4.1.0&q=85";
+
+const RouteLoader = () => (
+  <div className="min-h-screen bg-[#0a0d14] text-zinc-100" role="status" aria-live="polite" aria-label="Loading page">
+    <div className="border-b border-white/5 px-6 py-4">
+      <div className="h-9 w-40 rounded-lg bg-white/[0.06] animate-pulse" />
+    </div>
+    <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="h-10 w-64 max-w-full rounded-lg bg-white/[0.07] animate-pulse mb-4" />
+      <div className="h-5 w-96 max-w-full rounded bg-white/[0.05] animate-pulse mb-10" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {[0, 1, 2].map((item) => (
+          <div key={item} className="h-44 rounded-2xl border border-white/5 bg-white/[0.025] animate-pulse" />
+        ))}
+      </div>
+    </div>
+    <span className="sr-only">Loading page…</span>
+  </div>
+);
 
 const Dashboard = () => {
   const { user, login, logout, loading, isAuthenticated } = useAuth();
@@ -172,26 +190,28 @@ const Dashboard = () => {
 
 const AppContent = () => {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/dream-kitchen" element={<DreamKitchen />} />
-      <Route path="/day-one" element={<DayOneSimulator />} />
-      <Route path="/signature-dish" element={<SignatureDishDeveloper />} />
-      <Route path="/crew-quarters" element={<CrewQuartersTraining />} />
-      <Route path="/payroll" element={<PayrollPlanning />} />
-      <Route path="/scaling-prep" element={<ScalingPrepCalculator />} />
-      <Route path="/paper-trail" element={<PaperTrailPermits />} />
-      <Route path="/break-even" element={<BreakEvenAnalyzer />} />
-      <Route path="/target-customer" element={<TargetCustomerProfiling />} />
-      <Route path="/recipe-builder" element={<RecipeBuilder />} />
-      <Route path="/paint-shop" element={<PaintShop />} />
-      <Route path="/kitchen-builder" element={<KitchenBuilder />} />
-      <Route path="/kitchen-outfitter" element={<KitchenOutfitter />} />
-      <Route path="/pricing" element={<PricingPage />} />
-      <Route path="/truck-showroom" element={<TruckShowroom />} />
-      <Route path="/login" element={<LoginPage />} />
-    </Routes>
+    <Suspense fallback={<RouteLoader />}>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dream-kitchen" element={<DreamKitchen />} />
+        <Route path="/day-one" element={<DayOneSimulator />} />
+        <Route path="/signature-dish" element={<SignatureDishDeveloper />} />
+        <Route path="/crew-quarters" element={<CrewQuartersTraining />} />
+        <Route path="/payroll" element={<PayrollPlanning />} />
+        <Route path="/scaling-prep" element={<ScalingPrepCalculator />} />
+        <Route path="/paper-trail" element={<PaperTrailPermits />} />
+        <Route path="/break-even" element={<BreakEvenAnalyzer />} />
+        <Route path="/target-customer" element={<TargetCustomerProfiling />} />
+        <Route path="/recipe-builder" element={<RecipeBuilder />} />
+        <Route path="/paint-shop" element={<PaintShop />} />
+        <Route path="/kitchen-builder" element={<KitchenBuilder />} />
+        <Route path="/kitchen-outfitter" element={<KitchenOutfitter />} />
+        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/truck-showroom" element={<TruckShowroom />} />
+        <Route path="/login" element={<LoginPage />} />
+      </Routes>
+    </Suspense>
   );
 };
 

@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { apiClient } from "@/lib/api";
 import { SkeletonForm, SkeletonTable } from "@/components/ui/skeleton-loader";
-import { exportRecipeToPDF } from "@/lib/pdfExport";
 
 const initialIngredients = [
   { id: 1, name: "Prime Beef Brisket", sku: "#0422", qty: "5.50", unit: "kg", unitCost: 18.50, total: 101.75 },
@@ -52,7 +51,7 @@ const RecipeBuilder = () => {
   useEffect(() => {
     const loadSavedRecipe = async () => {
       try {
-        const data = await apiClient.request('/api/recipes/latest');
+        const data = await apiClient.getLatestRecipe();
         if (data && data.name) {
           setRecipeName(data.name);
           if (data.ingredients?.length) setIngredients(data.ingredients);
@@ -66,7 +65,6 @@ const RecipeBuilder = () => {
       }
     };
     loadSavedRecipe();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Form validation
@@ -129,7 +127,8 @@ const RecipeBuilder = () => {
   const handleExportPDF = async () => {
     setIsExporting(true);
     try {
-      exportRecipeToPDF({
+      const { exportRecipeToPDF } = await import("@/lib/pdfExport");
+      await exportRecipeToPDF({
         name: recipeName,
         prep_time: prepTime,
         cook_time: cookTime,
@@ -179,6 +178,7 @@ const RecipeBuilder = () => {
 
   return (
     <div className="bg-[#0a0d14] font-display text-slate-100 min-h-screen">
+      <h1 className="sr-only">Recipe Builder</h1>
       <SEO 
         title="Recipe Builder - Smoked Brisket Tacos"
         description="Build and cost your food truck recipes with industrial precision. Ingredient costing, cooking methods, batch yields, and cost per serving."

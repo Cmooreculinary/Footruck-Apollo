@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import { apiClient } from "@/lib/api";
 import { SkeletonTable } from "@/components/ui/skeleton-loader";
-import { exportToPDF } from "@/lib/pdfExport";
 
 const crewData = [
   { initials: "MA", name: "Marco A.", color: "primary", shifts: ["08:00", "08:00", "08:00", "OFF", "10:00", "10:00"], total: "44:00" },
@@ -23,7 +22,7 @@ const PayrollPlanning = () => {
   useEffect(() => {
     const loadSavedPayroll = async () => {
       try {
-        const data = await apiClient.request('/api/payroll/latest');
+        const data = await apiClient.getLatestPayrollPlan();
         if (data && data.location) {
           setSelectedLocation(data.location);
           toast.success("Payroll loaded", { description: "Your saved payroll plan has been restored." });
@@ -35,7 +34,6 @@ const PayrollPlanning = () => {
       }
     };
     loadSavedPayroll();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSavePayroll = async () => {
@@ -58,6 +56,7 @@ const PayrollPlanning = () => {
   const handleExportReport = async () => {
     setIsExporting(true);
     try {
+      const { exportToPDF } = await import("@/lib/pdfExport");
       await exportToPDF("payroll-report", "payroll-plan", { orientation: "landscape" });
       toast.success("Report exported", { description: "Your payroll PDF is downloading." });
     } catch (err) {

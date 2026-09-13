@@ -19,37 +19,37 @@ const TRUCK_MODELS = {
     id: "truck_01",
     name: "Classic Step Van",
     description: "Street food, BBQ, comfort food",
-    photo: "/trucks/truck_01.png"
+    photo: "/trucks/truck_01.webp"
   },
   truck_02: {
     id: "truck_02", 
     name: "Modern Step Van",
     description: "Coffee, juice, health food, desserts",
-    photo: "/trucks/truck_02.png"
+    photo: "/trucks/truck_02.webp"
   },
   truck_03: {
     id: "truck_03",
     name: "Large Box Truck", 
     description: "High-volume, catering, events",
-    photo: "/trucks/truck_03.png"
+    photo: "/trucks/truck_03.webp"
   },
   truck_04: {
     id: "truck_04",
     name: "Compact Truck",
     description: "Urban tight spaces, lunch rush", 
-    photo: "/trucks/truck_04.png"
+    photo: "/trucks/truck_04.webp"
   },
   truck_05: {
     id: "truck_05",
     name: "Retro Trailer",
     description: "Premium, wine, artisan, brunch",
-    photo: "/trucks/truck_05.png"
+    photo: "/trucks/truck_05.webp"
   },
   truck_06: {
     id: "truck_06",
     name: "Open-Air Trailer",
     description: "Farmers markets, festivals",
-    photo: "/trucks/truck_06.png"
+    photo: "/trucks/truck_06.webp"
   }
 };
 
