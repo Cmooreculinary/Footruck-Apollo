@@ -53,6 +53,26 @@ class User(BaseModel):
 
 # ==================== AUTH HELPER ====================
 
+_DEV_JWT_SECRET = "dev-secret-change-in-production"
+
+
+def jwt_secret() -> str:
+    """Signing key for session tokens. Never fall back to a public default in production."""
+    secret = os.environ.get("JWT_SECRET")
+    if secret:
+        return secret
+    if os.environ.get("ALLOW_DEV_JWT_SECRET") == "1":
+        return _DEV_JWT_SECRET
+    raise RuntimeError("JWT_SECRET is not set")
+
+
+def owner_query(user: Optional["User"]) -> Dict[str, Any]:
+    """Scope a query to the signed-in user. Anonymous callers never see stored records."""
+    if not user:
+        raise HTTPException(status_code=401, detail="Sign in to load or change saved data")
+    return {"user_id": user.user_id}
+
+
 async def get_current_user(request: Request) -> Optional[User]:
     """Get current user by decoding the JWT session token."""
     session_token = request.cookies.get("session_token")
@@ -67,7 +87,7 @@ async def get_current_user(request: Request) -> Optional[User]:
 
     try:
         from jose import jwt, JWTError
-        secret = os.environ.get("JWT_SECRET", "dev-secret-change-in-production")
+        secret = jwt_secret()
         payload = jwt.decode(session_token, secret, algorithms=["HS256"])
         user_id: str = payload.get("user_id")
         if not user_id:
@@ -464,7 +484,7 @@ class LoginRequest(BaseModel):
 
 def create_session_token(user_id: str) -> str:
     from jose import jwt
-    secret = os.environ.get("JWT_SECRET", "dev-secret-change-in-production")
+    secret = jwt_secret()
     payload = {
         "user_id": user_id,
         "exp": datetime.now(timezone.utc) + timedelta(days=7)
@@ -949,14 +969,14 @@ async def create_truck_design(input: TruckDesignCreate, request: Request):
 async def get_truck_designs(request: Request):
     # If authenticated, get user's designs; otherwise get all
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     designs = await db.truck_designs.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(d) for d in designs]
 
 @api_router.get("/truck-designs/latest", response_model=Optional[TruckDesign])
 async def get_latest_truck_design(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     design = await db.truck_designs.find_one(query, {"_id": 0}, sort=[("created_at", -1)])
     return deserialize_doc(design) if design else None
 
@@ -975,14 +995,14 @@ async def create_recipe(input: RecipeCreate, request: Request):
 @api_router.get("/recipes", response_model=List[Recipe])
 async def get_recipes(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     recipes = await db.recipes.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(r) for r in recipes]
 
 @api_router.get("/recipes/latest", response_model=Optional[Recipe])
 async def get_latest_recipe(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     recipe = await db.recipes.find_one(
         query,
         {"_id": 0},
@@ -1005,14 +1025,14 @@ async def create_customer_profile(input: CustomerProfileCreate, request: Request
 @api_router.get("/customer-profiles", response_model=List[CustomerProfile])
 async def get_customer_profiles(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     profiles = await db.customer_profiles.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(p) for p in profiles]
 
 @api_router.get("/customer-profiles/latest", response_model=Optional[CustomerProfile])
 async def get_latest_customer_profile(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     profile = await db.customer_profiles.find_one(query, {"_id": 0}, sort=[("created_at", -1)])
     return deserialize_doc(profile) if profile else None
 
@@ -1031,14 +1051,14 @@ async def create_dish(input: SignatureDishCreate, request: Request):
 @api_router.get("/dishes", response_model=List[SignatureDish])
 async def get_dishes(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     dishes = await db.dishes.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(d) for d in dishes]
 
 @api_router.get("/dishes/latest", response_model=Optional[SignatureDish])
 async def get_latest_dish(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     dish = await db.dishes.find_one(query, {"_id": 0}, sort=[("created_at", -1)])
     return deserialize_doc(dish) if dish else None
 
@@ -1057,7 +1077,7 @@ async def create_assessment(input: AssessmentCreate, request: Request):
 @api_router.get("/assessments", response_model=List[Assessment])
 async def get_assessments(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     assessments = await db.assessments.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(a) for a in assessments]
 
@@ -1076,14 +1096,14 @@ async def create_break_even_scenario(input: BreakEvenScenarioCreate, request: Re
 @api_router.get("/break-even", response_model=List[BreakEvenScenario])
 async def get_break_even_scenarios(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     scenarios = await db.break_even_scenarios.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(s) for s in scenarios]
 
 @api_router.get("/break-even/latest", response_model=Optional[BreakEvenScenario])
 async def get_latest_break_even(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     scenario = await db.break_even_scenarios.find_one(query, {"_id": 0}, sort=[("created_at", -1)])
     return deserialize_doc(scenario) if scenario else None
 
@@ -1102,16 +1122,14 @@ async def create_permit(input: PermitCreate, request: Request):
 @api_router.get("/permits", response_model=List[Permit])
 async def get_permits(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     permits = await db.permits.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(p) for p in permits]
 
 @api_router.patch("/permits/{permit_id}")
 async def update_permit(permit_id: str, status: Literal["pending", "in_progress", "complete"], request: Request):
     user = await get_current_user(request)
-    query = {"id": permit_id}
-    if user:
-        query["user_id"] = user.user_id
+    query = {"id": permit_id, **owner_query(user)}
     result = await db.permits.update_one(
         query,
         {"$set": {"status": status, "updated_at": datetime.now(timezone.utc).isoformat()}}
@@ -1135,14 +1153,14 @@ async def create_scaled_batch(input: ScaledBatchCreate, request: Request):
 @api_router.get("/scaled-batches", response_model=List[ScaledBatch])
 async def get_scaled_batches(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     batches = await db.scaled_batches.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(b) for b in batches]
 
 @api_router.get("/scaled-batches/latest", response_model=Optional[ScaledBatch])
 async def get_latest_scaled_batch(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     batch = await db.scaled_batches.find_one(query, {"_id": 0}, sort=[("created_at", -1)])
     return deserialize_doc(batch) if batch else None
 
@@ -1161,14 +1179,14 @@ async def create_payroll_plan(input: PayrollPlanCreate, request: Request):
 @api_router.get("/payroll-plans", response_model=List[PayrollPlan])
 async def get_payroll_plans(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     plans = await db.payroll_plans.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(p) for p in plans]
 
 @api_router.get("/payroll-plans/latest", response_model=Optional[PayrollPlan])
 async def get_latest_payroll_plan(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     plan = await db.payroll_plans.find_one(query, {"_id": 0}, sort=[("created_at", -1)])
     return deserialize_doc(plan) if plan else None
 
@@ -1189,7 +1207,7 @@ async def create_training_progress(input: TrainingProgressCreate, request: Reque
 @api_router.get("/training-progress", response_model=List[TrainingProgress])
 async def get_training_progress(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     progress = await db.training_progress.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(p) for p in progress]
 
@@ -1208,7 +1226,7 @@ async def create_simulation_progress(input: SimulationProgressCreate, request: R
 @api_router.get("/simulation-progress", response_model=List[SimulationProgress])
 async def get_simulation_progress(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     progress = await db.simulation_progress.find(query, {"_id": 0}).to_list(100)
     return [deserialize_doc(p) for p in progress]
 
@@ -1230,16 +1248,14 @@ async def create_training_document(input: TrainingDocumentCreate, request: Reque
 @api_router.get("/training-documents", response_model=List[TrainingDocument])
 async def list_training_documents(request: Request):
     user = await get_current_user(request)
-    query = {"user_id": user.user_id} if user else {}
+    query = owner_query(user)
     docs = await db.training_documents.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
     return [deserialize_doc(d) for d in docs]
 
 @api_router.delete("/training-documents/{doc_id}")
 async def delete_training_document(doc_id: str, request: Request):
     user = await get_current_user(request)
-    query = {"id": doc_id}
-    if user:
-        query["user_id"] = user.user_id
+    query = {"id": doc_id, **owner_query(user)}
     result = await db.training_documents.delete_one(query)
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Document not found")
