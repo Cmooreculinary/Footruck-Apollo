@@ -446,3 +446,43 @@ def test_stripe_webhook_rejects_missing_secret(client, monkeypatch):
 
     assert response.status_code == 400
     assert response.json()["detail"] == "Webhook secret not configured"
+
+
+def test_anonymous_callers_cannot_read_or_change_saved_records(client, fake_db):
+    owner_headers = seed_user(fake_db, token="iso_owner", user_id="iso_owner")
+    doc = client.post(
+        "/api/training-documents",
+        json={
+            "name": "private.pdf",
+            "category": "safety",
+            "file_type": "application/pdf",
+            "size": 10,
+            "data_url": "data:application/pdf;base64,abc",
+        },
+        headers=owner_headers,
+    )
+    assert doc.status_code == 200
+    doc_id = doc.json()["id"]
+
+    # Anonymous list/latest reads no longer fall back to "all users".
+    for path in ("/api/training-documents", "/api/truck-designs", "/api/truck-designs/latest"):
+        assert client.get(path).status_code == 401, path
+
+    # Anonymous delete/patch no longer act on any record by id.
+    assert client.delete(f"/api/training-documents/{doc_id}").status_code == 401
+    assert client.patch("/api/permits/some-id?status=complete").status_code == 401
+
+    # The owner still sees their own document.
+    mine = client.get("/api/training-documents", headers=owner_headers)
+    assert [d["id"] for d in mine.json()] == [doc_id]
+
+
+def test_jwt_secret_has_no_silent_production_fallback(monkeypatch):
+    import server
+
+    monkeypatch.delenv("JWT_SECRET", raising=False)
+    monkeypatch.delenv("ALLOW_DEV_JWT_SECRET", raising=False)
+    with pytest.raises(RuntimeError):
+        server.jwt_secret()
+    monkeypatch.setenv("ALLOW_DEV_JWT_SECRET", "1")
+    assert server.jwt_secret() == "dev-secret-change-in-production"
