@@ -11,7 +11,7 @@ const OG_IMAGE = "/og-image.png";
 
 const features = [
   { icon: Paintbrush, title: "Truck Configurator", desc: "Design your dream truck with real-time color, wrap, and accessory previews. See every detail before you commit.", img: FEATURE_IMG_1 },
-  { icon: ChefHat, title: "Kitchen Builder", desc: "Plan your mobile kitchen layout with drag-and-drop equipment placement and code compliance validation.", img: FEATURE_IMG_2 },
+  { icon: ChefHat, title: "Kitchen Builder", desc: "Plan your mobile kitchen layout with drag-and-drop equipment placement, practical planning checks, and a running equipment cost.", img: FEATURE_IMG_2 },
   { icon: Timer, title: "Day One Training", desc: "Interactive scenario-based simulations prepare you for rush hours, customer surges, and real-world decisions.", img: FEATURE_IMG_3 },
 ];
 
@@ -26,7 +26,7 @@ const tools = [
 
 const steps = [
   { num: "01", title: "Design Your Truck", desc: "Choose your chassis, pick colors and finishes, add wraps and accessories in our real-time configurator." },
-  { num: "02", title: "Plan Your Kitchen", desc: "Layout your equipment, validate code compliance, and estimate your startup costs with precision." },
+  { num: "02", title: "Plan Your Kitchen", desc: "Lay out your equipment, run planning checks for missing essentials, and total your equipment cost." },
   { num: "03", title: "Master Your Numbers", desc: "Run break-even analysis, build recipes with real costing, and plan your payroll before Day One." },
   { num: "04", title: "Launch With Confidence", desc: "Navigate permits, train your crew, and simulate your first day with battle-tested scenarios." },
 ];
