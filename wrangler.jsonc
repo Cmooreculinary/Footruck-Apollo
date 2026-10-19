@@ -1,5 +1,10 @@
 {
   "name": "footruck-apollo",
   "compatibility_date": "2026-10-01",
-  "assets": { "directory": "./dist" }
+  // The app is built from frontend/ by Vite into frontend/build (see frontend/vite.config.js).
+  "assets": {
+    "directory": "./frontend/build",
+    // React Router app: unknown paths must serve index.html instead of a 404.
+    "not_found_handling": "single-page-application"
+  }
 }
