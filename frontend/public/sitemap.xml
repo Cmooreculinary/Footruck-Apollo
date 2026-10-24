@@ -1,68 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://footruck-apollo-frontend.onrender.com/</loc>
+    <loc>https://apollo.bcappz.com/</loc>
     <lastmod>2026-06-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://footruck-apollo-frontend.onrender.com/day-one</loc>
+    <loc>https://apollo.bcappz.com/day-one</loc>
     <lastmod>2026-06-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://footruck-apollo-frontend.onrender.com/signature-dish</loc>
+    <loc>https://apollo.bcappz.com/signature-dish</loc>
     <lastmod>2026-06-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://footruck-apollo-frontend.onrender.com/crew-quarters</loc>
+    <loc>https://apollo.bcappz.com/crew-quarters</loc>
     <lastmod>2026-06-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://footruck-apollo-frontend.onrender.com/dream-kitchen</loc>
+    <loc>https://apollo.bcappz.com/dream-kitchen</loc>
     <lastmod>2026-06-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://footruck-apollo-frontend.onrender.com/payroll</loc>
+    <loc>https://apollo.bcappz.com/payroll</loc>
     <lastmod>2026-06-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://footruck-apollo-frontend.onrender.com/scaling-prep</loc>
+    <loc>https://apollo.bcappz.com/scaling-prep</loc>
     <lastmod>2026-06-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://footruck-apollo-frontend.onrender.com/paper-trail</loc>
+    <loc>https://apollo.bcappz.com/paper-trail</loc>
     <lastmod>2026-06-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://footruck-apollo-frontend.onrender.com/break-even</loc>
+    <loc>https://apollo.bcappz.com/break-even</loc>
     <lastmod>2026-06-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://footruck-apollo-frontend.onrender.com/target-customer</loc>
+    <loc>https://apollo.bcappz.com/target-customer</loc>
     <lastmod>2026-06-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://footruck-apollo-frontend.onrender.com/recipe-builder</loc>
+    <loc>https://apollo.bcappz.com/recipe-builder</loc>
     <lastmod>2026-06-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://apollo.bcappz.com/pricing</loc>
+    <lastmod>2026-10-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

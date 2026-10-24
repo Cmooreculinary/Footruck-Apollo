@@ -70,7 +70,7 @@ const TargetCustomerProfiling = () => {
               <div className="w-3 h-3 bg-primary rounded-sm"></div>
               <div className="w-3 h-3 bg-primary/50 rounded-sm"></div>
             </div>
-            <h2 className="font-bold text-white">Food Truck Launchpad</h2>
+            <h2 className="font-bold text-white">Foodtruck Apollo</h2>
           </div>
           <div className="p-4 flex-1">
             <p className="text-[9px] text-slate-500 uppercase tracking-widest font-bold mb-4 px-2">Workshop Phases</p>
@@ -128,7 +128,7 @@ const TargetCustomerProfiling = () => {
             <div className="bg-surface border border-border-col rounded-xl p-6 mb-6" data-testid="archetypes-section">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-3">
-                  <span className="size-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-black text-primary">01</span>
+                  <span className="size-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-black text-[#F4793B]">01</span>
                   <h2 className="font-bold text-lg">Core Archetypes</h2>
                 </div>
                 <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Multiple Choice</span>
@@ -169,7 +169,7 @@ const TargetCustomerProfiling = () => {
             {/* Demographic Details */}
             <div className="bg-surface border border-border-col rounded-xl p-6" data-testid="demographics-section">
               <div className="flex items-center gap-3 mb-5">
-                <span className="size-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-black text-primary">02</span>
+                <span className="size-7 rounded-full bg-primary/20 flex items-center justify-center text-xs font-black text-[#F4793B]">02</span>
                 <h2 className="font-bold text-lg">Demographic Details</h2>
               </div>
               <div className="space-y-6">
@@ -202,7 +202,7 @@ const TargetCustomerProfiling = () => {
                         onClick={() => setIncomeLevel(idx)}
                         className={`py-2 border rounded-lg text-xs font-bold transition-colors ${
                           incomeLevel === idx 
-                            ? 'border-2 border-primary text-primary bg-primary/10' 
+                            ? 'border-2 border-primary text-[#F4793B] bg-primary/10' 
                             : 'border-border-col text-slate-500 hover:border-primary/50'
                         }`}
                         data-testid={`income-${label}`}
@@ -272,7 +272,7 @@ const TargetCustomerProfiling = () => {
             <button 
               onClick={handleSaveProfile}
               disabled={isSaving}
-              className="w-full py-3 bg-primary rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors disabled:opacity-50 mt-3" 
+              className="w-full py-3 bg-primary rounded-xl text-sm font-bold text-[#0D0D0D] flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors disabled:opacity-50 mt-3" 
               data-testid="save-profile-btn"
             >
               {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}

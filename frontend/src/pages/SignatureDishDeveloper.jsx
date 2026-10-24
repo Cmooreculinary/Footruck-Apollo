@@ -144,7 +144,7 @@ const SignatureDishDeveloper = () => {
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-4 text-primary">
             <Utensils className="w-8 h-8" />
-            <h2 className="text-slate-100 text-lg font-bold leading-tight tracking-[-0.015em]">Food Truck Launch Pad</h2>
+            <h2 className="text-slate-100 text-lg font-bold leading-tight tracking-[-0.015em]">Foodtruck Apollo</h2>
           </div>
           <nav className="hidden md:flex items-center gap-9">
             <Link to="/dashboard" className="text-slate-100 hover:text-primary transition-colors text-sm font-medium">Dashboard</Link>
@@ -311,7 +311,7 @@ const SignatureDishDeveloper = () => {
                 >
                   <Upload className="w-12 h-12 text-steel group-hover:text-primary transition-colors mb-4" />
                   <p className="text-slate-400 font-medium group-hover:text-slate-200">Drop image here or click to browse</p>
-                  <p className="text-slate-600 text-xs mt-2 uppercase tracking-widest">JPG, PNG up to 10MB</p>
+                  <p className="text-slate-500 text-xs mt-2 uppercase tracking-widest">JPG, PNG up to 10MB</p>
                 </div>
                 <div className="mt-10 p-6 bg-background-dark/80 rounded-lg border border-primary-dark/20 italic text-slate-400 text-sm relative">
                   <div className="absolute -top-3 -left-3 bg-primary-dark text-white rounded-full p-1">
@@ -357,9 +357,9 @@ const SignatureDishDeveloper = () => {
       </main>
 
       {/* Footer */}
-      <footer className="px-4 lg:px-40 py-10 bg-background-dark text-slate-600 text-xs uppercase tracking-[0.2em] border-t border-industrial-gray mt-10">
+      <footer className="px-4 lg:px-40 py-10 bg-background-dark text-slate-500 text-xs uppercase tracking-[0.2em] border-t border-industrial-gray mt-10">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <p>© 2024 Food Truck Launch Pad</p>
+          <p>© {new Date().getFullYear()} Foodtruck Apollo</p>
           <div className="flex gap-8">
             <Link to="/dashboard" className="hover:text-primary transition-colors">Dashboard</Link>
             <Link to="/crew-quarters" className="hover:text-primary transition-colors">Training</Link>

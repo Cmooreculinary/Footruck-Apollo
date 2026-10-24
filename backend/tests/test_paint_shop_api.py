@@ -23,7 +23,7 @@ class TestPaintShopAPI:
     def setup(self):
         """Setup test data"""
         self.test_design = {
-            "primary_color": "#E8592F",
+            "primary_color": "#EC5B13",
             "accent_color": "#2C2C2C",
             "finish_type": "GLOSS",
             "business_name": f"TEST_TACO_FIESTA_{uuid.uuid4().hex[:6]}",
@@ -237,7 +237,7 @@ class TestPaintShopAPI:
     def test_create_design_with_all_accessories(self):
         """Test all accessory fields are properly persisted"""
         design_with_accessories = {
-            "primary_color": "#E8592F",
+            "primary_color": "#EC5B13",
             "accent_color": "#2C2C2C",
             "finish_type": "METALLIC",
             "business_name": "TEST_ALL_ACCESSORIES",

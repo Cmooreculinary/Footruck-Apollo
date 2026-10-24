@@ -9,6 +9,7 @@ from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Literal, Optional, Dict, Any
 import uuid
+from urllib.parse import urlsplit
 from datetime import datetime, timezone, timedelta
 import stripe
 
@@ -31,7 +32,7 @@ async def lifespan(app: FastAPI):
 
 # Create the main app without a prefix
 app = FastAPI(
-    title="Food Truck Launch Pad API",
+    title="Foodtruck Apollo API",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -111,7 +112,7 @@ SUBSCRIPTION_PLANS = {
         "first_month_price": 10.00,
         "regular_price": 14.00,
         "stripe_price_id": os.environ.get("FOODTRUCK_STANDARD_PRICE_ID", "price_1TEEq1HAM0vSVVVHrdIhHNWE"),
-        "features": ["All 14 Launch Pad modules", "Equipment Showroom", "Recipe Builder with PDF export"]
+        "features": ["All 14 Apollo modules", "Equipment Showroom", "Recipe Builder with PDF export"]
     },
     "pro": {
         "name": "Pro", 
@@ -468,7 +469,7 @@ def deserialize_doc(doc):
 
 @api_router.get("/")
 async def root():
-    return {"message": "Food Truck Launch Pad API v1.0", "status": "healthy"}
+    return {"message": "Foodtruck Apollo API v1.0", "status": "healthy"}
 
 
 # ==================== AUTH ROUTES ====================
@@ -667,6 +668,11 @@ async def create_checkout_session(request: Request):
     
     if not origin_url:
         raise HTTPException(status_code=400, detail="Origin URL required")
+
+    # Never build Stripe redirect URLs from an unchecked, caller-supplied origin.
+    origin_url = allowed_origin(origin_url)
+    if not origin_url:
+        raise HTTPException(status_code=400, detail="Origin URL not allowed")
     
     plan = SUBSCRIPTION_PLANS[plan_id]
     price_id = plan.get("stripe_price_id")
@@ -1265,12 +1271,13 @@ async def delete_training_document(doc_id: str, request: Request):
 # Include the router in the main app
 app.include_router(api_router)
 
+# Assumed production frontend; override with FRONTEND_URL (no code change needed).
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://apollo.bcappz.com").strip().rstrip("/")
+
 DEFAULT_CORS_ORIGINS = (
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://footruck-apollo-frontend.onrender.com",
-    "https://foodtrucklaunchpad.com",
-    "https://www.foodtrucklaunchpad.com",
+    FRONTEND_URL,
 )
 
 
@@ -1279,8 +1286,24 @@ def parse_cors_origins(raw_origins: str | None = None) -> list[str]:
     if configured is None:
         configured = os.environ.get("CORS_ORIGINS", "")
 
-    origins = [origin.strip() for origin in configured.split(",") if origin.strip()]
+    origins = [origin.strip().rstrip("/") for origin in configured.split(",") if origin.strip()]
     return list(dict.fromkeys([*origins, *DEFAULT_CORS_ORIGINS]))
+
+
+def allowed_origin(candidate: Any) -> Optional[str]:
+    """Return the bare origin (scheme://host[:port]) if it is on the CORS allowlist, else None."""
+    if not isinstance(candidate, str):
+        return None
+    try:
+        parts = urlsplit(candidate.strip())
+        port = parts.port
+    except ValueError:
+        return None
+    if parts.scheme not in ("http", "https") or not parts.hostname or parts.username or parts.password:
+        return None
+    host = parts.hostname.lower()
+    origin = f"{parts.scheme}://{host}" + (f":{port}" if port else "")
+    return origin if origin in {o.lower() for o in cors_origins} else None
 
 
 cors_origins = parse_cors_origins()

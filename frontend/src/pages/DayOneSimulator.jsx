@@ -105,8 +105,8 @@ const DayOneSimulator = () => {
             <Truck className="w-9 h-9" />
           </Link>
           <div className="flex flex-col">
-            <h2 className="font-header text-xl font-bold leading-tight tracking-wider uppercase">Food Truck Launch Pad</h2>
-            <span className="text-[10px] text-primary font-bold tracking-[0.2em] uppercase">Phase 7: Launchpad</span>
+            <h2 className="font-header text-xl font-bold leading-tight tracking-wider uppercase">Foodtruck Apollo</h2>
+            <span className="text-[10px] text-primary font-bold tracking-[0.2em] uppercase">Phase 7: Day One</span>
           </div>
         </div>
         <div className="flex flex-1 justify-end gap-8 items-center">
@@ -114,7 +114,7 @@ const DayOneSimulator = () => {
             <Link to="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">Dashboard</Link>
             <Link to="/crew-quarters" className="text-sm font-medium hover:text-primary transition-colors">Training</Link>
             <Link to="/kitchen-builder" className="text-sm font-medium hover:text-primary transition-colors">Equipment</Link>
-            <span className="text-primary text-sm font-bold border-b-2 border-primary pb-1">Launchpad</span>
+            <span className="text-primary text-sm font-bold border-b-2 border-primary pb-1">Day One</span>
           </nav>
           <button className="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-background-dark text-sm font-bold hover:bg-primary/90 transition-all uppercase tracking-wider font-header">
             Profile
@@ -190,7 +190,7 @@ const DayOneSimulator = () => {
           <div className="bg-white/5 border border-steel p-8 rounded-xl scenario-glow" data-testid="scenario-card">
             <div className="flex justify-between items-start mb-8">
               <div>
-                <span className="bg-primary/20 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest mb-2 inline-block">
+                <span className="bg-primary/20 text-[#F4793B] text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest mb-2 inline-block">
                   Scenario {scenario.id} of {scenarios.length}
                 </span>
                 <h1 className="font-header text-4xl font-bold uppercase text-white leading-none">{scenario.title}</h1>
@@ -315,10 +315,10 @@ const DayOneSimulator = () => {
                 <Sun className="w-5 h-5 text-copper" />
               </div>
               <div className="size-10 rounded-full bg-steel/50 flex items-center justify-center border border-slate-700">
-                <Utensils className="w-5 h-5 text-slate-600" />
+                <Utensils className="w-5 h-5 text-slate-500" />
               </div>
               <div className="size-10 rounded-full bg-steel/50 flex items-center justify-center border border-slate-700">
-                <Zap className="w-5 h-5 text-slate-600" />
+                <Zap className="w-5 h-5 text-slate-500" />
               </div>
             </div>
           </div>

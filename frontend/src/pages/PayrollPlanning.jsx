@@ -84,7 +84,7 @@ const PayrollPlanning = () => {
             <Truck className="w-6 h-6 text-primary" />
             <div>
               <p className="text-xs font-bold text-white uppercase tracking-wide leading-tight">Food Truck</p>
-              <p className="text-xs font-bold text-white uppercase tracking-wide leading-tight">Launch Pad</p>
+              <p className="text-xs font-bold text-white uppercase tracking-wide leading-tight">Foodtruck Apollo</p>
             </div>
           </div>
           <nav className="flex-1 p-4 space-y-1">
@@ -95,7 +95,7 @@ const PayrollPlanning = () => {
             <button onClick={() => toast.info("Scheduling coming soon")} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm w-full text-left">
               <Calendar className="w-5 h-5" /> Scheduling
             </button>
-            <span className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/20 text-primary font-semibold text-sm">
+            <span className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/20 text-[#F4793B] font-semibold text-sm">
               <Coins className="w-5 h-5" /> Payroll Modeling
             </span>
             <button onClick={() => toast.info("Tip Management coming soon")} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm w-full text-left">
@@ -127,7 +127,7 @@ const PayrollPlanning = () => {
                 />
                 <Search className="absolute left-2.5 top-2 text-slate-500 w-5 h-5" />
               </div>
-              <button className="bg-primary text-white text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-lg flex items-center gap-2">
+              <button className="bg-primary text-[#0D0D0D] text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-lg flex items-center gap-2">
                 <Zap className="w-4 h-4" /> Go Live
               </button>
               <div className="size-9 rounded-full bg-slate-600 border-2 border-primary/50"></div>
@@ -155,7 +155,7 @@ const PayrollPlanning = () => {
                 </button>
                 <button 
                   onClick={handleAddShift}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-primary rounded-lg text-sm font-bold text-white hover:bg-primary/90" 
+                  className="flex items-center gap-2 px-4 py-2.5 bg-primary rounded-lg text-sm font-bold text-[#0D0D0D] hover:bg-primary/90" 
                   data-testid="add-shift-btn"
                 >
                   <Plus className="w-4 h-4" /> Add Shift
@@ -163,7 +163,7 @@ const PayrollPlanning = () => {
                 <button 
                   onClick={handleSavePayroll}
                   disabled={isSaving}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-primary rounded-lg text-sm font-bold text-white hover:bg-primary/90 disabled:opacity-50" 
+                  className="flex items-center gap-2 px-4 py-2.5 bg-primary rounded-lg text-sm font-bold text-[#0D0D0D] hover:bg-primary/90 disabled:opacity-50" 
                   data-testid="save-payroll-btn"
                 >
                   {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
@@ -306,7 +306,7 @@ const PayrollPlanning = () => {
                   <div className="w-full h-1.5 bg-border-col rounded-full overflow-hidden mb-3">
                     <div className="h-full bg-primary w-2/3"></div>
                   </div>
-                  <button className="w-full py-2.5 bg-primary rounded-lg text-xs font-bold uppercase tracking-widest text-white hover:bg-primary/90">
+                  <button className="w-full py-2.5 bg-primary rounded-lg text-xs font-bold uppercase tracking-widest text-[#0D0D0D] hover:bg-primary/90">
                     Resume Wizard
                   </button>
                 </div>
