@@ -1,5 +1,5 @@
 """
-Backend API tests for Food Truck Launch Pad Auth Endpoints.
+Backend API tests for Foodtruck Apollo Auth Endpoints.
 Tests cover:
 - /api/auth/me - Get current user (authenticated/unauthenticated)
 - /api/auth/logout - Logout endpoint

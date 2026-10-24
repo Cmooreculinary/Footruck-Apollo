@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Check, Truck, Rocket, Crown, ArrowRight, Clock, Shield, Zap, Star, ChefHat, Store, Loader2, XCircle, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
+import SupportLink from "@/components/SupportLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { apiClient } from "@/lib/api";
 
@@ -15,7 +16,7 @@ const plans = [
     firstMonth: 10,
     regular: 14,
     features: [
-      "All 14 Launch Pad modules",
+      "All 14 Apollo modules",
       "Equipment Showroom access",
       "Recipe Builder with PDF export",
       "Break-even calculator",
@@ -117,7 +118,7 @@ const PricingPage = () => {
       
       if (response.payment_status === "paid") {
         toast.success("Payment successful!", { 
-          description: "Welcome to Food Truck Launch Pad! Your subscription is now active.",
+          description: "Welcome to Foodtruck Apollo! Your subscription is now active.",
           duration: 5000
         });
         navigate("/dashboard", { replace: true });
@@ -214,7 +215,7 @@ const PricingPage = () => {
   return (
     <div className="min-h-screen bg-[#0a0d14] text-white">
       <SEO 
-        title="Pricing - Food Truck Launch Pad"
+        title="Pricing - Foodtruck Apollo"
         description="Choose your plan and start your 24-hour free trial. No credit card required. Standard from $10/mo, Pro from $15/mo."
         url="/pricing"
       />
@@ -223,10 +224,10 @@ const PricingPage = () => {
       <header className="glass sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-            <div className="w-8 h-8 rounded-lg bg-[#E8592F] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#EC5B13] flex items-center justify-center">
               <Truck className="w-4 h-4 text-white" />
             </div>
-            <span className="font-heading text-lg font-bold">FTLP</span>
+            <span className="font-heading text-2xl font-bold tracking-wide">Foodtruck Apollo</span>
           </Link>
           <Link 
             to="/dashboard" 
@@ -239,9 +240,9 @@ const PricingPage = () => {
 
       {/* Hero */}
       <section className="py-16 px-4 text-center">
-        <div className="inline-flex items-center gap-2 bg-[#E8592F]/10 border border-[#E8592F]/30 rounded-full px-4 py-2 mb-6">
-          <Clock className="w-4 h-4 text-[#E8592F]" />
-          <span className="text-[#E8592F] text-sm font-semibold">24-Hour Free Trial • No Credit Card</span>
+        <div className="inline-flex items-center gap-2 bg-[#EC5B13]/10 border border-[#EC5B13]/30 rounded-full px-4 py-2 mb-6">
+          <Clock className="w-4 h-4 text-[#EC5B13]" />
+          <span className="text-[#EC5B13] text-sm font-semibold">24-Hour Free Trial • No Credit Card</span>
         </div>
         
         <h1 className="font-heading text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
@@ -282,7 +283,7 @@ const PricingPage = () => {
               {/* Popular Badge */}
               {plan.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-orange-500 text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider">
+                  <span className="bg-orange-500 text-[#0D0D0D] text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider">
                     Most Popular
                   </span>
                 </div>
@@ -350,7 +351,7 @@ const PricingPage = () => {
                     disabled={isStartingTrial && selectedPlan === plan.id}
                     className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${
                       plan.popular
-                        ? "bg-orange-500 hover:bg-orange-600 text-white"
+                        ? "bg-orange-500 hover:bg-[#F2742F] text-[#0D0D0D]"
                         : "bg-slate-700 hover:bg-slate-600 text-white"
                     } disabled:opacity-50`}
                   >
@@ -464,6 +465,9 @@ const PricingPage = () => {
               </div>
             ))}
           </div>
+          <p className="text-center text-zinc-400 text-sm mt-8">
+            Questions about plans or billing? <SupportLink className="underline" />
+          </p>
         </div>
       </section>
 
@@ -474,7 +478,7 @@ const PricingPage = () => {
           <p className="text-slate-400 mb-6">Start your 24-hour free trial today. No credit card required.</p>
           <button
             onClick={() => handleStartTrial("pro")}
-            className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-xl transition-all"
+            className="inline-flex items-center gap-2 bg-orange-500 hover:bg-[#F2742F] text-[#0D0D0D] font-bold py-3 px-8 rounded-xl transition-all"
           >
             Start Free Trial
             <ArrowRight className="w-5 h-5" />
@@ -484,11 +488,12 @@ const PricingPage = () => {
 
       {/* Footer */}
       <footer className="border-t border-slate-800 py-6 px-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between text-slate-500 text-sm">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-slate-500 text-sm">
           <span>© {new Date().getFullYear()} Blue Collar Apps Co.</span>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap justify-center gap-x-6">
             <Link to="/" className="hover:text-white transition-colors">Home</Link>
             <Link to="/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
+            <SupportLink />
           </div>
         </div>
       </footer>

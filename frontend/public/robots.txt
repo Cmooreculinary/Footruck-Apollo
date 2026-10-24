@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://footruck-apollo-frontend.onrender.com/sitemap.xml
+Sitemap: https://apollo.bcappz.com/sitemap.xml
 
 # Block indexing of API routes
 Disallow: /api/

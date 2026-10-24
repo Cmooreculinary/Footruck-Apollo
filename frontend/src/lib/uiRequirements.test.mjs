@@ -71,3 +71,57 @@ test("Kitchen Builder renders diagrams and supports click-to-place selection", (
   assert.match(builder, /placementCollides/);
   assert.match(builder, /getEquipmentDimensions/);
 });
+
+test("Customer-facing name is Foodtruck Apollo and the old brand is gone", () => {
+  const seo = readSource("src", "components", "SEO.jsx");
+  const html = readSource("index.html");
+  const walk = (dir) =>
+    readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+      entry.isDirectory() ? walk(join(dir, entry.name)) : [join(dir, entry.name)],
+    );
+  const sources = walk(join(frontendRoot, "src")).filter((file) => /\.(jsx?|css)$/.test(file));
+
+  assert.ok(html.includes("<title>Foodtruck Apollo"));
+  assert.equal(seo.includes("foodtrucklaunchpad.com"), false);
+  for (const file of sources) {
+    assert.equal(/launch ?pad|FTLP/i.test(readFileSync(file, "utf8")), false, `${file} still uses the old name`);
+  }
+});
+
+test("Deploy hosts are not hard-coded to Render and sitemap uses one domain", () => {
+  const sitemap = readSource("public", "sitemap.xml");
+  const robots = readSource("public", "robots.txt");
+
+  assert.equal(/onrender/i.test(sitemap + robots), false);
+  assert.ok(robots.includes("https://apollo.bcappz.com/sitemap.xml"));
+  const hosts = new Set([...sitemap.matchAll(/<loc>(https:\/\/[^/]+)/g)].map((match) => match[1]));
+  assert.deepEqual([...hosts], ["https://apollo.bcappz.com"]);
+});
+
+test("Help / Contact link reads VITE_SUPPORT_URL with a bcappz.com fallback, in the footer and on pricing", () => {
+  const support = readSource("src", "components", "SupportLink.jsx");
+  const landing = readSource("src", "pages", "LandingPage.jsx");
+  const pricing = readSource("src", "pages", "PricingPage.jsx");
+
+  assert.ok(support.includes("VITE_SUPPORT_URL"));
+  assert.ok(support.includes("https://bcappz.com"));
+  assert.ok(support.includes("Help / Contact"));
+  assert.ok(landing.includes("<SupportLink"));
+  assert.ok((pricing.match(/<SupportLink/g) || []).length >= 1);
+});
+
+test("Trench Design fonts and colors are in place; retired fonts and colors are removed", () => {
+  const html = readSource("index.html");
+  const tailwind = readSource("tailwind.config.js");
+  const allCss = readSource("src", "index.css") + readSource("src", "App.css");
+
+  for (const font of ["Bebas+Neue", "DM+Sans", "IBM+Plex+Mono"]) assert.ok(html.includes(font), font);
+  for (const font of ["Outfit", "Manrope", "Oswald", "Space Grotesk", "Space+Grotesk"]) {
+    assert.equal((html + tailwind + allCss).includes(font), false, `${font} must be removed`);
+  }
+  assert.ok(tailwind.includes("Bebas Neue") && tailwind.includes("DM Sans") && tailwind.includes("IBM Plex Mono"));
+  assert.ok(allCss.includes("min-height: 44px"));
+
+  const app = readSource("src", "App.jsx") + readSource("src", "pages", "LandingPage.jsx");
+  assert.equal(/e8592f|0b0f17/i.test(app + allCss), false);
+});

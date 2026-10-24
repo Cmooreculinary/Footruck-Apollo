@@ -110,7 +110,7 @@ const PaperTrailPermits = () => {
                 </div>
                 <div>
                   <p className="font-bold text-sm text-slate-400">Operations Launch</p>
-                  <p className="text-[10px] text-slate-600 uppercase tracking-wider">Locked Phase 3</p>
+                  <p className="text-[10px] text-slate-500 uppercase tracking-wider">Locked Phase 3</p>
                 </div>
               </div>
             </div>
@@ -179,7 +179,7 @@ const PaperTrailPermits = () => {
                       <Cross className="w-5 h-5 text-primary" />
                       <h2 className="font-bold uppercase tracking-wide text-sm">Health Department</h2>
                     </div>
-                    <span className="bg-primary/10 text-primary text-[10px] font-bold px-3 py-1 rounded border border-primary/30">In Progress</span>
+                    <span className="bg-primary/10 text-[#F4793B] text-[10px] font-bold px-3 py-1 rounded border border-primary/30">In Progress</span>
                     <ChevronRight className={`w-5 h-5 text-slate-400 ml-2 transition-transform ${healthExpanded ? 'rotate-90' : ''}`} />
                   </div>
                   {healthExpanded && (
@@ -190,7 +190,7 @@ const PaperTrailPermits = () => {
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
                               <p className="font-bold">Public Health Permit Application</p>
-                              <span className="text-[10px] font-bold text-primary border border-primary/50 px-2 py-0.5 rounded cursor-pointer hover:bg-primary/10">Explain This</span>
+                              <span className="text-[10px] font-bold text-[#F4793B] border border-primary/50 px-2 py-0.5 rounded cursor-pointer hover:bg-primary/10">Explain This</span>
                               <p className="ml-auto text-xs text-slate-500">Due 02/01/2025</p>
                             </div>
                             <p className="text-xs text-slate-400">Primary authorization required to serve food to the public.</p>
@@ -211,7 +211,7 @@ const PaperTrailPermits = () => {
                             <button 
                               onClick={handleScheduleInspection}
                               disabled={isScheduling}
-                              className="ml-auto bg-primary text-white text-[10px] font-bold px-3 py-1 rounded uppercase tracking-wider hover:bg-primary/90 disabled:opacity-50" 
+                              className="ml-auto bg-primary text-[#0D0D0D] text-[10px] font-bold px-3 py-1 rounded uppercase tracking-wider hover:bg-primary/90 disabled:opacity-50" 
                               data-testid="schedule-btn"
                             >
                               {isScheduling ? "Scheduling..." : "Schedule Now"}
@@ -220,7 +220,7 @@ const PaperTrailPermits = () => {
                           <div className="flex items-center gap-3 opacity-50">
                             <div className="size-4 rounded border-2 border-border-col bg-transparent shrink-0"></div>
                             <p className="text-sm text-slate-500">Submit commissary kitchen agreement</p>
-                            <Lock className="ml-auto w-4 h-4 text-slate-600" />
+                            <Lock className="ml-auto w-4 h-4 text-slate-500" />
                           </div>
                         </div>
                       </div>
@@ -282,7 +282,7 @@ const PaperTrailPermits = () => {
                 <button 
                   onClick={handleNewPermit}
                   disabled={isAddingPermit}
-                  className="w-full py-3.5 bg-primary rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors disabled:opacity-50" 
+                  className="w-full py-3.5 bg-primary rounded-xl text-[#0D0D0D] font-bold text-sm flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors disabled:opacity-50" 
                   data-testid="new-permit-btn"
                 >
                   {isAddingPermit ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}

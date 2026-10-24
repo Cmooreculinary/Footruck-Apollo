@@ -179,7 +179,7 @@ def test_cors_allows_deployed_frontend_origin(client):
     response = client.options(
         "/api/auth/login",
         headers={
-            "Origin": "https://footruck-apollo-frontend.onrender.com",
+            "Origin": "https://apollo.bcappz.com",
             "Access-Control-Request-Method": "POST",
             "Access-Control-Request-Headers": "content-type",
         },
@@ -188,9 +188,39 @@ def test_cors_allows_deployed_frontend_origin(client):
     assert response.status_code == 200
     assert (
         response.headers["access-control-allow-origin"]
-        == "https://footruck-apollo-frontend.onrender.com"
+        == "https://apollo.bcappz.com"
     )
     assert response.headers["access-control-allow-credentials"] == "true"
+
+
+def test_checkout_rejects_origin_not_on_allowlist(client, fake_db, monkeypatch):
+    headers = seed_user(fake_db, token="token_checkout", user_id="user_checkout")
+    monkeypatch.setenv("STRIPE_API_KEY", "sk_test_placeholder")
+    created = []
+    monkeypatch.setattr(
+        server.stripe.checkout.Session,
+        "create",
+        lambda **kwargs: created.append(kwargs) or SimpleNamespace(id="cs_1", url="https://stripe.test/pay"),
+        raising=False,
+    )
+
+    for bad_origin in ("https://evil.example", "https://apollo.bcappz.com.evil.example", "javascript:alert(1)", "https://user:pw@apollo.bcappz.com"):
+        response = client.post(
+            "/api/subscription/checkout",
+            headers=headers,
+            json={"plan_id": "standard", "origin_url": bad_origin},
+        )
+        assert response.status_code == 400, bad_origin
+    assert created == []
+
+    ok = client.post(
+        "/api/subscription/checkout",
+        headers=headers,
+        json={"plan_id": "standard", "origin_url": "https://apollo.bcappz.com/some/path?x=1"},
+    )
+    assert ok.status_code == 200
+    assert created[0]["success_url"].startswith("https://apollo.bcappz.com/pricing?")
+    assert created[0]["cancel_url"] == "https://apollo.bcappz.com/pricing?cancelled=true"
 
 
 def test_authenticated_truck_designs_are_upserted_and_filtered_by_user(client, fake_db):
@@ -204,7 +234,7 @@ def test_authenticated_truck_designs_are_upserted_and_filtered_by_user(client, f
         "business_name": "First Truck",
     }
     updated_design = {
-        "primary_color": "#E8592F",
+        "primary_color": "#EC5B13",
         "accent_color": "#101010",
         "finish_type": "gloss",
         "business_name": "Updated Truck",

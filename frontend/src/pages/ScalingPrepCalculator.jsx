@@ -62,7 +62,7 @@ const ScalingPrepCalculator = () => {
               <Link to="/recipe-builder" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm">
                 <BookOpen className="w-5 h-5" /> Recipe Library
               </Link>
-              <span className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/20 text-primary font-semibold text-sm">
+              <span className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/20 text-[#F4793B] font-semibold text-sm">
                 <Calculator className="w-5 h-5" /> Prep Calculator
               </span>
               <button onClick={() => toast.info("Batch Logs coming soon")} className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-slate-200 text-sm w-full text-left">
@@ -129,7 +129,7 @@ const ScalingPrepCalculator = () => {
                 <button 
                   onClick={handleExportToInventory}
                   disabled={isExporting}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-primary rounded-lg text-sm font-bold text-white hover:bg-primary/90 disabled:opacity-50" 
+                  className="flex items-center gap-2 px-4 py-2.5 bg-primary rounded-lg text-sm font-bold text-[#0D0D0D] hover:bg-primary/90 disabled:opacity-50" 
                   data-testid="export-inventory-btn"
                 >
                   {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Package className="w-4 h-4" />}
@@ -283,7 +283,7 @@ const ScalingPrepCalculator = () => {
                 <span className="size-1.5 rounded-full bg-primary inline-block"></span> Lab Calibrated
               </span>
             </div>
-            <span>© 2024 Food Truck Launch Pad – Industrial Series</span>
+            <span>© {new Date().getFullYear()} Foodtruck Apollo – Industrial Series</span>
           </footer>
         </div>
       </div>

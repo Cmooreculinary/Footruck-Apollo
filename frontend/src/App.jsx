@@ -92,7 +92,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-[#0a0d14] text-zinc-100" data-testid="dashboard">
       <SEO 
-        title="Dashboard - Food Truck Launch Pad"
+        title="Dashboard - Foodtruck Apollo"
         description="Your food truck command center. Design, plan, and launch your mobile food business."
         url="/dashboard"
       />
@@ -101,10 +101,10 @@ const Dashboard = () => {
       <nav className="sticky top-0 z-50 glass">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-            <div className="w-9 h-9 rounded-lg bg-[#E8592F] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-[#EC5B13] flex items-center justify-center">
               <Truck className="w-5 h-5 text-white" />
             </div>
-            <span className="font-heading text-lg font-bold tracking-tight">FTLP</span>
+            <span className="font-heading text-2xl font-bold tracking-wide">Foodtruck Apollo</span>
           </Link>
           <div className="flex items-center gap-3">
             {loading ? (
@@ -115,8 +115,8 @@ const Dashboard = () => {
                   {user.picture ? (
                     <img src={user.picture} alt={user.name} className="w-7 h-7 rounded-full" />
                   ) : (
-                    <div className="w-7 h-7 rounded-full bg-[#E8592F]/20 flex items-center justify-center">
-                      <User className="w-4 h-4 text-[#E8592F]" />
+                    <div className="w-7 h-7 rounded-full bg-[#EC5B13]/20 flex items-center justify-center">
+                      <User className="w-4 h-4 text-[#EC5B13]" />
                     </div>
                   )}
                   <span className="text-sm font-medium text-white">{user.name?.split(' ')[0]}</span>
@@ -126,7 +126,7 @@ const Dashboard = () => {
                 </button>
               </div>
             ) : (
-              <button onClick={login} className="flex items-center gap-2 px-5 py-2.5 bg-[#E8592F] text-white rounded-full text-sm font-semibold hover:bg-[#d14a24] transition-colors" data-testid="login-btn">
+              <button onClick={login} className="flex items-center gap-2 px-5 py-2.5 bg-[#EC5B13] text-[#0D0D0D] rounded-full text-sm font-semibold hover:bg-[#F2742F] transition-colors" data-testid="login-btn">
                 <LogIn className="w-4 h-4" /> Sign In
               </button>
             )}
@@ -136,7 +136,7 @@ const Dashboard = () => {
 
       {/* Header */}
       <div className="max-w-7xl mx-auto px-6 pt-12 pb-8">
-        <h1 className="font-heading text-4xl md:text-5xl font-extrabold tracking-tight mb-2">Your Launch Pad</h1>
+        <h1 className="font-heading text-4xl md:text-5xl font-extrabold tracking-tight mb-2">Your Dashboard</h1>
         <p className="text-zinc-500 text-lg max-w-lg">Everything you need to design, plan, and launch your food truck business.</p>
       </div>
 
@@ -146,7 +146,7 @@ const Dashboard = () => {
           <section key={ci}>
             <div className="flex items-baseline gap-3 mb-5">
               <h2 className="font-heading text-xl font-bold text-white">{cat.title}</h2>
-              <span className="text-sm text-zinc-600">{cat.desc}</span>
+              <span className="text-sm text-zinc-500">{cat.desc}</span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {cat.items.map((item) => {
@@ -156,15 +156,15 @@ const Dashboard = () => {
                     key={item.path}
                     to={item.path}
                     data-testid={`nav-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
-                    className="group relative p-5 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-[#E8592F]/30 transition-all"
+                    className="group relative p-5 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] hover:border-[#EC5B13]/30 transition-all"
                   >
                     {item.badge && (
-                      <span className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#E8592F]/15 text-[#E8592F] border border-[#E8592F]/20">{item.badge}</span>
+                      <span className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#EC5B13]/15 text-[#F4793B] border border-[#EC5B13]/20">{item.badge}</span>
                     )}
-                    <div className="w-11 h-11 rounded-xl bg-[#E8592F]/10 flex items-center justify-center mb-4 group-hover:bg-[#E8592F]/20 transition-colors">
-                      <Icon className="w-5 h-5 text-[#E8592F]" />
+                    <div className="w-11 h-11 rounded-xl bg-[#EC5B13]/10 flex items-center justify-center mb-4 group-hover:bg-[#EC5B13]/20 transition-colors">
+                      <Icon className="w-5 h-5 text-[#EC5B13]" />
                     </div>
-                    <h3 className="font-heading text-base font-bold text-white mb-1.5 group-hover:text-[#E8592F] transition-colors">{item.name}</h3>
+                    <h3 className="font-heading text-base font-bold text-white mb-1.5 group-hover:text-[#EC5B13] transition-colors">{item.name}</h3>
                     <p className="text-zinc-500 text-sm leading-relaxed">{item.desc}</p>
                   </Link>
                 );
@@ -176,7 +176,7 @@ const Dashboard = () => {
 
       {/* Footer */}
       <div className="max-w-7xl mx-auto px-6 pb-12">
-        <div className="border-t border-white/5 pt-8 flex items-center justify-between text-xs text-zinc-600">
+        <div className="border-t border-white/5 pt-8 flex items-center justify-between text-xs text-zinc-500">
           <p>&copy; {new Date().getFullYear()} Blue Collar Apps Co.</p>
           <div className="flex items-center gap-4">
             <Link to="/" className="hover:text-white transition-colors">Home</Link>

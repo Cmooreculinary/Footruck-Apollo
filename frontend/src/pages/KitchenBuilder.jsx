@@ -424,7 +424,7 @@ const KitchenBuilder = () => {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="px-5 py-2.5 bg-[#EC5B13] rounded-lg text-sm font-bold uppercase tracking-wide hover:bg-[#EC5B13]/90 transition-all flex items-center gap-2 disabled:opacity-50"
+              className="text-[#0D0D0D] px-5 py-2.5 bg-[#EC5B13] rounded-lg text-sm font-bold uppercase tracking-wide hover:bg-[#EC5B13]/90 transition-all flex items-center gap-2 disabled:opacity-50"
               data-testid="save-layout-btn"
             >
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
@@ -440,7 +440,7 @@ const KitchenBuilder = () => {
           {/* Search */}
           <div className="p-4 border-b border-white/10">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/60" />
               <input
                 type="text"
                 value={searchTerm}
@@ -461,7 +461,7 @@ const KitchenBuilder = () => {
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
                     className={`px-2 py-1.5 text-[10px] font-bold uppercase rounded flex items-center gap-1 transition-all ${
-                      activeCategory === cat ? "bg-[#EC5B13] text-white" : "bg-white/10 text-white/60 hover:bg-white/20"
+                      activeCategory === cat ? "bg-[#EC5B13] text-[#0D0D0D]" : "bg-white/10 text-white/60 hover:bg-white/20"
                     }`}
                   >
                     <Icon className="w-3 h-3" />
@@ -498,7 +498,7 @@ const KitchenBuilder = () => {
                   <EquipmentPlanDiagram equipment={item} className="w-12 h-12 shrink-0 rounded-md" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-white truncate">{item.name}</p>
-                    <p className="text-[10px] text-white/50">{item.w}" × {item.d}"</p>
+                    <p className="text-[10px] text-white/60">{item.w}" × {item.d}"</p>
                     <p className="text-[9px] uppercase tracking-wide text-[#EC5B13] mt-1">Click to place · drag to position</p>
                   </div>
                   <div className="text-right">
@@ -651,7 +651,7 @@ const KitchenBuilder = () => {
                 <AlertTriangle className="w-4 h-4 text-amber-400" />
                 Planning Checks
               </h3>
-              <p className="text-[10px] text-white/50 mb-2">
+              <p className="text-[10px] text-white/60 mb-2">
                 Fit guidance only. Confirm final equipment, ventilation, fire, and health requirements with local authorities and licensed installers.
               </p>
               <div className="space-y-1">
@@ -671,11 +671,11 @@ const KitchenBuilder = () => {
         <aside className="w-[280px] border-l border-white/10 h-[calc(100vh-73px)] overflow-y-auto custom-scrollbar bg-[#111118] p-5">
           {/* Space Stats */}
           <div className="mb-6">
-            <h3 className="text-xs text-white/50 uppercase tracking-widest font-bold mb-3">Space Utilization</h3>
+            <h3 className="text-xs text-white/60 uppercase tracking-widest font-bold mb-3">Space Utilization</h3>
             <div className="bg-white/5 rounded-lg p-4">
               <div className="flex justify-between items-end mb-2">
                 <span className="text-4xl font-black text-[#EC5B13]">{utilization}%</span>
-                <span className="text-xs text-white/50">of {Math.round(totalArea / 144)} sq ft</span>
+                <span className="text-xs text-white/60">of {Math.round(totalArea / 144)} sq ft</span>
               </div>
               <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                 <div 
@@ -688,7 +688,7 @@ const KitchenBuilder = () => {
 
           {/* Equipment List */}
           <div className="mb-6">
-            <h3 className="text-xs text-white/50 uppercase tracking-widest font-bold mb-3">
+            <h3 className="text-xs text-white/60 uppercase tracking-widest font-bold mb-3">
               Equipment ({placedEquipment.length})
             </h3>
             <div className="space-y-2 max-h-60 overflow-y-auto">
@@ -711,7 +711,7 @@ const KitchenBuilder = () => {
                 );
               })}
               {placedEquipment.length === 0 && (
-                <p className="text-xs text-white/40 text-center py-4">
+                <p className="text-xs text-white/60 text-center py-4">
                   Drag equipment from the catalog to place it on the floor plan
                 </p>
               )}
@@ -720,10 +720,10 @@ const KitchenBuilder = () => {
 
           {/* Total Cost */}
           <div className="mb-6">
-            <h3 className="text-xs text-white/50 uppercase tracking-widest font-bold mb-3">Estimated Cost</h3>
+            <h3 className="text-xs text-white/60 uppercase tracking-widest font-bold mb-3">Estimated Cost</h3>
             <div className="bg-[#EC5B13]/10 border border-[#EC5B13]/30 rounded-lg p-4">
               <p className="text-3xl font-black text-[#EC5B13]">${totalCost.toLocaleString()}</p>
-              <p className="text-xs text-white/50 mt-1">Equipment only, excludes installation</p>
+              <p className="text-xs text-white/60 mt-1">Equipment only, excludes installation</p>
             </div>
           </div>
 
@@ -739,7 +739,7 @@ const KitchenBuilder = () => {
             </button>
             <button
               onClick={() => toast.info("Quote request coming soon")}
-              className="w-full py-3 bg-[#EC5B13] rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#EC5B13]/90 transition-all"
+              className="text-[#0D0D0D] w-full py-3 bg-[#EC5B13] rounded-lg text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#EC5B13]/90 transition-all"
             >
               <FileText className="w-4 h-4" /> Get Quote
             </button>

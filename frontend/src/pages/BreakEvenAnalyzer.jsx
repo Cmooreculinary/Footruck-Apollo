@@ -159,7 +159,7 @@ const BreakEvenAnalyzer = () => {
               <div className="flex items-center justify-center text-primary">
                 <Truck className="w-8 h-8" />
               </div>
-              <Link to="/dashboard" className="text-lg font-bold leading-tight tracking-[-0.015em] uppercase hover:text-primary transition-colors">FT Launch Pad</Link>
+              <Link to="/dashboard" className="text-lg font-bold leading-tight tracking-[-0.015em] uppercase hover:text-primary transition-colors">Foodtruck Apollo</Link>
             </div>
             <div className="hidden md:flex flex-1 justify-end gap-8 items-center">
               <nav className="flex items-center gap-9">
@@ -482,7 +482,7 @@ const BreakEvenAnalyzer = () => {
                   <button 
                     onClick={handleSaveScenario}
                     disabled={isSaving}
-                    className="flex items-center gap-2 px-6 py-3 rounded-lg bg-primary hover:bg-primary-hover text-white font-bold shadow-[0_4px_14px_rgba(203,79,16,0.3)] transition-all disabled:opacity-50" 
+                    className="flex items-center gap-2 px-6 py-3 rounded-lg bg-primary hover:bg-primary-hover text-[#0D0D0D] font-bold shadow-[0_4px_14px_rgba(203,79,16,0.3)] transition-all disabled:opacity-50" 
                     data-testid="save-plan-btn"
                   >
                     {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
@@ -501,7 +501,7 @@ const BreakEvenAnalyzer = () => {
             <div className="flex flex-col gap-4 max-w-xs">
               <div className="flex items-center gap-2 text-white">
                 <Truck className="w-5 h-5 text-primary" />
-                <span className="font-bold text-lg uppercase tracking-tight">FT Launch Pad</span>
+                <span className="font-bold text-lg uppercase tracking-tight">Foodtruck Apollo</span>
               </div>
               <p className="text-text-muted text-sm">Empowering culinary entrepreneurs to build sustainable, profitable mobile food businesses.</p>
             </div>
@@ -527,7 +527,7 @@ const BreakEvenAnalyzer = () => {
             </div>
           </div>
           <div className="mx-auto max-w-[1200px] mt-12 pt-8 border-t border-border-dark text-center md:text-left">
-            <p className="text-[#54433b] text-xs">© 2023 Food Truck Launch Pad. All rights reserved.</p>
+            <p className="text-[#54433b] text-xs">© {new Date().getFullYear()} Foodtruck Apollo. All rights reserved.</p>
           </div>
         </footer>
       </div>
