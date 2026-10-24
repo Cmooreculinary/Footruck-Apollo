@@ -49,7 +49,7 @@ const DreamKitchen = () => {
                 <button onClick={() => toast.info("Community coming soon")} className="text-text-muted text-sm font-medium hover:text-white transition-colors">Community</button>
               </nav>
               <div className="h-6 w-px bg-border-dark"></div>
-              <button className="bg-primary hover:bg-orange-600 text-white text-sm font-bold px-4 py-2 rounded-md transition-all shadow-[0_2px_8px_rgba(203,79,16,0.3)]">
+              <button className="bg-primary hover:bg-[#F2742F] text-[#0D0D0D] text-sm font-bold px-4 py-2 rounded-md transition-all shadow-[0_2px_8px_rgba(203,79,16,0.3)]">
                 My Plan
               </button>
             </div>
@@ -74,7 +74,7 @@ const DreamKitchen = () => {
                 
                 {/* Step 1 - Current */}
                 <div className="relative z-10 flex gap-4 pb-8">
-                  <div className="size-10 rounded-full bg-primary flex items-center justify-center text-white shrink-0 shadow-[0_0_15px_rgba(203,79,16,0.4)] border-2 border-surface-dark">
+                  <div className="size-10 rounded-full bg-primary flex items-center justify-center text-[#0D0D0D] shrink-0 shadow-[0_0_15px_rgba(203,79,16,0.4)] border-2 border-surface-dark">
                     <ClipboardList className="w-5 h-5" />
                   </div>
                   <div className="pt-1">
@@ -135,7 +135,7 @@ const DreamKitchen = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#181311] via-[#181311]/80 to-transparent z-10"></div>
               </div>
               <div className="relative z-20 max-w-2xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary text-xs font-bold uppercase tracking-wider mb-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-[#F4793B] text-xs font-bold uppercase tracking-wider mb-4">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
                   Getting Started
                 </div>
@@ -163,7 +163,7 @@ const DreamKitchen = () => {
                     <button 
                       onClick={startAssessment}
                       disabled={isStarting}
-                      className="w-full sm:w-auto bg-primary hover:bg-orange-600 text-white text-base font-bold py-3.5 px-8 rounded-md transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 disabled:opacity-50"
+                      className="w-full sm:w-auto bg-primary hover:bg-[#F2742F] text-[#0D0D0D] text-base font-bold py-3.5 px-8 rounded-md transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 disabled:opacity-50"
                       data-testid="begin-assessment-btn"
                     >
                       {isStarting ? <Loader2 className="w-5 h-5 animate-spin" /> : null}

@@ -1,0 +1,40 @@
+# Fly.io config for the Foodtruck Apollo API.
+# Deploy: GitHub Actions -> "Deploy backend to Fly.io" -> Run workflow (manual only).
+# Secrets live on Fly, never in this repo. Set once, from your own machine:
+#   fly secrets set --app bca-foodtruck-apollo-api JWT_SECRET=... STRIPE_API_KEY=... \
+#       STRIPE_WEBHOOK_SECRET=... CORS_ORIGINS=https://apollo.bcappz.com
+# Exactly one machine: SQLite lives on that machine's volume.
+app = "bca-foodtruck-apollo-api"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  SQLITE_PATH = "/var/data/footruck_apollo.sqlite3"
+  DB_NAME = "foodtruck_production"
+  COOKIE_SECURE = "true"
+  PORT = "8000"
+
+[[mounts]]
+  source = "apollo_data"
+  destination = "/var/data"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  # Stop when idle so an unattended app cannot run up a bill; wake on the next request.
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = "15s"
+    interval = "30s"
+    method = "GET"
+    path = "/api/"
+    timeout = "5s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

@@ -190,7 +190,7 @@ const RecipeBuilder = () => {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <Truck className="w-6 h-6 text-primary" />
-              <h2 className="font-bold text-white uppercase tracking-wide">Food Truck Launch Pad</h2>
+              <h2 className="font-bold text-white uppercase tracking-wide">Foodtruck Apollo</h2>
             </div>
             <nav className="flex items-center gap-6 text-sm">
               <Link to="/dashboard" className="text-slate-400 hover:text-slate-200">Dashboard</Link>
@@ -270,7 +270,7 @@ const RecipeBuilder = () => {
               <button 
                 onClick={handleSaveRecipe}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-4 py-2.5 bg-primary rounded-lg text-sm font-bold text-white hover:bg-primary/90 disabled:opacity-50" 
+                className="flex items-center gap-2 px-4 py-2.5 bg-primary rounded-lg text-sm font-bold text-[#0D0D0D] hover:bg-primary/90 disabled:opacity-50" 
                 data-testid="save-recipe-btn"
               >
                 {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
@@ -321,7 +321,7 @@ const RecipeBuilder = () => {
                 <div key={item.id} className="bg-[#0a0d14] border border-border-col rounded-xl p-4">
                   <div className="flex items-center justify-between mb-2">
                     <p className="font-bold text-sm text-white uppercase tracking-tighter">{item.name}</p>
-                    <span className="text-[10px] text-slate-600">{item.sku}</span>
+                    <span className="text-[10px] text-slate-500">{item.sku}</span>
                   </div>
                   <div className="grid grid-cols-3 gap-4 text-xs">
                     <div><p className="text-slate-500 uppercase font-bold tracking-widest text-[9px]">QTY</p><p className="text-slate-200 font-bold">{item.qty} {item.unit}</p></div>
@@ -349,7 +349,7 @@ const RecipeBuilder = () => {
               <h2 className="font-header text-2xl font-bold uppercase tracking-wide">Cooking Method</h2>
               <button 
                 onClick={handleAddStep}
-                className="flex items-center gap-2 px-4 py-2 bg-primary rounded-lg text-sm font-bold text-white hover:bg-primary/90" 
+                className="flex items-center gap-2 px-4 py-2 bg-primary rounded-lg text-sm font-bold text-[#0D0D0D] hover:bg-primary/90" 
                 data-testid="add-step-btn"
               >
                 <Plus className="w-5 h-5" /> Add Step
@@ -366,7 +366,7 @@ const RecipeBuilder = () => {
                     <div className="flex items-center gap-4">
                       <span className={`size-9 rounded-lg flex items-center justify-center font-header font-bold text-lg ${
                         activeStep === step.id 
-                          ? 'bg-primary text-white' 
+                          ? 'bg-primary text-[#0D0D0D]' 
                           : 'bg-surface border border-border-col text-slate-400'
                       }`}>
                         {String(step.id).padStart(2, '0')}

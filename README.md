@@ -9,8 +9,8 @@ endpoints.
 
 - `frontend/`: React 19 and Vite application
 - `backend/`: FastAPI application and pytest suite
-- `vercel.json`: Vercel frontend deployment config
-- `render.yaml`: Render backend deployment blueprint
+- `backend/Dockerfile`, `backend/fly.toml`: Fly.io backend deployment
+- `.github/workflows/`: manual deploys (`fly-backend.yml`, `cloudflare.yml`)
 
 Historical mockups, generated reports, and retired design assets are kept
 outside this application repository.
@@ -71,19 +71,25 @@ Optional integration test variables:
 
 ## Deployment
 
-The frontend deploys on Vercel from `vercel.json`. The backend deploys on
-Render from `render.yaml`.
+- Frontend: Cloudflare, built from `frontend/` by `.github/workflows/cloudflare.yml`.
+  Site: https://apollo.bcappz.com
+- Backend API: Fly.io app `bca-foodtruck-apollo-api` (org `blue-collar-appz`), deployed by
+  the manual `Deploy backend to Fly.io` workflow. API: https://api-apollo.bcappz.com
 
-- Frontend: Vercel project connected to this repository
-- Backend API: https://footruck-apollo-backend.onrender.com
-- API documentation: https://footruck-apollo-backend.onrender.com/docs
+Both domains are assumed until confirmed. The frontend and API share a parent domain so
+login cookies work on phones. To change a domain:
 
-The backend stores SQLite data on the persistent disk mounted at `/var/data`.
-Do not change `SQLITE_PATH` to a non-disk path in production or user data will
-be lost across deploys.
+- Backend: set `CORS_ORIGINS` (a Fly secret) and optionally `FRONTEND_URL`.
+- Frontend: set the repository variables `VITE_BACKEND_URL`, `VITE_SITE_URL` and
+  `VITE_SUPPORT_URL` (Help / Contact link, falls back to https://bcappz.com).
+- Static files: search and replace `apollo.bcappz.com` in `frontend/public/sitemap.xml`
+  and `frontend/public/robots.txt`.
 
-Secrets and environment-specific URLs belong in the appropriate Render or Vercel
-environment variables, not in Git. Required production values include
-`JWT_SECRET`, `STRIPE_API_KEY`, `STRIPE_WEBHOOK_SECRET`, `CORS_ORIGINS`,
-`VITE_BACKEND_URL`, and the Stripe price IDs if they differ from the checked-in
-defaults.
+The backend runs on exactly one Fly machine and stores SQLite data on the volume mounted
+at `/var/data`. Do not move `SQLITE_PATH` off the volume or user data is lost on deploy.
+The machine stops when idle and wakes on the next request.
+
+Secrets live on Fly, never in Git: `fly secrets set --app bca-foodtruck-apollo-api
+JWT_SECRET=... STRIPE_API_KEY=... STRIPE_WEBHOOK_SECRET=... CORS_ORIGINS=...`.
+The deploy workflow only checks that these names exist. Stripe price IDs can be
+overridden with `FOODTRUCK_STANDARD_PRICE_ID` and `FOODTRUCK_PRO_PRICE_ID`.

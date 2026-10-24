@@ -1,4 +1,4 @@
-// API Client for Food Truck Launch Pad
+// API Client for Foodtruck Apollo
 const API_BASE = import.meta.env.VITE_BACKEND_URL || '';
 
 class ApiClient {

@@ -21,6 +21,8 @@ jobs:
         env:
           # Backend address baked into the build. Set as a repository variable.
           VITE_BACKEND_URL: ${{ vars.VITE_BACKEND_URL }}
+          VITE_SITE_URL: ${{ vars.VITE_SITE_URL }}
+          VITE_SUPPORT_URL: ${{ vars.VITE_SUPPORT_URL }}
       - uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}

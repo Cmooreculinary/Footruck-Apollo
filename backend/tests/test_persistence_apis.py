@@ -1,5 +1,5 @@
 """
-Backend API tests for Food Truck Launch Pad persistence endpoints.
+Backend API tests for Foodtruck Apollo persistence endpoints.
 Tests cover all new CRUD operations for:
 - Customer Profiles
 - Assessments  
@@ -30,7 +30,7 @@ class TestHealthCheck:
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "healthy"
-        assert "Food Truck Launch Pad API" in data["message"]
+        assert "Foodtruck Apollo API" in data["message"]
         print("✓ API root endpoint healthy")
 
 

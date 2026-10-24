@@ -1,11 +1,12 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 
-const DEFAULT_IMAGE = "/og-image.png";
-const SITE_URL = "https://foodtrucklaunchpad.com";
+// Assumed production domain (confirm). Override at build time with VITE_SITE_URL.
+const SITE_URL = (import.meta.env.VITE_SITE_URL || "https://apollo.bcappz.com").replace(/\/+$/, "");
+const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 
 const SEO = ({ 
-  title = "Food Truck Launch Pad",
+  title = "Foodtruck Apollo",
   description = "The ultimate platform for food truck entrepreneurs. From concept to Day One — design your truck, plan your kitchen, master your finances.",
   image = DEFAULT_IMAGE,
   url = "",
@@ -13,7 +14,7 @@ const SEO = ({
 }) => {
   const fullUrl = url ? `${SITE_URL}${url}` : SITE_URL;
   const fullImage = image && image.startsWith("http") ? image : DEFAULT_IMAGE;
-  const safeTitle = title || "Food Truck Launch Pad";
+  const safeTitle = title || "Foodtruck Apollo";
   const safeDescription = description || "The ultimate platform for food truck entrepreneurs.";
   
   return (
@@ -32,7 +33,7 @@ const SEO = ({
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="1200" />
       <meta property="og:image:alt" content={safeTitle} />
-      <meta property="og:site_name" content="Food Truck Launch Pad" />
+      <meta property="og:site_name" content="Foodtruck Apollo" />
       
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:url" content={fullUrl} />

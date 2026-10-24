@@ -178,7 +178,7 @@ const CrewQuartersTraining = () => {
               <nav className="flex flex-col gap-2">
                 <button 
                   onClick={() => setActiveCategory("all")}
-                  className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg font-semibold transition-colors ${activeCategory === "all" ? "bg-primary text-white" : "hover:bg-steel/20 text-slate-400"}`}
+                  className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg font-semibold transition-colors ${activeCategory === "all" ? "bg-primary text-[#0D0D0D]" : "hover:bg-steel/20 text-slate-400"}`}
                   data-testid="category-all"
                 >
                   <Box className="w-5 h-5" />
@@ -186,7 +186,7 @@ const CrewQuartersTraining = () => {
                 </button>
                 <button 
                   onClick={() => setActiveCategory("safety")}
-                  className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-colors ${activeCategory === "safety" ? "bg-primary text-white" : "hover:bg-steel/20 text-slate-400"}`}
+                  className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-colors ${activeCategory === "safety" ? "bg-primary text-[#0D0D0D]" : "hover:bg-steel/20 text-slate-400"}`}
                   data-testid="category-safety"
                 >
                   <Thermometer className="w-5 h-5" />
@@ -194,14 +194,14 @@ const CrewQuartersTraining = () => {
                 </button>
                 <button 
                   onClick={() => setActiveCategory("service")}
-                  className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-colors ${activeCategory === "service" ? "bg-primary text-white" : "hover:bg-steel/20 text-slate-400"}`}
+                  className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-colors ${activeCategory === "service" ? "bg-primary text-[#0D0D0D]" : "hover:bg-steel/20 text-slate-400"}`}
                 >
                   <Users className="w-5 h-5" />
                   <span>Customer Service</span>
                 </button>
                 <button 
                   onClick={() => setActiveCategory("emergency")}
-                  className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-colors ${activeCategory === "emergency" ? "bg-primary text-white" : "hover:bg-steel/20 text-slate-400"}`}
+                  className={`flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-colors ${activeCategory === "emergency" ? "bg-primary text-[#0D0D0D]" : "hover:bg-steel/20 text-slate-400"}`}
                 >
                   <AlertTriangle className="w-5 h-5" />
                   <span>Emergency Docs</span>
@@ -294,7 +294,7 @@ const CrewQuartersTraining = () => {
                   {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
                   {isUploading ? "Uploading..." : "Upload New Doc"}
                 </button>
-                <p className="text-[10px] text-slate-600 text-center -mt-1">PDF, PNG, JPG, DOC · Max 2MB</p>
+                <p className="text-[10px] text-slate-500 text-center -mt-1">PDF, PNG, JPG, DOC · Max 2MB</p>
               </div>
             </div>
           </aside>
@@ -325,7 +325,7 @@ const CrewQuartersTraining = () => {
                         <PlayCircle className="w-12 h-12 text-white" />
                       </div>
                       <div className="absolute bottom-3 left-4 flex items-center gap-2">
-                        <span className="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded">{module.type}</span>
+                        <span className="bg-primary text-[#0D0D0D] text-[10px] font-bold px-2 py-0.5 rounded">{module.type}</span>
                         <span className="text-white text-xs font-medium">{module.duration}</span>
                       </div>
                     </div>
@@ -352,7 +352,7 @@ const CrewQuartersTraining = () => {
                             <button 
                               onClick={() => handleMarkAsTrained(module.id)}
                               disabled={savingModuleId === module.id}
-                              className="bg-primary text-white text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2" 
+                              className="bg-primary text-[#0D0D0D] text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 flex items-center gap-2" 
                               data-testid={`train-btn-${module.id}`}
                             >
                               {savingModuleId === module.id ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
@@ -396,7 +396,7 @@ const CrewQuartersTraining = () => {
                           <span className={`text-[10px] font-bold px-2 py-1 rounded border ${
                             module.format === "PDF GUIDE" 
                               ? "bg-blue-500/10 text-blue-400 border-blue-500/30" 
-                              : "bg-primary/10 text-primary border-primary/30"
+                              : "bg-primary/10 text-[#F4793B] border-primary/30"
                           }`}>
                             {module.format}
                           </span>
@@ -439,7 +439,7 @@ const CrewQuartersTraining = () => {
       {/* Footer */}
       <footer className="mt-auto px-10 py-6 border-t border-industrial bg-[#1a1614] text-slate-500 text-sm flex justify-between items-center">
         <div className="flex items-center gap-2">
-          © 2024 Food Truck Launch Pad - Phase 6: Crew Quarters
+          © {new Date().getFullYear()} Foodtruck Apollo - Phase 6: Crew Quarters
         </div>
         <div className="flex gap-6">
           <button className="hover:text-primary transition-colors" onClick={() => toast.info("Privacy Policy coming soon")}>Privacy Policy</button>
@@ -467,7 +467,7 @@ const CrewQuartersTraining = () => {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleDownloadDoc(previewDoc)}
-                  className="px-3 py-1.5 bg-primary text-white text-xs font-bold uppercase tracking-wider rounded hover:bg-primary/90 flex items-center gap-1.5"
+                  className="px-3 py-1.5 bg-primary text-[#0D0D0D] text-xs font-bold uppercase tracking-wider rounded hover:bg-primary/90 flex items-center gap-1.5"
                 >
                   <Download className="w-3.5 h-3.5" />
                   Download

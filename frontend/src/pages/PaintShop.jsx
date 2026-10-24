@@ -73,9 +73,9 @@ const COLOR_PALETTES = {
   },
   copper_steel: {
     name: "Copper & Steel",
-    description: "Industrial-luxe — matches FTLP brand",
+    description: "Industrial-luxe — matches Foodtruck Apollo brand",
     colors: [
-      { name: "Burnt Copper", hex: "#E8592F" },
+      { name: "Burnt Copper", hex: "#EC5B13" },
       { name: "Brushed Steel", hex: "#71797E" },
       { name: "Forge Orange", hex: "#CC5500" },
       { name: "Anvil Black", hex: "#2C2C2C" },
@@ -283,8 +283,8 @@ const WRAP_PATTERNS = {
 // ============================================================================
 const LETTERING_FONTS = {
   STENCIL: { name: "Stencil", fontFamily: "'Stencil Std', 'Impact', sans-serif", fontWeight: "900" },
-  GOTHIC: { name: "Gothic", fontFamily: "'Oswald', 'Impact', sans-serif", fontWeight: "700" },
-  SANS: { name: "Modern", fontFamily: "'Inter', 'Helvetica Neue', sans-serif", fontWeight: "600" },
+  GOTHIC: { name: "Gothic", fontFamily: "'Bebas Neue', 'Impact', sans-serif", fontWeight: "700" },
+  SANS: { name: "Modern", fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif", fontWeight: "600" },
   SCRIPT: { name: "Script", fontFamily: "'Pacifico', cursive", fontWeight: "400" },
   BLOCK: { name: "Block", fontFamily: "'Anton', 'Impact', sans-serif", fontWeight: "400" }
 };
@@ -346,7 +346,7 @@ const DraggableElement = ({ canvasRef, x, y, onDrag, children }) => {
     >
       {children}
       {/* Drag indicator ring */}
-      <div className={`absolute -inset-2 border-2 border-dashed rounded-lg pointer-events-none transition-opacity duration-150 ${dragging ? "border-[#E8592F] opacity-100" : "border-white/30 opacity-0 group-hover:opacity-100"}`} />
+      <div className={`absolute -inset-2 border-2 border-dashed rounded-lg pointer-events-none transition-opacity duration-150 ${dragging ? "border-[#EC5B13] opacity-100" : "border-white/30 opacity-0 group-hover:opacity-100"}`} />
     </div>
   );
 };
@@ -387,7 +387,7 @@ const TruckCanvas = ({ state, zoom = 1, onDragText, onDragLogo }) => {
       {/* Loading indicator */}
       {!imgLoaded && !imgError && (
         <div className="absolute inset-0 flex items-center justify-center z-20">
-          <div className="w-8 h-8 border-2 border-[#E8592F] border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-[#EC5B13] border-t-transparent rounded-full animate-spin" />
         </div>
       )}
       {imgError && (
@@ -593,8 +593,8 @@ const ColorWheel = ({ value, onChange }) => {
   const wheelRef = React.useRef(null);
   const svRef = React.useRef(null);
   const [dragging, setDragging] = React.useState(null); // "wheel" | "sv"
-  const [hsv, setHsv] = React.useState(() => hexToHsv(value || "#E8592F"));
-  const [hexInput, setHexInput] = React.useState(value || "#E8592F");
+  const [hsv, setHsv] = React.useState(() => hexToHsv(value || "#EC5B13"));
+  const [hexInput, setHexInput] = React.useState(value || "#EC5B13");
   const hsvRef = React.useRef(hsv);
   hsvRef.current = hsv;
 
@@ -734,7 +734,7 @@ const ColorWheel = ({ value, onChange }) => {
       <div className="flex items-center gap-2 w-full max-w-[220px]">
         <div
           className="w-10 h-10 rounded-lg border border-white/10 shrink-0"
-          style={{ backgroundColor: value || "#E8592F" }}
+          style={{ backgroundColor: value || "#EC5B13" }}
         />
         <input
           type="text"
@@ -749,7 +749,7 @@ const ColorWheel = ({ value, onChange }) => {
             }
           }}
           className={`flex-1 px-3 py-2 bg-white/[0.06] border rounded-lg text-white text-sm font-mono uppercase
-            ${hexValid ? "border-white/10 focus:border-[#E8592F]" : "border-red-500"} focus:outline-none`}
+            ${hexValid ? "border-white/10 focus:border-[#EC5B13]" : "border-red-500"} focus:outline-none`}
           maxLength={7}
           data-testid="hex-input"
         />
@@ -767,7 +767,7 @@ const ColorSwatch = ({ color, isSelected, onClick, size = "md" }) => {
     <button
       onClick={onClick}
       className={`${sizeClasses[size]} rounded-full border-2 transition-all duration-150 flex items-center justify-center
-        ${isSelected ? "border-[#E8592F] scale-110 ring-2 ring-[#E8592F] ring-offset-2 ring-offset-[#1a1a2e]" : "border-white/10 hover:border-white/20"}`}
+        ${isSelected ? "border-[#EC5B13] scale-110 ring-2 ring-[#EC5B13] ring-offset-2 ring-offset-[#1a1a2e]" : "border-white/10 hover:border-white/20"}`}
       style={{ backgroundColor: color.hex }}
       title={color.name}
       data-testid={`color-swatch-${color.hex}`}
@@ -860,9 +860,9 @@ const ControlTabs = ({ activeTab, setActiveTab }) => {
           }}
           className={`flex-none min-w-[52px] py-3 px-2 flex flex-col items-center gap-1 transition-colors text-xs font-medium
             ${activeTab === tab.id
-              ? "text-[#E8592F] border-b-2 border-[#E8592F] bg-[#E8592F]/5"
+              ? "text-[#F4793B] border-b-2 border-[#EC5B13] bg-[#EC5B13]/5"
               : tab.locked
-              ? "text-zinc-700 cursor-not-allowed"
+              ? "text-zinc-500 cursor-not-allowed"
               : "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.02]"}`}
           data-testid={`tab-${tab.id}`}
         >
@@ -1067,7 +1067,7 @@ const PaintShop = () => {
     return (
       <div className="min-h-screen bg-[#0a0d14] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#E8592F] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="w-12 h-12 border-4 border-[#EC5B13] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-zinc-500 font-medium">Loading Paint Shop...</p>
         </div>
       </div>
@@ -1088,7 +1088,7 @@ const PaintShop = () => {
           </button>
           
           <h1 className="font-heading text-lg font-bold text-white flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#E8592F] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-[#EC5B13] flex items-center justify-center">
               <Palette className="w-4 h-4 text-white" />
             </div>
             Paint Shop
@@ -1106,7 +1106,7 @@ const PaintShop = () => {
             <button
               onClick={saveDesign}
               disabled={isSaving}
-              className="flex items-center gap-2 px-5 py-2 bg-[#E8592F] hover:bg-[#d14a24] text-white text-sm font-semibold rounded-full transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-5 py-2 bg-[#EC5B13] hover:bg-[#F2742F] text-[#0D0D0D] text-sm font-semibold rounded-full transition-colors disabled:opacity-50"
               data-testid="save-design-btn"
             >
               <Save className="w-4 h-4" />
@@ -1156,7 +1156,7 @@ const PaintShop = () => {
                   title={model.description}
                 >
                   {idx === 0 && (
-                    <span className="absolute top-2 left-2 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-[#EC5B13] text-white z-10">
+                    <span className="absolute top-2 left-2 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-[#EC5B13] text-[#0D0D0D] z-10">
                       ⭐ Most Popular
                     </span>
                   )}
@@ -1252,7 +1252,7 @@ const PaintShop = () => {
                         onClick={() => updateState({ wrapPattern: key })}
                         className={`p-3 rounded-lg border text-center transition-all
                           ${truckState.wrapPattern === key 
-                            ? "border-[#E8592F] bg-[#E8592F]/10" 
+                            ? "border-[#EC5B13] bg-[#EC5B13]/10" 
                             : "border-white/10 hover:border-white/15"}`}
                       >
                         <div 
@@ -1280,7 +1280,7 @@ const PaintShop = () => {
                       step="0.05"
                       value={truckState.wrapOpacity}
                       onChange={(e) => updateState({ wrapOpacity: parseFloat(e.target.value) })}
-                      className="w-full accent-[#E8592F]"
+                      className="w-full accent-[#EC5B13]"
                     />
                   </div>
                 )}
@@ -1297,13 +1297,13 @@ const PaintShop = () => {
                     value={truckState.businessName}
                     onChange={(e) => updateState({ businessName: e.target.value.slice(0, 28) })}
                     placeholder="Enter your business name"
-                    className="w-full px-4 py-3 bg-white/[0.06] border border-white/10 rounded-lg text-white focus:border-[#E8592F] focus:outline-none"
+                    className="w-full px-4 py-3 bg-white/[0.06] border border-white/10 rounded-lg text-white focus:border-[#EC5B13] focus:outline-none"
                     maxLength={28}
                     data-testid="business-name-input"
                   />
                   <div className="flex justify-between mt-1">
-                    <span className="text-xs text-zinc-600">{truckState.businessName.length}/28</span>
-                    {truckState.businessName && <span className="text-xs text-[#E8592F]">Drag text on the preview to reposition</span>}
+                    <span className="text-xs text-zinc-500">{truckState.businessName.length}/28</span>
+                    {truckState.businessName && <span className="text-xs text-[#EC5B13]">Drag text on the preview to reposition</span>}
                   </div>
                 </div>
                 
@@ -1316,7 +1316,7 @@ const PaintShop = () => {
                         onClick={() => updateState({ letteringFont: key })}
                         className={`p-2 rounded-lg border text-center
                           ${truckState.letteringFont === key 
-                            ? "border-[#E8592F] bg-[#E8592F]/10" 
+                            ? "border-[#EC5B13] bg-[#EC5B13]/10" 
                             : "border-white/10 hover:border-white/15"}`}
                       >
                         <span 
@@ -1333,12 +1333,12 @@ const PaintShop = () => {
                 <div>
                   <label className="block text-sm text-zinc-400 mb-2">Text Color</label>
                   <div className="flex flex-wrap gap-2">
-                    {["#FFFFFF", "#000000", "#E8592F", "#FFD700", "#FF0000", "#00FF00", "#0000FF", "#FF00FF"].map(hex => (
+                    {["#FFFFFF", "#000000", "#EC5B13", "#FFD700", "#FF0000", "#00FF00", "#0000FF", "#FF00FF"].map(hex => (
                       <button
                         key={hex}
                         onClick={() => updateState({ letteringColor: hex })}
                         className={`w-8 h-8 rounded-full border-2 transition-all
-                          ${truckState.letteringColor === hex ? "border-[#E8592F] scale-110" : "border-white/10"}`}
+                          ${truckState.letteringColor === hex ? "border-[#EC5B13] scale-110" : "border-white/10"}`}
                         style={{ backgroundColor: hex }}
                       />
                     ))}
@@ -1355,7 +1355,7 @@ const PaintShop = () => {
                     max="5"
                     value={truckState.letteringSize}
                     onChange={(e) => updateState({ letteringSize: parseInt(e.target.value) })}
-                    className="w-full accent-[#E8592F]"
+                    className="w-full accent-[#EC5B13]"
                   />
                 </div>
                 
@@ -1368,7 +1368,7 @@ const PaintShop = () => {
                         onClick={() => updateState({ letteringOutline: value })}
                         className={`flex-1 py-2 rounded-lg border text-sm
                           ${truckState.letteringOutline === value 
-                            ? "border-[#E8592F] bg-[#E8592F]/10 text-[#E8592F]" 
+                            ? "border-[#EC5B13] bg-[#EC5B13]/10 text-[#F4793B]" 
                             : "border-white/10 text-zinc-400 hover:border-white/15"}`}
                       >
                         {label}
@@ -1385,7 +1385,7 @@ const PaintShop = () => {
                 <div>
                   <label className="block text-sm text-zinc-400 mb-2">Upload Logo</label>
                   {!truckState.logoUrl ? (
-                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/10 rounded-lg cursor-pointer hover:border-[#E8592F] transition-colors">
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/10 rounded-lg cursor-pointer hover:border-[#EC5B13] transition-colors">
                       <Upload className="w-8 h-8 text-zinc-500 mb-2" />
                       <span className="text-sm text-zinc-500">PNG, SVG, WebP (max 5MB)</span>
                       <input
@@ -1425,7 +1425,7 @@ const PaintShop = () => {
                         step="0.1"
                         value={truckState.logoScale}
                         onChange={(e) => updateState({ logoScale: parseFloat(e.target.value) })}
-                        className="w-full accent-[#E8592F]"
+                        className="w-full accent-[#EC5B13]"
                       />
                     </div>
                     
@@ -1439,7 +1439,7 @@ const PaintShop = () => {
                         max="45"
                         value={truckState.logoRotation}
                         onChange={(e) => updateState({ logoRotation: parseInt(e.target.value) })}
-                        className="w-full accent-[#E8592F]"
+                        className="w-full accent-[#EC5B13]"
                       />
                     </div>
                     
@@ -1454,7 +1454,7 @@ const PaintShop = () => {
                           max="90"
                           value={truckState.logoX}
                           onChange={(e) => updateState({ logoX: parseInt(e.target.value) })}
-                          className="w-full accent-[#E8592F]"
+                          className="w-full accent-[#EC5B13]"
                         />
                       </div>
                       <div>
@@ -1467,7 +1467,7 @@ const PaintShop = () => {
                           max="90"
                           value={truckState.logoY}
                           onChange={(e) => updateState({ logoY: parseInt(e.target.value) })}
-                          className="w-full accent-[#E8592F]"
+                          className="w-full accent-[#EC5B13]"
                         />
                       </div>
                     </div>
@@ -1486,7 +1486,7 @@ const PaintShop = () => {
                     <button
                       onClick={() => updateState({ awningEnabled: !truckState.awningEnabled })}
                       className={`relative w-12 h-6 rounded-full transition-colors
-                        ${truckState.awningEnabled ? "bg-[#E8592F]" : "bg-zinc-700"}`}
+                        ${truckState.awningEnabled ? "bg-[#EC5B13]" : "bg-zinc-700"}`}
                     >
                       <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
                         ${truckState.awningEnabled ? "left-7" : "left-1"}`} />
@@ -1500,7 +1500,7 @@ const PaintShop = () => {
                             key={style}
                             onClick={() => updateState({ awningStyle: style })}
                             className={`flex-1 py-1 text-xs rounded border
-                              ${truckState.awningStyle === style ? "border-[#E8592F] text-[#E8592F]" : "border-white/10 text-zinc-400"}`}
+                              ${truckState.awningStyle === style ? "border-[#EC5B13] text-[#EC5B13]" : "border-white/10 text-zinc-400"}`}
                           >
                             {style.charAt(0).toUpperCase() + style.slice(1)}
                           </button>
@@ -1526,7 +1526,7 @@ const PaintShop = () => {
                     <button
                       onClick={() => updateState({ lightsEnabled: !truckState.lightsEnabled })}
                       className={`relative w-12 h-6 rounded-full transition-colors
-                        ${truckState.lightsEnabled ? "bg-[#E8592F]" : "bg-zinc-700"}`}
+                        ${truckState.lightsEnabled ? "bg-[#EC5B13]" : "bg-zinc-700"}`}
                     >
                       <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
                         ${truckState.lightsEnabled ? "left-7" : "left-1"}`} />
@@ -1552,7 +1552,7 @@ const PaintShop = () => {
                     <button
                       onClick={() => updateState({ signageEnabled: !truckState.signageEnabled })}
                       className={`relative w-12 h-6 rounded-full transition-colors
-                        ${truckState.signageEnabled ? "bg-[#E8592F]" : "bg-zinc-700"}`}
+                        ${truckState.signageEnabled ? "bg-[#EC5B13]" : "bg-zinc-700"}`}
                     >
                       <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
                         ${truckState.signageEnabled ? "left-7" : "left-1"}`} />
@@ -1565,7 +1565,7 @@ const PaintShop = () => {
                           type="checkbox"
                           checked={truckState.signageIlluminated}
                           onChange={(e) => updateState({ signageIlluminated: e.target.checked })}
-                          className="accent-[#E8592F]"
+                          className="accent-[#EC5B13]"
                         />
                         Illuminated
                       </label>
@@ -1580,7 +1580,7 @@ const PaintShop = () => {
                     <button
                       onClick={() => updateState({ racingStripeEnabled: !truckState.racingStripeEnabled })}
                       className={`relative w-12 h-6 rounded-full transition-colors
-                        ${truckState.racingStripeEnabled ? "bg-[#E8592F]" : "bg-zinc-700"}`}
+                        ${truckState.racingStripeEnabled ? "bg-[#EC5B13]" : "bg-zinc-700"}`}
                     >
                       <span className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
                         ${truckState.racingStripeEnabled ? "left-7" : "left-1"}`} />
@@ -1594,7 +1594,7 @@ const PaintShop = () => {
                             key={width}
                             onClick={() => updateState({ racingStripeWidth: width })}
                             className={`flex-1 py-1 text-xs rounded border
-                              ${truckState.racingStripeWidth === width ? "border-[#E8592F] text-[#E8592F]" : "border-white/10 text-zinc-400"}`}
+                              ${truckState.racingStripeWidth === width ? "border-[#EC5B13] text-[#EC5B13]" : "border-white/10 text-zinc-400"}`}
                           >
                             {width.charAt(0).toUpperCase() + width.slice(1)}
                           </button>
@@ -1624,7 +1624,7 @@ const PaintShop = () => {
                   Works best with light-colored trucks on a plain background.
                 </p>
                 {!truckState.userPhotoUrl ? (
-                  <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-white/10 rounded-lg cursor-pointer hover:border-[#E8592F] transition-colors">
+                  <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-white/10 rounded-lg cursor-pointer hover:border-[#EC5B13] transition-colors">
                     <Camera className="w-10 h-10 text-zinc-500 mb-2" />
                     <span className="text-sm text-zinc-500">JPG, PNG, WebP (max 10MB)</span>
                     <input
@@ -1683,7 +1683,7 @@ const PaintShop = () => {
       <div className="max-w-7xl mx-auto px-6 pb-12">
         <div className="mb-5">
           <h2 className="text-xs font-bold uppercase tracking-[0.1em] text-zinc-400">Level Up Your Build</h2>
-          <p className="text-zinc-600 text-xs mt-0.5">Preview professional services and upcoming build features</p>
+          <p className="text-zinc-500 text-xs mt-0.5">Preview professional services and upcoming build features</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Detailing Pack */}
@@ -1693,7 +1693,7 @@ const PaintShop = () => {
                 <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#EC5B13]">Detailing Pack</p>
                 <p className="text-2xl font-extrabold text-white mt-0.5">BETA</p>
               </div>
-              <span className="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-[#EC5B13]/15 text-[#EC5B13] border border-[#EC5B13]/20">BETA</span>
+              <span className="text-[10px] font-bold uppercase px-2 py-1 rounded-full bg-[#EC5B13]/15 text-[#F4793B] border border-[#EC5B13]/20">BETA</span>
             </div>
             <p className="text-xs text-zinc-500 leading-relaxed">Custom vinyl decal files, cut-ready for any print shop. Includes your logo placement, color specs, and bleed-ready artwork.</p>
             <button
@@ -1728,13 +1728,13 @@ const PaintShop = () => {
           <div className="relative rounded-2xl border border-[#8b5cf6]/40 bg-[#1a1a1a] p-5 flex flex-col gap-3">
             <span className="absolute top-4 right-4 text-[9px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#8b5cf6] text-white">BETA</span>
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#8b5cf6]">The Showroom</p>
+              <p className="text-xs font-bold uppercase tracking-[0.1em] text-[#A78BFA]">The Showroom</p>
               <p className="text-2xl font-extrabold text-white mt-0.5">BETA</p>
             </div>
             <p className="text-xs text-zinc-500 leading-relaxed">Browse 30 curated preset builds from top food truck operators. Filter by concept, copy a build, and launch in minutes.</p>
             <Link
               to="/truck-showroom"
-              className="mt-auto w-full py-2 text-xs font-semibold rounded-xl border border-[#8b5cf6]/30 text-[#8b5cf6] hover:bg-[#8b5cf6]/10 transition-colors text-center block"
+              className="mt-auto w-full py-2 text-xs font-semibold rounded-xl border border-[#8b5cf6]/30 text-[#A78BFA] hover:bg-[#8b5cf6]/10 transition-colors text-center block"
             >
               Explore The Showroom
             </Link>
@@ -1784,7 +1784,7 @@ const PaintShop = () => {
                   }, 800);
                 }}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-4 py-2 bg-[#EC5B13] text-white rounded-xl text-xs font-bold hover:bg-[#d14a24] transition-colors disabled:opacity-60"
+                className="flex items-center gap-2 px-4 py-2 bg-[#EC5B13] text-[#0D0D0D] rounded-xl text-xs font-bold hover:bg-[#F2742F] transition-colors disabled:opacity-60"
               >
                 <Save className="w-3.5 h-3.5" />
                 {isSaving ? "Saving…" : "Save Build"}

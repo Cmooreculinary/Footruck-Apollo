@@ -6,7 +6,7 @@ import SEO from "@/components/SEO";
 import { apiClient } from "@/lib/api";
 
 // ═══════════════════════════════════════════════════════════════
-// FTLP SHOWROOM — COMPLETE PRODUCTION BUILD
+// APOLLO SHOWROOM — COMPLETE PRODUCTION BUILD
 // All 8 categories, all products, full interactive UI
 // ═══════════════════════════════════════════════════════════════
 
@@ -156,7 +156,7 @@ function ProductSVG({ item, size = 160 }) {
         height: size, 
         borderRadius: 12, 
         overflow: "hidden",
-        background: "#0B0F17",
+        background: "#0D0D0D",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -190,7 +190,7 @@ function ProductSVG({ item, size = 160 }) {
 
   const bg = (
     <>
-      <rect width="200" height="200" fill="#0B0F17"/>
+      <rect width="200" height="200" fill="#0D0D0D"/>
       <rect x="40" y="150" width="120" height="3" rx="1" fill="#1E293B"/>
     </>
   );
@@ -202,9 +202,9 @@ function ProductSVG({ item, size = 160 }) {
       <g>
         <rect x="30" y="85" width="140" height="55" rx="6" fill="#1E293B"/>
         <rect x="130" y="75" width="40" height="35" rx="4" fill="#1E293B"/>
-        <rect x="135" y="80" width="25" height="20" rx="2" fill="#0B0F17" stroke={tc} strokeWidth="1"/>
-        <circle cx="55" cy="140" r="15" fill="#0B0F17" stroke="#2A3A4E" strokeWidth="3"/>
-        <circle cx="145" cy="140" r="15" fill="#0B0F17" stroke="#2A3A4E" strokeWidth="3"/>
+        <rect x="135" y="80" width="25" height="20" rx="2" fill="#0D0D0D" stroke={tc} strokeWidth="1"/>
+        <circle cx="55" cy="140" r="15" fill="#0D0D0D" stroke="#2A3A4E" strokeWidth="3"/>
+        <circle cx="145" cy="140" r="15" fill="#0D0D0D" stroke="#2A3A4E" strokeWidth="3"/>
         <rect x="45" y="100" width="70" height="25" rx="3" fill={tc} opacity="0.15"/>
       </g>
     );
@@ -214,8 +214,8 @@ function ProductSVG({ item, size = 160 }) {
         <ellipse cx="100" cy="100" rx="70" ry="35" fill={tc} opacity="0.1"/>
         <rect x="30" y="75" width="140" height="60" rx="30" fill="#1E293B"/>
         <rect x="35" y="80" width="130" height="50" rx="25" fill="#2A3A4E"/>
-        <circle cx="60" cy="140" r="12" fill="#0B0F17" stroke="#2A3A4E" strokeWidth="3"/>
-        <circle cx="140" cy="140" r="12" fill="#0B0F17" stroke="#2A3A4E" strokeWidth="3"/>
+        <circle cx="60" cy="140" r="12" fill="#0D0D0D" stroke="#2A3A4E" strokeWidth="3"/>
+        <circle cx="140" cy="140" r="12" fill="#0D0D0D" stroke="#2A3A4E" strokeWidth="3"/>
         <rect x="15" y="105" width="15" height="6" rx="2" fill="#2A3A4E"/>
       </g>
     );
@@ -223,10 +223,10 @@ function ProductSVG({ item, size = 160 }) {
     content = (
       <g>
         <rect x="40" y="80" width="120" height="55" rx="25" fill="#1E293B"/>
-        <rect x="45" y="85" width="30" height="25" rx="12" fill="#0B0F17" stroke={tc} strokeWidth="1"/>
-        <rect x="125" y="85" width="30" height="25" rx="12" fill="#0B0F17" stroke={tc} strokeWidth="1"/>
-        <circle cx="60" cy="140" r="16" fill="#0B0F17" stroke={tc} strokeWidth="2"/>
-        <circle cx="140" cy="140" r="16" fill="#0B0F17" stroke={tc} strokeWidth="2"/>
+        <rect x="45" y="85" width="30" height="25" rx="12" fill="#0D0D0D" stroke={tc} strokeWidth="1"/>
+        <rect x="125" y="85" width="30" height="25" rx="12" fill="#0D0D0D" stroke={tc} strokeWidth="1"/>
+        <circle cx="60" cy="140" r="16" fill="#0D0D0D" stroke={tc} strokeWidth="2"/>
+        <circle cx="140" cy="140" r="16" fill="#0D0D0D" stroke={tc} strokeWidth="2"/>
         <rect x="80" y="90" width="40" height="35" rx="4" fill={tc} opacity="0.15"/>
       </g>
     );
@@ -235,8 +235,8 @@ function ProductSVG({ item, size = 160 }) {
       <g>
         <rect x="35" y="75" width="130" height="65" rx="6" fill="#1E293B"/>
         <rect x="40" y="80" width="120" height="40" rx="3" fill="#2A3A4E"/>
-        {[50,80,110,140].map((x)=><rect key={x} x={x} y="85" width="15" height="30" rx="2" fill="#0B0F17" opacity="0.5"/>)}
-        <rect x="35" y="125" width="130" height="15" rx="4" fill="#0B0F17"/>
+        {[50,80,110,140].map((x)=><rect key={x} x={x} y="85" width="15" height="30" rx="2" fill="#0D0D0D" opacity="0.5"/>)}
+        <rect x="35" y="125" width="130" height="15" rx="4" fill="#0D0D0D"/>
         <text x="100" y="136" fill={tc} fontSize="8" textAnchor="middle" fontWeight="bold">{name.match(/\d+"/)?.[0] || "FLAT TOP"}</text>
       </g>
     );
@@ -248,7 +248,7 @@ function ProductSVG({ item, size = 160 }) {
         <rect x="45" y="65" width="110" height="80" rx="6" fill="#1E293B"/>
         {Array.from({ length: wells }, (_, index) => {
           const x = wells === 2 ? 55 + index * 50 : 61;
-          return <rect key={x} x={x} y="75" width={wellWidth} height="50" rx="4" fill="#0B0F17" stroke="#2A3A4E"/>;
+          return <rect key={x} x={x} y="75" width={wellWidth} height="50" rx="4" fill="#0D0D0D" stroke="#2A3A4E"/>;
         })}
         {Array.from({ length: wells }, (_, index) => (
           <circle key={index} cx={wells === 2 ? 75 + index * 50 : 100} cy="135" r="5" fill={tc}/>
@@ -259,7 +259,7 @@ function ProductSVG({ item, size = 160 }) {
     content = (
       <g>
         <rect x="45" y="55" width="110" height="95" rx="8" fill="#1E293B"/>
-        <rect x="50" y="60" width="100" height="70" rx="4" fill="#0B0F17"/>
+        <rect x="50" y="60" width="100" height="70" rx="4" fill="#0D0D0D"/>
         {lowerName.includes("pizza") ? (
           <circle cx="100" cy="93" r="25" fill="none" stroke={tc} strokeWidth="2" opacity="0.6"/>
         ) : (
@@ -282,7 +282,7 @@ function ProductSVG({ item, size = 160 }) {
     content = (
       <g>
         <rect x="45" y="75" width="110" height="70" rx="6" fill="#1E293B"/>
-        <rect x="50" y="80" width="100" height="45" rx="3" fill="#0B0F17"/>
+        <rect x="50" y="80" width="100" height="45" rx="3" fill="#0D0D0D"/>
         {burnerPositions.map(([x, y], index)=><circle key={index} cx={x} cy={y} r={burnerCount === 1 ? 22 : 10} fill="none" stroke={tc} strokeWidth="2"/>)}
         {[55,80,105,130].map((x)=><circle key={x} cx={x} cy="135" r="4" fill="#2A3A4E"/>)}
       </g>
@@ -292,7 +292,7 @@ function ProductSVG({ item, size = 160 }) {
     content = (
       <g>
         <rect x="50" y="60" width="100" height="80" rx="6" fill="#1E293B"/>
-        <rect x="55" y="65" width="90" height="55" rx="3" fill="#0B0F17"/>
+        <rect x="55" y="65" width="90" height="55" rx="3" fill="#0D0D0D"/>
         {isRoller
           ? Array.from({ length: 8 }, (_, index) => <rect key={index} x="60" y={70 + index * 6} width="80" height="3" rx="1" fill={index % 2 ? tc : "#2A3A4E"}/>)
           : [72,82,92,102].map((y)=><rect key={y} x="60" y={y} width="80" height="3" rx="1" fill="#2A3A4E"/>)}
@@ -304,7 +304,7 @@ function ProductSVG({ item, size = 160 }) {
     content = (
       <g>
         <rect x="55" y="55" width="90" height="95" rx="6" fill="#1E293B"/>
-        <rect x="60" y="60" width="80" height="85" rx="4" fill="#0B0F17"/>
+        <rect x="60" y="60" width="80" height="85" rx="4" fill="#0D0D0D"/>
         {doors === 2 && <rect x="99" y="60" width="2" height="85" fill="#2A3A4E"/>}
         {Array.from({ length: doors }, (_, index) => (
           <rect key={index} x={doors === 2 ? 92 + index * 16 : 133} y="85" width="4" height="30" rx="2" fill="#2A3A4E"/>
@@ -318,26 +318,26 @@ function ProductSVG({ item, size = 160 }) {
       <g>
         <rect x="25" y="80" width="150" height="65" rx="6" fill="#1E293B"/>
         <rect x="30" y="85" width="140" height="15" rx="3" fill="#2A3A4E"/>
-        {[30,55,80,105,130,148].map((x)=><rect key={x} x={x} y="87" width="15" height="10" rx="2" fill="#0B0F17"/>)}
-        <rect x="30" y="105" width="140" height="35" rx="3" fill="#0B0F17"/>
+        {[30,55,80,105,130,148].map((x)=><rect key={x} x={x} y="87" width="15" height="10" rx="2" fill="#0D0D0D"/>)}
+        <rect x="30" y="105" width="140" height="35" rx="3" fill="#0D0D0D"/>
       </g>
     );
   } else if (t === "ice") {
     content = (
       <g>
         <rect x="55" y="60" width="90" height="85" rx="6" fill="#1E293B"/>
-        <rect x="60" y="65" width="80" height="40" rx="4" fill="#0B0F17"/>
+        <rect x="60" y="65" width="80" height="40" rx="4" fill="#0D0D0D"/>
         {[60,70,80,90,100].map((x,i)=>[65,75,85,95].map((y,j)=>
           <rect key={`${i}-${j}`} x={x+5} y={y} width="6" height="6" rx="1" fill={tc} opacity="0.3"/>
         ))}
-        <rect x="60" y="110" width="80" height="30" rx="3" fill="#0B0F17"/>
+        <rect x="60" y="110" width="80" height="30" rx="3" fill="#0D0D0D"/>
       </g>
     );
   } else if (t === "hood") {
     content = (
       <g>
         <path d="M30 120 L40 70 L160 70 L170 120 Z" fill="#1E293B"/>
-        <rect x="45" y="75" width="110" height="35" rx="4" fill="#0B0F17"/>
+        <rect x="45" y="75" width="110" height="35" rx="4" fill="#0D0D0D"/>
         {[55,85,115,145].map((x)=><rect key={x} x={x} y="80" width="20" height="25" rx="2" fill="#2A3A4E"/>)}
         <rect x="30" y="115" width="140" height="8" rx="2" fill="#2A3A4E"/>
       </g>
@@ -356,7 +356,7 @@ function ProductSVG({ item, size = 160 }) {
     content = (
       <g>
         <rect x="55" y="55" width="90" height="95" rx="8" fill="#1E293B"/>
-        <circle cx="100" cy="95" r="35" fill="#0B0F17" stroke="#2A3A4E" strokeWidth="2"/>
+        <circle cx="100" cy="95" r="35" fill="#0D0D0D" stroke="#2A3A4E" strokeWidth="2"/>
         {[0,60,120,180,240,300].map((a,i)=>{
           const r=20;const x=100+r*Math.cos(a*Math.PI/180);const y=95+r*Math.sin(a*Math.PI/180);
           return <circle key={i} cx={x} cy={y} r="8" fill={tc} opacity="0.4"/>
@@ -372,23 +372,23 @@ function ProductSVG({ item, size = 160 }) {
         {isMakeUpAir ? (
           <>
             <rect x="35" y="65" width="130" height="75" rx="7" fill="#1E293B"/>
-            <rect x="45" y="75" width="48" height="55" rx="4" fill="#0B0F17"/>
+            <rect x="45" y="75" width="48" height="55" rx="4" fill="#0D0D0D"/>
             {[82,94,106,118].map(y => <path key={y} d={`M50 ${y} H88`} stroke="#2A3A4E" strokeWidth="4"/>)}
-            <circle cx="127" cy="102" r="24" fill="#0B0F17" stroke={tc} strokeWidth="3"/>
+            <circle cx="127" cy="102" r="24" fill="#0D0D0D" stroke={tc} strokeWidth="3"/>
             <path d="M127 83 V121 M108 102 H146" stroke={tc} strokeWidth="4"/>
           </>
         ) : isEvaporative ? (
           <>
             <rect x="62" y="45" width="76" height="100" rx="8" fill="#1E293B"/>
             {[60,72,84,96,108,120].map(y => <path key={y} d={`M72 ${y} H128`} stroke="#2A3A4E" strokeWidth="4"/>)}
-            <circle cx="76" cy="148" r="7" fill="#0B0F17" stroke={tc}/>
-            <circle cx="124" cy="148" r="7" fill="#0B0F17" stroke={tc}/>
+            <circle cx="76" cy="148" r="7" fill="#0D0D0D" stroke={tc}/>
+            <circle cx="124" cy="148" r="7" fill="#0D0D0D" stroke={tc}/>
           </>
         ) : (
           <>
             <rect x="40" y="70" width="120" height="30" rx="6" fill="#1E293B"/>
             <rect x="50" y="110" width="80" height="45" rx="4" fill="#1E293B"/>
-            <rect x="55" y="115" width="70" height="35" rx="3" fill="#0B0F17"/>
+            <rect x="55" y="115" width="70" height="35" rx="3" fill="#0D0D0D"/>
             {[0,45,90,135,180,225,270,315].map((a,i)=>{
               const r=10;const x=90+r*Math.cos(a*Math.PI/180);const y=140+r*Math.sin(a*Math.PI/180);
               return <circle key={i} cx={x} cy={y} r="3" fill={tc} opacity="0.5"/>;
@@ -403,14 +403,14 @@ function ProductSVG({ item, size = 160 }) {
     content = (
       <g>
         <rect x="20" y="80" width="160" height="60" rx="6" fill="#1E293B"/>
-        <rect x="25" y="85" width="150" height="40" rx="4" fill="#0B0F17"/>
+        <rect x="25" y="85" width="150" height="40" rx="4" fill="#0D0D0D"/>
         {Array.from({ length: basinCount }, (_, index) => {
           const x = basinCount === 3 ? 25 + index * 47 : 61;
           return <rect key={x} x={x} y="90" width={basinWidth} height="30" rx="3" fill="#2A3A4E"/>;
         })}
         <rect x="90" y="55" width="6" height="30" rx="2" fill="#2A3A4E"/>
         <circle cx="93" cy="55" r="8" fill="#2A3A4E"/>
-        {[20,162].map((x)=><rect key={x} x={x} y="85" width="5" height="50" rx="2" fill="#0B0F17"/>)}
+        {[20,162].map((x)=><rect key={x} x={x} y="85" width="5" height="50" rx="2" fill="#0D0D0D"/>)}
       </g>
     );
   } else if (t === "faucet") {
@@ -427,7 +427,7 @@ function ProductSVG({ item, size = 160 }) {
       <g>
         <rect x="45" y="70" width="110" height="70" rx="12" fill="#1E293B"/>
         {[55,75,95,115,135].map(x => <path key={x} d={`M${x} 76 V134`} stroke="#2A3A4E" strokeWidth="2"/>)}
-        <circle cx="100" cy="70" r="8" fill="#0B0F17" stroke={tc} strokeWidth="2"/>
+        <circle cx="100" cy="70" r="8" fill="#0D0D0D" stroke={tc} strokeWidth="2"/>
         <text x="100" y="110" fill={tc} fontSize="12" textAnchor="middle" fontWeight="bold">{name.match(/\d+\s*Gal/i)?.[0] || "TANK"}</text>
       </g>
     );
@@ -467,17 +467,17 @@ function ProductSVG({ item, size = 160 }) {
     content = (
       <g>
         <rect x="40" y="70" width="120" height="75" rx="8" fill="#1E293B"/>
-        <rect x="45" y="75" width="110" height="50" rx="4" fill="#0B0F17"/>
+        <rect x="45" y="75" width="110" height="50" rx="4" fill="#0D0D0D"/>
         <text x="100" y="105" fill={tc} fontSize="12" textAnchor="middle" fontWeight="bold">{watts}</text>
         <rect x="45" y="130" width="110" height="10" rx="3" fill="#2A3A4E"/>
-        {[90,110,130,150].map((x)=><rect key={x} x={x-30} y="132" width="8" height="6" rx="1" fill="#0B0F17"/>)}
+        {[90,110,130,150].map((x)=><rect key={x} x={x-30} y="132" width="8" height="6" rx="1" fill="#0D0D0D"/>)}
       </g>
     );
   } else if (t === "panel") {
     content = (
       <g>
         <rect x="55" y="55" width="90" height="95" rx="6" fill="#1E293B"/>
-        <rect x="60" y="60" width="80" height="85" rx="4" fill="#0B0F17"/>
+        <rect x="60" y="60" width="80" height="85" rx="4" fill="#0D0D0D"/>
         <text x="100" y="75" fill={tc} fontSize="8" textAnchor="middle" fontWeight="bold">MAIN 100A</text>
         {[0,1,2,3,4,5,6,7].map(i=><>
           <rect key={`l${i}`} x="65" y={82+i*7} width="30" height="5" rx="1" fill="#2A3A4E"/>
@@ -515,12 +515,12 @@ function ProductSVG({ item, size = 160 }) {
         {isOutletStrip ? (
           <>
             <rect x="25" y="80" width="150" height="42" rx="8" fill="#1E293B"/>
-            {[42,65,88,111,134,157].map(x => <circle key={x} cx={x} cy="101" r="8" fill="#0B0F17" stroke={tc} strokeWidth="2"/>)}
+            {[42,65,88,111,134,157].map(x => <circle key={x} cx={x} cy="101" r="8" fill="#0D0D0D" stroke={tc} strokeWidth="2"/>)}
           </>
         ) : (
           <>
             <rect x="50" y="70" width="100" height="70" rx="8" fill="#1E293B"/>
-            <rect x="55" y="75" width="90" height="60" rx="4" fill="#0B0F17"/>
+            <rect x="55" y="75" width="90" height="60" rx="4" fill="#0D0D0D"/>
             <text x="100" y="100" fill={tc} fontSize="10" textAnchor="middle" fontWeight="bold">{isBattery ? "LiFePO₄" : isInlet ? "50A" : "3000W"}</text>
             {isInlet ? (
               <circle cx="100" cy="119" r="12" fill="#2A3A4E" stroke={tc} strokeWidth="2"/>
@@ -550,12 +550,12 @@ function ProductSVG({ item, size = 160 }) {
           <>
             <rect x="55" y="72" width="90" height="70" rx="10" fill="#1E293B"/>
             <rect x="68" y="82" width="64" height="25" rx="5" fill="#CBD5E1"/>
-            <rect x="76" y="115" width="48" height="16" rx="4" fill="#0B0F17"/>
+            <rect x="76" y="115" width="48" height="16" rx="4" fill="#0D0D0D"/>
             <text x="100" y="127" fill={tc} fontSize="10" textAnchor="middle">0.0 oz</text>
           </>
         ) : isBoards ? (
           ["#EF4444", "#3B82F6", "#22C55E", "#EAB308", "#F8FAFC", "#92400E"].map((color, index) => (
-            <rect key={color} x={47 + index * 9} y={62 + index * 11} width="82" height="42" rx="5" fill={color} stroke="#0B0F17" strokeWidth="3"/>
+            <rect key={color} x={47 + index * 9} y={62 + index * 11} width="82" height="42" rx="5" fill={color} stroke="#0D0D0D" strokeWidth="3"/>
           ))
         ) : isThermometers ? (
           <>
@@ -596,7 +596,7 @@ function ProductSVG({ item, size = 160 }) {
         ) : (
           <>
             <rect x="30" y="75" width="140" height="70" rx="6" fill="#1E293B"/>
-            <rect x="35" y="80" width="130" height="40" rx="4" fill="#0B0F17" stroke={isWindow ? "#CBD5E1" : "#2A3A4E"}/>
+            <rect x="35" y="80" width="130" height="40" rx="4" fill="#0D0D0D" stroke={isWindow ? "#CBD5E1" : "#2A3A4E"}/>
             <rect x="35" y="125" width="130" height="15" rx="3" fill={tc} opacity="0.35"/>
           </>
         )}
@@ -609,14 +609,14 @@ function ProductSVG({ item, size = 160 }) {
         {isCashDrawer ? (
           <>
             <rect x="42" y="80" width="116" height="68" rx="7" fill="#1E293B"/>
-            <rect x="48" y="88" width="104" height="44" rx="4" fill="#0B0F17"/>
+            <rect x="48" y="88" width="104" height="44" rx="4" fill="#0D0D0D"/>
             {[54,75,96,117,138].map(x => <rect key={x} x={x} y="94" width="15" height="31" rx="2" fill="#2A3A4E"/>)}
             <circle cx="100" cy="140" r="4" fill={tc}/>
           </>
         ) : (
           <>
             <rect x="55" y="60" width="90" height="70" rx="6" fill="#1E293B"/>
-            <rect x="60" y="65" width="80" height="55" rx="3" fill="#0B0F17"/>
+            <rect x="60" y="65" width="80" height="55" rx="3" fill="#0D0D0D"/>
             <rect x="65" y="70" width="70" height="45" rx="2" fill={tc} opacity="0.18"/>
             <rect x="85" y="135" width="30" height="15" rx="3" fill="#2A3A4E"/>
           </>
@@ -649,7 +649,7 @@ function ProductSVG({ item, size = 160 }) {
     content = (
       <g>
         <rect x="55" y="65" width="90" height="75" rx="8" fill="#1E293B"/>
-        <rect x="60" y="70" width="80" height="65" rx="4" fill="#0B0F17"/>
+        <rect x="60" y="70" width="80" height="65" rx="4" fill="#0D0D0D"/>
         <circle cx="100" cy="102" r="20" fill={tc} opacity="0.15"/>
       </g>
     );
@@ -697,16 +697,16 @@ function Card({ item, selected, onSelect, onDetail }) {
           POPULAR
         </div>
       )}
-      <div style={{ background:"#0B0F17", padding:16, display:"flex", justifyContent:"center" }}>
+      <div style={{ background:"#0D0D0D", padding:16, display:"flex", justifyContent:"center" }}>
         <ProductSVG item={item} size={140}/>
       </div>
       <div style={{ padding:"14px 16px 16px" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
           <TierBadge tier={item.tier}/>
-          <span style={{ color:tc, fontWeight:800, fontSize:15, fontFamily:"'Outfit',sans-serif" }}>${item.price.toLocaleString()}</span>
+          <span style={{ color:tc, fontWeight:800, fontSize:15, fontFamily:"'IBM Plex Mono',monospace" }}>${item.price.toLocaleString()}</span>
         </div>
-        <h3 style={{ color:"#E8ECF2", fontSize:13, fontWeight:700, marginBottom:4, fontFamily:"'Outfit',sans-serif", lineHeight:1.3 }}>{item.name}</h3>
-        <p style={{ color:"#64748B", fontSize:10, marginBottom:10, fontFamily:"'Outfit',sans-serif" }}>{item.dims}{item.specs?` · ${item.specs[0]}`:""}</p>
+        <h3 style={{ color:"#E8ECF2", fontSize:13, fontWeight:700, marginBottom:4, fontFamily:"'DM Sans',sans-serif", lineHeight:1.3 }}>{item.name}</h3>
+        <p style={{ color:"#64748B", fontSize:10, marginBottom:10, fontFamily:"'DM Sans',sans-serif" }}>{item.dims}{item.specs?` · ${item.specs[0]}`:""}</p>
         <div style={{ display:"flex", flexWrap:"wrap", gap:4, marginBottom:8 }}>
           {item.features.slice(0,3).map((f)=><span key={f} style={{ fontSize:9, background:"#1E293B", color:"#8896A8", padding:"3px 8px", borderRadius:6 }}>{f}</span>)}
           {item.features.length>3 && <span style={{ fontSize:9, color:"#64748B", padding:"3px 8px" }}>+{item.features.length-3}</span>}
@@ -721,11 +721,11 @@ function Card({ item, selected, onSelect, onDetail }) {
             borderRadius:8,
             border: selected ? "none" : `1px solid ${tc}40`, 
             background: selected ? tc : "transparent", 
-            color: selected ? "#0B0F17" : tc,
+            color: selected ? "#0D0D0D" : tc,
             fontWeight:700, 
             fontSize:10, 
             letterSpacing:"0.06em", 
-            fontFamily:"'Outfit',sans-serif", 
+            fontFamily:"'DM Sans',sans-serif", 
             cursor:"pointer",
             transition:"all 0.2s", 
             textTransform:"uppercase" 
@@ -752,7 +752,7 @@ function Modal({ item, selected, onClose, onSelect }) {
         style={{ background:"#0F172A", borderRadius:20, maxWidth:700, width:"100%", overflow:"hidden", border:"1px solid #1E293B" }}
       >
         <div style={{ display:"flex", flexDirection:"row" }}>
-          <div style={{ flex:"0 0 260px", background:"#0B0F17", display:"flex", alignItems:"center", justifyContent:"center", padding:30 }}>
+          <div style={{ flex:"0 0 260px", background:"#0D0D0D", display:"flex", alignItems:"center", justifyContent:"center", padding:30 }}>
             <ProductSVG item={item} size={200}/>
           </div>
           <div style={{ flex:1, padding:28 }}>
@@ -760,7 +760,7 @@ function Modal({ item, selected, onClose, onSelect }) {
               <TierBadge tier={item.tier}/>
               <span style={{ color:"#64748B", fontSize:11 }}>{TIERS[item.tier].desc}</span>
             </div>
-            <h2 style={{ color:"#E8ECF2", fontSize:22, fontWeight:800, marginBottom:16, fontFamily:"'Outfit',sans-serif" }}>{item.name}</h2>
+            <h2 style={{ color:"#E8ECF2", fontSize:22, fontWeight:800, marginBottom:16, fontFamily:"'DM Sans',sans-serif" }}>{item.name}</h2>
             <div style={{ display:"flex", flexWrap:"wrap", gap:10, marginBottom:20 }}>
               {[{l:"Dimensions",v:item.dims}, ...item.specs.map(s=>({l:s.includes("BTU")?"Power":s.includes("°F")?"Temp":s.includes("lb")?"Weight":"Spec",v:s}))].map((sp)=>(
                 <div key={`${sp.l}-${sp.v}`} style={{ background:"#1E293B", padding:"8px 14px", borderRadius:10 }}>
@@ -772,18 +772,18 @@ function Modal({ item, selected, onClose, onSelect }) {
             <div style={{ marginBottom:20 }}>
               <div style={{ color:"#64748B", fontSize:10, marginBottom:8, textTransform:"uppercase", letterSpacing:"0.08em" }}>Features</div>
               <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
-                {item.features.map((f)=><span key={f} style={{ fontSize:10, background:"#0B0F17", color:"#8896A8", padding:"5px 10px", borderRadius:8, border:"1px solid #1E293B" }}>✓ {f}</span>)}
+                {item.features.map((f)=><span key={f} style={{ fontSize:10, background:"#0D0D0D", color:"#8896A8", padding:"5px 10px", borderRadius:8, border:"1px solid #1E293B" }}>✓ {f}</span>)}
               </div>
             </div>
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", paddingTop:16, borderTop:"1px solid #1E293B" }}>
               <div>
                 <div style={{ color:"#64748B", fontSize:10, marginBottom:4, textTransform:"uppercase" }}>Price</div>
-                <div style={{ color:tc, fontSize:28, fontWeight:800, fontFamily:"'Outfit',sans-serif" }}>${item.price.toLocaleString()}</div>
+                <div style={{ color:tc, fontSize:28, fontWeight:800, fontFamily:"'IBM Plex Mono',monospace" }}>${item.price.toLocaleString()}</div>
               </div>
               <div style={{ display:"flex", gap:10 }}>
                 <button 
                   onClick={onClose} 
-                  style={{ padding:"10px 24px", borderRadius:10, border:"1px solid #2A3A4E", background:"transparent", color:"#8896A8", fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"'Outfit',sans-serif" }}
+                  style={{ padding:"10px 24px", borderRadius:10, border:"1px solid #2A3A4E", background:"transparent", color:"#8896A8", fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}
                 >
                   Close
                 </button>
@@ -795,11 +795,11 @@ function Modal({ item, selected, onClose, onSelect }) {
                     borderRadius:10, 
                     border:"none", 
                     background: selected ? "#2A3A4E" : `linear-gradient(135deg,${tc},${tc}CC)`, 
-                    color: selected ? "#8896A8" : "#0B0F17", 
+                    color: selected ? "#8896A8" : "#0D0D0D", 
                     fontSize:11, 
                     fontWeight:700, 
                     cursor:"pointer", 
-                    fontFamily:"'Outfit',sans-serif", 
+                    fontFamily:"'DM Sans',sans-serif", 
                     letterSpacing:"0.04em", 
                     textTransform:"uppercase" 
                   }}
@@ -873,9 +873,9 @@ const KitchenOutfitter = () => {
   };
 
   return (
-    <div style={{ display:"flex", minHeight:"100vh", background:"#0a0d14", fontFamily:"'Manrope',sans-serif" }}>
+    <div style={{ display:"flex", minHeight:"100vh", background:"#0a0d14", fontFamily:"'DM Sans',sans-serif" }}>
       <SEO 
-        title="Equipment Showroom - Food Truck Launch Pad"
+        title="Equipment Showroom - Foodtruck Apollo"
         description="Browse and configure commercial food truck equipment. Chassis, cooking, refrigeration, HVAC, plumbing, electrical, and serving equipment."
         url="/kitchen-outfitter"
       />
@@ -888,7 +888,7 @@ const KitchenOutfitter = () => {
               <Truck className="w-4 h-4" style={{ color:"white" }} />
             </div>
             <div>
-              <div style={{ color:"#fff", fontSize:15, fontWeight:700, fontFamily:"'Outfit',sans-serif" }}>FTLP</div>
+              <div style={{ color:"#fff", fontSize:15, fontWeight:700, fontFamily:"'DM Sans',sans-serif" }}>Foodtruck Apollo</div>
             </div>
           </Link>
           <div style={{ color:"#52525b", fontSize:12, fontWeight:600, letterSpacing:"0.05em" }}>Equipment Showroom</div>
@@ -967,11 +967,11 @@ const KitchenOutfitter = () => {
                 padding:"7px 12px", 
                 borderRadius:8, 
                 border:"1px solid #1E293B", 
-                background:"#0B0F17", 
+                background:"#0D0D0D", 
                 color:"#E8ECF2", 
                 fontSize:11, 
                 width:180, 
-                fontFamily:"'Outfit',sans-serif", 
+                fontFamily:"'DM Sans',sans-serif", 
                 outline:"none" 
               }}
             />
@@ -996,7 +996,7 @@ const KitchenOutfitter = () => {
                   background: active ? (t?.bg||"#EC5B1315") : "transparent",
                   color: active ? (t?.color||"#EC5B13") : "#8896A8",
                   cursor:"pointer", 
-                  fontFamily:"'Outfit',sans-serif", 
+                  fontFamily:"'DM Sans',sans-serif", 
                   letterSpacing:"0.06em", 
                   textTransform:"uppercase" 
                 }}
@@ -1068,11 +1068,11 @@ const KitchenOutfitter = () => {
                       borderRadius:10, 
                       border:"none", 
                       background:"#EC5B13",
-                      color:"#0B0F17", 
+                      color:"#0D0D0D", 
                       fontWeight:700, 
                       fontSize:11, 
                       cursor: isSaving ? "not-allowed" : "pointer", 
-                      fontFamily:"'Outfit',sans-serif", 
+                      fontFamily:"'DM Sans',sans-serif", 
                       textTransform:"uppercase", 
                       letterSpacing:"0.06em",
                       opacity: isSaving ? 0.7 : 1

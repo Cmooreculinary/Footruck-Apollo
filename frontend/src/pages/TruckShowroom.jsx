@@ -75,7 +75,7 @@ const TruckShowroom = () => {
           <p className="text-xl text-zinc-400 font-medium mb-3">
             <span className="text-[#EC5B13] font-bold">30</span> signature builds. Find yours.
           </p>
-          <p className="text-sm text-zinc-600">
+          <p className="text-sm text-zinc-500">
             First 10 are free. Unlock all 30 with a{" "}
             <span className="text-[#EC5B13] font-semibold">Showroom Pass</span>.
           </p>
@@ -91,7 +91,7 @@ const TruckShowroom = () => {
               onClick={() => setActiveFilter(f)}
               className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-all ${
                 activeFilter === f
-                  ? "bg-[#EC5B13] border-[#EC5B13] text-white"
+                  ? "bg-[#EC5B13] border-[#EC5B13] text-[#0D0D0D]"
                   : "border-[#2a2a2a] text-zinc-400 hover:border-white/20 hover:text-white"
               }`}
             >
@@ -99,7 +99,7 @@ const TruckShowroom = () => {
             </button>
           ))}
         </div>
-        <p className="text-xs text-zinc-600">
+        <p className="text-xs text-zinc-500">
           Showing <span className="text-zinc-400 font-semibold">{filtered.length}</span> builds
         </p>
       </div>
@@ -134,7 +134,7 @@ const TruckShowroom = () => {
                   </>
                 )}
                 {!truck.locked && (
-                  <span className="absolute top-3 right-3 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#EC5B13]/20 text-[#EC5B13] border border-[#EC5B13]/30 tracking-wider">
+                  <span className="absolute top-3 right-3 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#EC5B13]/20 text-[#F4793B] border border-[#EC5B13]/30 tracking-wider">
                     {truck.category}
                   </span>
                 )}
@@ -146,9 +146,9 @@ const TruckShowroom = () => {
                   <h3 className={`text-base font-bold leading-tight ${truck.locked ? "text-zinc-500" : "text-white"}`}>
                     {truck.name}
                   </h3>
-                  <p className="text-xs text-zinc-600 mt-0.5">{truck.style}</p>
+                  <p className="text-xs text-zinc-500 mt-0.5">{truck.style}</p>
                   {truck.locked && (
-                    <span className="inline-block mt-1.5 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#8b5cf6]/10 text-[#8b5cf6] border border-[#8b5cf6]/20 tracking-wider">
+                    <span className="inline-block mt-1.5 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-[#8b5cf6]/10 text-[#A78BFA] border border-[#8b5cf6]/20 tracking-wider">
                       {truck.category}
                     </span>
                   )}
@@ -164,7 +164,7 @@ const TruckShowroom = () => {
                   {truck.locked ? (
                     <Link
                       to="/pricing"
-                      className="flex-1 py-2 text-xs font-semibold rounded-xl border border-[#8b5cf6]/40 text-[#8b5cf6] hover:bg-[#8b5cf6]/10 transition-colors text-center"
+                      className="flex-1 py-2 text-xs font-semibold rounded-xl border border-[#8b5cf6]/40 text-[#A78BFA] hover:bg-[#8b5cf6]/10 transition-colors text-center"
                     >
                       Unlock Showroom Pass
                     </Link>
@@ -172,13 +172,13 @@ const TruckShowroom = () => {
                     <>
                       <button
                         onClick={() => navigate("/paint-shop")}
-                        className="flex-1 py-2 text-xs font-semibold rounded-xl bg-[#EC5B13] text-white hover:bg-[#d14a24] transition-colors"
+                        className="flex-1 py-2 text-xs font-semibold rounded-xl bg-[#EC5B13] text-[#0D0D0D] hover:bg-[#F2742F] transition-colors"
                       >
                         Customize This
                       </button>
                       <button
                         disabled
-                        className="flex-1 py-2 text-xs font-semibold rounded-xl border border-[#2a2a2a] text-zinc-600 flex items-center justify-center gap-1.5 cursor-not-allowed"
+                        className="flex-1 py-2 text-xs font-semibold rounded-xl border border-[#2a2a2a] text-zinc-500 flex items-center justify-center gap-1.5 cursor-not-allowed"
                         title="Coming soon"
                       >
                         <Lock className="w-3 h-3" />
@@ -206,7 +206,7 @@ const TruckShowroom = () => {
           </div>
           <Link
             to="/pricing"
-            className="shrink-0 px-6 py-3 bg-[#EC5B13] text-white text-sm font-bold rounded-xl hover:bg-[#d14a24] transition-colors whitespace-nowrap"
+            className="shrink-0 px-6 py-3 bg-[#EC5B13] text-[#0D0D0D] text-sm font-bold rounded-xl hover:bg-[#F2742F] transition-colors whitespace-nowrap"
           >
             Get Showroom Pass — $149
           </Link>

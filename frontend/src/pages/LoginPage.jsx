@@ -46,10 +46,10 @@ const LoginPage = () => {
       <SEO
         title={
           mode === "login"
-            ? "Sign In — Food Truck Launch Pad"
-            : "Create Account — Food Truck Launch Pad"
+            ? "Sign In — Foodtruck Apollo"
+            : "Create Account — Foodtruck Apollo"
         }
-        description="Sign in or create your Food Truck Launch Pad account."
+        description="Sign in or create your Foodtruck Apollo account."
         url="/login"
       />
 
@@ -59,11 +59,11 @@ const LoginPage = () => {
 
       {/* Logo */}
       <Link to="/" className="flex items-center gap-2.5 mb-10 hover:opacity-80 transition-opacity">
-        <div className="w-10 h-10 rounded-xl bg-[#E8592F] flex items-center justify-center">
+        <div className="w-10 h-10 rounded-xl bg-[#EC5B13] flex items-center justify-center">
           <Truck className="w-5 h-5 text-white" />
         </div>
         <span className="font-heading text-xl font-bold tracking-tight text-white">
-          Food Truck Launch Pad
+          Foodtruck Apollo
         </span>
       </Link>
 
@@ -79,7 +79,7 @@ const LoginPage = () => {
             disabled={loading}
             className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
               mode === "login"
-                ? "bg-[#E8592F] text-white"
+                ? "bg-[#EC5B13] text-[#0D0D0D]"
                 : "text-zinc-500 hover:text-zinc-300"
             }`}
           >
@@ -92,7 +92,7 @@ const LoginPage = () => {
             disabled={loading}
             className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
               mode === "register"
-                ? "bg-[#E8592F] text-white"
+                ? "bg-[#EC5B13] text-[#0D0D0D]"
                 : "text-zinc-500 hover:text-zinc-300"
             }`}
           >
@@ -116,7 +116,7 @@ const LoginPage = () => {
                 placeholder="Jane Smith"
                 required
                 autoComplete="name"
-                className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#E8592F]/60 focus:bg-white/[0.06] transition-all"
+                className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#EC5B13]/60 focus:bg-white/[0.06] transition-all"
               />
             </div>
           )}
@@ -136,7 +136,7 @@ const LoginPage = () => {
               autoComplete="email"
               aria-invalid={Boolean(error)}
               aria-describedby={error ? "auth-error" : undefined}
-              className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#E8592F]/60 focus:bg-white/[0.06] transition-all"
+              className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#EC5B13]/60 focus:bg-white/[0.06] transition-all"
             />
           </div>
 
@@ -157,7 +157,7 @@ const LoginPage = () => {
                 autoComplete={mode === "login" ? "current-password" : "new-password"}
                 aria-invalid={Boolean(error)}
                 aria-describedby={error ? "auth-error" : undefined}
-                className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 pr-11 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#E8592F]/60 focus:bg-white/[0.06] transition-all"
+                className="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 pr-11 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-[#EC5B13]/60 focus:bg-white/[0.06] transition-all"
               />
               <button
                 type="button"
@@ -182,7 +182,7 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 flex items-center justify-center gap-2 py-3 rounded-xl bg-[#E8592F] text-white text-sm font-semibold hover:bg-[#d14a24] disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+            className="w-full mt-2 flex items-center justify-center gap-2 py-3 rounded-xl bg-[#EC5B13] text-[#0D0D0D] text-sm font-semibold hover:bg-[#F2742F] disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? (
               <>
@@ -201,7 +201,7 @@ const LoginPage = () => {
       {/* Back link */}
       <Link
         to="/"
-        className="mt-6 text-sm text-zinc-600 hover:text-zinc-400 transition-colors"
+        className="mt-6 text-sm text-zinc-500 hover:text-zinc-400 transition-colors"
       >
         ← Back to home
       </Link>
